@@ -17,4 +17,4 @@ services:
     ports:
       - "8080:8080"
       - "35729:35729"
-    entrypoint: npm run dev
+    entrypoint: npm run start

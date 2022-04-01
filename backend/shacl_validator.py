@@ -132,7 +132,7 @@ def create_repository_representation(access_token="", repo_name="", expected_typ
                     (readme_entity, props["has_section"], Literal(heading)))
 
     except Exception as e:
-        print(f"No README file could be retrieved due to: {e}")
+        logging.exception(f"No README file could be retrieved due to: {e}")
 
     return graph
 

@@ -3,7 +3,7 @@
     <br>
 </p>
     
-<h2 align="center">QuaRe: Validate the Quality of your Git Repositories</h2>
+<h2 align="center">QuaRe: Validate your Git Repositories against Quality Criteria</h2>
 
 <p align="center">
     <a href="#summary">Summary</a>
@@ -12,14 +12,14 @@
     •
     <a href="#usage">Usage</a>
     •
-    <a href="#development">Development</a>
+    <a href="#developer-information">Developer Information</a>
     •
     <a href="#license">License</a>
 </p>
 
 ## Summary
 
-QuaRe is a Single-Page Application (SPA) that allows users to test if GitHub repositories of interest comply with certain quality criteria that they should fulfill according to the type of project in the repository. 
+QuaRe is a single-Page application that allows users to test if GitHub repositories of interest comply with certain quality criteria that they should fulfill according to the type of project in the repository. 
 
 ## Installation
 
@@ -41,7 +41,7 @@ When you have filled out the form, you can issue the validation of the specified
 
 Here you can view the available project types and the quality constraints that are assigned to them. In the future, it is planned that the project types and criteria can be edited directly here. Currently, you have to edit the SHACL shapes graph or the ontology manually. If you want to change the criteria or add other project types, we strongly recommend editing the shapes graph and thereby using the SHACL approach because this is far easier than editing the ontology.  
 
-## Development
+## Developer Information
 
 Instead of running frontend and backend using `docker compose up`, you can run backend and frontend independently for easier debugging.
 ### Running the Backend
