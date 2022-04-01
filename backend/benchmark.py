@@ -155,5 +155,5 @@ def process_results():
 
 
 if __name__ == "__main__":
-    # run_benchmark()
+    run_benchmark()
     process_results()
