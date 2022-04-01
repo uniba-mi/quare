@@ -1,0 +1,20 @@
+version: "3"
+
+services:
+  backend:
+    build: ./backend
+    container_name: backend
+    volumes:
+      - ./backend:/src
+    ports:
+      - "5000:5000"
+    entrypoint: ./backend_api.py
+  frontend:
+    build: ./frontend
+    container_name: frontend
+    volumes:
+      - ./frontend:/src
+    ports:
+      - "8080:8080"
+      - "35729:35729"
+    entrypoint: npm run dev

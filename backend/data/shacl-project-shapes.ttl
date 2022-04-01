@@ -1,0 +1,117 @@
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix types: <https://example.org/repo/project-types/> .
+@prefix props: <https://example.org/repo/props/> .
+@prefix entities: <https://example.org/repo/entities/> .
+
+types:FinishedResearchProject
+  a rdfs:Class, sh:NodeShape ;
+  sh:property [
+		sh:path props:is_private ;
+		sh:pattern "false" ;
+	], [
+		sh:path props:has_topic ;
+		sh:minCount 1 ;
+	], [
+		sh:path props:has_description ;
+		sh:minCount 1 ;
+    	sh:maxCount 1 ;
+	], [
+		sh:path props:has_branch ;
+		sh:minCount 1 ;
+		sh:maxCount 1 ;
+	], [
+		sh:path ( props:has_branch props:has_name ) ;
+		sh:qualifiedValueShape [
+			sh:pattern "main" ;
+		] ;
+		sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;
+	], [
+		sh:path ( props:has_issue props:has_state ) ;
+		sh:pattern "open" ;
+		sh:maxCount 0 ;
+	], [
+		sh:path props:has_release ;
+		sh:minCount 1 ;
+	], [
+		sh:path props:has_license ;
+		sh:pattern "GNU General Public License v3.0" ;
+	], [
+		sh:path props:has_readme ;
+		sh:minCount 1 ;
+	], [
+		sh:path ( props:has_readme props:has_section );
+		sh:qualifiedValueShape [
+			sh:pattern "Installation" ;
+		] ;
+		sh:qualifiedMinCount 1 ;
+	], [
+		sh:path ( props:has_readme props:has_section ) ;
+		sh:qualifiedValueShape [
+			sh:pattern "Usage" ;
+		] ;
+		sh:qualifiedMinCount 1 ;
+	] .
+
+types:OngoingResearchProject
+  a rdfs:Class, sh:NodeShape ;
+  sh:property [
+		sh:path props:is_private ;
+		sh:pattern "true" ;
+	], [
+		sh:path props:has_branch ;
+		sh:minCount 2 ;
+	] .
+
+types:TeachingTool
+  a rdfs:Class, sh:NodeShape ;
+  sh:property [
+		sh:path props:is_private ;
+		sh:pattern "false" ;
+	], [
+		sh:path props:has_topic ;
+		sh:minCount 1 ;
+	], [
+		sh:path props:has_description ;
+		sh:minCount 1 ;
+    	sh:maxCount 1 ;
+	], [
+		sh:path props:has_branch ;
+		sh:minCount 2 ;
+	], [
+		sh:path props:has_release ;
+		sh:minCount 1 ;
+	], [
+		sh:path props:has_license ;
+		sh:pattern "MIT License" ;
+	], [
+		sh:path props:has_readme ;
+		sh:minCount 1 ;
+	], [
+		sh:path ( props:has_readme props:has_section ) ;
+		sh:qualifiedValueShape [
+			sh:pattern "Usage" ;
+		] ;
+		sh:qualifiedMinCount 1 ;
+	] .
+
+types:InternalDocumentation
+  a rdfs:Class, sh:NodeShape ;
+  sh:property [
+		sh:path props:is_private ;
+		sh:pattern "true" ;
+	], [
+		sh:path props:has_description ;
+		sh:minCount 1 ;
+    	sh:maxCount 1 ;
+	], [
+		sh:path props:has_readme ;
+		sh:minCount 1 ;
+	], [
+		sh:path ( props:has_readme props:has_section );
+		sh:qualifiedValueShape [
+			sh:pattern "Purpose" ;
+		] ;
+		sh:qualifiedMinCount 1 ;
+	] .
