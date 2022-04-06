@@ -159,7 +159,7 @@ def get_project_type_specifcations():
 
 if __name__ == "__main__":
     run_validator(
-        "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", "uniba-mi/blender_lernapp", "TeachingTool", "shacl")
+        "", "uniba-mi/blender_lernapp", "TeachingTool", "shacl")
 
     run_validator(
-        "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", "uniba-mi/rdftex", "FinishedResearchProject", "shacl")
+        "", "uniba-mi/rdftex", "FinishedResearchProject", "shacl")
