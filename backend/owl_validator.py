@@ -277,7 +277,7 @@ def create_repository_representation(github_access_token="", repo_name="", expec
                 repo_entity_params["readme_sections"] = section_entities
 
         except Exception as e:
-            print(f"No README file could be retrieved due to: {e}")
+            logging.exception(f"No README file could be retrieved due to: {e}")
 
         # create and thereby test repo entity against expected type
         if expected_type == "FinishedResearchProject":

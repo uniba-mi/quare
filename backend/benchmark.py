@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 
 import glob
-import json
-from pprint import pprint
+import logging
 import pstats
 from subprocess import run
 from time import sleep
@@ -148,12 +147,12 @@ def process_results():
     shacl_step_three_percent = '{:.2f}%'.format(
         shacl_step_durations[2]/shacl_total*100)
 
-    print(
+    logging.info(
         f"Using the OWL approach, steps 1/2/3 account for {owl_step_one_percent}/{owl_step_two_percent}/{owl_step_three_percent} of the total runtime.")
-    print(
+    logging.info(
         f"Using the SHACL approach, steps 1/2/3 account for {shacl_step_one_percent}/{shacl_step_two_percent}/{shacl_step_three_percent} of the total runtime.")
 
 
 if __name__ == "__main__":
-    # run_benchmark()
+    run_benchmark()
     process_results()
