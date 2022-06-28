@@ -12,9 +12,7 @@ services:
   frontend:
     build: ./frontend
     container_name: frontend
-    volumes:
-      - ./frontend:/src
     ports:
       - "8080:8080"
       - "35729:35729"
-    entrypoint: npm run start
+    entrypoint: npm run launch

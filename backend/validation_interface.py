@@ -115,6 +115,8 @@ def run_validator(github_access_token="", repo_name="", repo_type="", method="")
         except Exception as e:
             logger.exception(e)
 
+        print(output)
+
         results["returnCode"] = output.returncode
 
         if results["returnCode"]:
