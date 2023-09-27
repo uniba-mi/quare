@@ -306,6 +306,9 @@ def test_repo_against_specs(github_access_token="", repo_name="", expected_type=
     create_project_type_representation()
     create_repository_representation(
         github_access_token, repo_name, expected_type)
+
+    onto.save(file = "./data/ontology.owl", format = "rdfxml")
+
     run_validation()
 
 
