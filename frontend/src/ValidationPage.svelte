@@ -91,170 +91,184 @@
   };
 </script>
 
-<div class="row justify-content-center mb-3">
-  <div class="col-6">
-    <h5 class="text-center">
-      On this page, GitHub repositories can be validated against a predefined
-      project type which corresponds to a set of quality criteria.
-    </h5>
+<div class="container-fluid">
+  <div class="row justify-content-center mb-3">
+    <div class="col-6">
+      <h5 class="text-center">
+        On this page, GitHub repositories can be validated against a predefined
+        project type which corresponds to a set of quality criteria.
+      </h5>
+    </div>
   </div>
-</div>
 
-<div class="row justify-content-center mb-3">
-  <div class="col-8">
-    <form
-      id="validation-form"
-      on:submit|preventDefault={handleValidationRequest}
-    >
-      <!-- access can be specified only once -->
-      <div class="mb-3 col-12">
-        <label for="validation-access-token" class="form-label"
-          >GitHub Access Token (required for private repositories)</label
-        >
-        <input
-          class="form-control"
-          id="validation-access-token"
-          type="text"
-          bind:value={$validationSettings.accessToken}
-        />
-      </div>
+  <div class="row justify-content-center mb-3">
+    <div class="col-8">
+      <form
+        id="validation-form"
+        on:submit|preventDefault={handleValidationRequest}
+      >
+        <!-- access token can be specified only once -->
+        <div class="row mb-3">
+          <div class="col-12">
+            <label for="validation-access-token" class="form-label"
+              >GitHub Access Token (required for private repositories)</label
+            >
+            <input
+              class="form-control"
+              id="validation-access-token"
+              type="text"
+              bind:value={$validationSettings.accessToken}
+            />
+          </div>
+        </div>
 
-      {#each { length: Object.keys($validationData).length } as _, i}
-        <div class="col mb-3">
-          <label for="validation-repository-{i}" class="form-label"
-            >Repository Name</label
-          >
-          <input
-            class="form-control"
-            id="validation-repository-{i}"
-            type="text"
-            bind:value={$validationData[i]["repoName"]}
-            required
-          />
-        </div>
-        <div class="col mb-3">
-          <label for="validation-type-{i}" class="form-label"
-            >Which type should the repository have?</label
-          >
-          <select
-            class="form-control"
-            id="validation-type-{i}"
-            bind:value={$validationData[i]["repoType"]}
-            required
-          >
-            {#each Object.keys($projectTypeSpecifications.owl) as typeName, _}
-              <option>{typeName}</option>
-            {/each}
-          </select>
-        </div>
-        <div class="col-2 mb-3">
-          <div class="row justify-content-center">
-            <p class="form-label">Result:</p>
-            <div class="btn-group" role="group">
-              {#if $validationData[i]["status"] == "success"}
-                <button class="btn btn-success disabled">
-                  <CheckCircleIcon size="20" />
-                </button>
-              {:else if $validationData[i]["status"] == "failure"}
-                <button class="btn btn-danger disabled">
-                  <AlertCircleIcon size="20" />
-                </button>
-                <button
-                  on:click|preventDefault={handleResultButtonPress}
-                  class="btn btn-outline-danger"
-                  id="result-button-{i}"
-                >
-                  View
-                </button>
-              {:else if $validationData[i]["status"] == "loading"}
-                <button class="btn btn-secondary disabled">
-                  <span
-                    class="spinner-border spinner-border"
-                    style="width: 1rem; height: 1rem;"
-                    role="status"
-                    aria-hidden="true"
-                  />
-                </button>
-              {:else if $validationData[i]["status"] == "unknown"}
-                <button class="btn btn-secondary disabled">
-                  <CircleIcon size="20" />
-                </button>
-              {/if}
+        <!-- one row for each repository to be validated -->
+        {#each { length: Object.keys($validationData).length } as _, i}
+          <div class="row mb-3">
+            <div class="col">
+              <label for="validation-repository-{i}" class="form-label"
+                >Repository Name</label
+              >
+              <input
+                class="form-control"
+                id="validation-repository-{i}"
+                type="text"
+                bind:value={$validationData[i]["repoName"]}
+                required
+              />
+            </div>
+            <div class="col">
+              <label for="validation-type-{i}" class="form-label"
+                >Project Type</label
+              >
+              <select
+                class="form-control"
+                id="validation-type-{i}"
+                bind:value={$validationData[i]["repoType"]}
+                required
+              >
+                {#each Object.keys($projectTypeSpecifications.owl) as typeName, _}
+                  <option>{typeName}</option>
+                {/each}
+              </select>
+            </div>
+            <div class="col-2">
+              <div class="row justify-content-center">
+                <p class="form-label">Result</p>
+                <div class="btn-group" role="group">
+                  {#if $validationData[i]["status"] == "success"}
+                    <button class="btn btn-success disabled">
+                      <CheckCircleIcon size="20" />
+                    </button>
+                  {:else if $validationData[i]["status"] == "failure"}
+                    <button class="btn btn-danger disabled">
+                      <AlertCircleIcon size="20" />
+                    </button>
+                    <button
+                      on:click|preventDefault={handleResultButtonPress}
+                      class="btn btn-outline-danger"
+                      id="result-button-{i}"
+                    >
+                      View
+                    </button>
+                  {:else if $validationData[i]["status"] == "loading"}
+                    <button class="btn btn-secondary disabled">
+                      <span
+                        class="spinner-border spinner-border"
+                        style="width: 1rem; height: 1rem;"
+                        role="status"
+                        aria-hidden="true"
+                      />
+                    </button>
+                  {:else if $validationData[i]["status"] == "unknown"}
+                    <button class="btn btn-secondary disabled">
+                      <CircleIcon size="20" />
+                    </button>
+                  {/if}
+                </div>
+              </div>
+            </div>
+          </div>
+        {/each}
+
+        <!-- radio buttons for selecting shacl or owl backend -->
+        <div class="row mb-3">
+          <div class="col">
+            <div class="form-check form-check-inline">
+              <!-- use the shacl validator -->
+              <input
+                type="radio"
+                class="form-check-input"
+                name="method"
+                id="shacl"
+                autocomplete="off"
+                value="shacl"
+                bind:group={$validationSettings["method"]}
+              />
+              <label class="form-check-label" for="shacl">SHACL</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <!-- use the owl validator -->
+              <input
+                type="radio"
+                class="form-check-input"
+                name="method"
+                id="owl"
+                autocomplete="off"
+                value="owl"
+                bind:group={$validationSettings["method"]}
+              />
+              <label class="form-check-label" for="owl">OWL</label>
             </div>
           </div>
         </div>
-      {/each}
-      <div class="row">
-        <div class="col">
-          <div class="form-check form-check-inline">
-            <!-- use the shacl validator -->
-            <input
-              type="radio"
-              class="form-check-input"
-              name="method"
-              id="shacl"
-              autocomplete="off"
-              value="shacl"
-              bind:group={$validationSettings["method"]}
-            />
-            <label class="form-check-label" for="shacl">SHACL</label>
-          </div>
-          <div class="form-check form-check-inline">
-            <!-- use the owl validator -->
-            <input
-              type="radio"
-              class="form-check-input"
-              name="method"
-              id="owl"
-              autocomplete="off"
-              value="owl"
-              bind:group={$validationSettings["method"]}
-            />
-            <label class="form-check-label" for="owl">OWL</label>
+
+        <!-- form buttons -->
+        <div class="row">
+          <div class="col-6">
+            <div class="btn-group" role="group" aria-label="Form buttons">
+              <!-- button for removing last form -->
+              <button
+                on:click|preventDefault={handleMinusButtonPress}
+                class="btn btn-outline-secondary">-</button
+              >
+              <!-- button for adding another form -->
+              <button
+                on:click|preventDefault={handlePlusButtonPress}
+                class="btn btn-outline-secondary">+</button
+              >
+              <!-- button for saving the form information -->
+              <button
+                on:click|preventDefault={handleSaveButtonPress}
+                class="btn btn-outline-primary">Save Entries</button
+              >
+              <!-- submission button -->
+              <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
           </div>
         </div>
-      </div>
-
-      <div class="btn-group col-4" role="group" aria-label="Form buttons">
-        <!-- button for removing last form -->
-        <button
-          on:click|preventDefault={handleMinusButtonPress}
-          class="btn btn-outline-secondary">-</button
-        >
-        <!-- button for adding another form -->
-        <button
-          on:click|preventDefault={handlePlusButtonPress}
-          class="btn btn-outline-secondary">+</button
-        >
-        <!-- button for saving the form information -->
-        <button
-          on:click|preventDefault={handleSaveButtonPress}
-          class="btn btn-outline-primary">Save Entries</button
-        >
-        <!-- submission button -->
-        <button type="submit" class="btn btn-primary">Submit</button>
-      </div>
-    </form>
+      </form>
+    </div>
   </div>
-</div>
 
-<div class="row justify-content-center">
-  {#if validationResultMessage}
-    <div class="col-6">
-      <p>Raw Explanation:</p>
-      <textarea class="form-control" rows="15" readonly>
-        {validationResultMessage}
-      </textarea>
-    </div>
-  {/if}
-  {#if validationResultVerbalized}
-    <div class="col-6">
-      <p>Verbalized Explanation:</p>
-      <textarea class="form-control" rows="15" readonly>
-        {validationResultVerbalized}
-      </textarea>
-    </div>
-  {/if}
+  <div class="row justify-content-center">
+    {#if validationResultMessage}
+      <div class="col-6">
+        <p>Raw Explanation:</p>
+        <textarea class="form-control" rows="15" readonly>
+          {validationResultMessage}
+        </textarea>
+      </div>
+    {/if}
+    {#if validationResultVerbalized}
+      <div class="col-6">
+        <p>Verbalized Explanation:</p>
+        <textarea class="form-control" rows="15" readonly>
+          {validationResultVerbalized}
+        </textarea>
+      </div>
+    {/if}
+  </div>
 </div>
 
 <style>

@@ -1,18 +1,16 @@
 <script>
   import { selectedPage } from "./stores";
 
-  // change the selected component (the event.originalTarget.id is not accessible in Chrome so switched to event.srcElement.id)
-  const changeComponent = (event) => {
+  const changePage = (event) => {
     document.querySelector(".nav-link.active").classList.remove("active");
     event.srcElement.classList.add("active");
     selectedPage.set(event.srcElement.textContent);
   };
 </script>
 
-<div class="container-fluid">
-  <div class="row p-0">
+<div class="container-fluid p-0">
+  <div class="row">
     <div class="col">
-      <!--app navigation -->
       <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
           <span class="navbar-brand mb-0 h1">QuaRe</span>
@@ -32,14 +30,14 @@
               <li class="nav-item">
                 <a
                   class="nav-link active"
-                  on:click={changeComponent}
+                  on:click={changePage}
                   href="#Validation">Validation</a
                 >
               </li>
               <li class="nav-item">
                 <a
                   class="nav-link"
-                  on:click={changeComponent}
+                  on:click={changePage}
                   href="#Specification">Specification</a
                 >
               </li>
