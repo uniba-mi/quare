@@ -86,9 +86,9 @@
         <owl:Class>
           <owl:unionOf rdf:parseType="Collection">
             <rdf:Description rdf:about="#InstallationSection"/>
-            <rdf:Description rdf:about="#UsageSection"/>
-            <rdf:Description rdf:about="#UsageSection"/>
             <rdf:Description rdf:about="#InstallationSection"/>
+            <rdf:Description rdf:about="#UsageSection"/>
+            <rdf:Description rdf:about="#UsageSection"/>
             <owl:Class>
               <owl:oneOf rdf:parseType="Collection">
                 <rdf:Description rdf:about="#readmesection1"/>
@@ -153,8 +153,8 @@
       <owl:allValuesFrom>
         <owl:Class>
           <owl:unionOf rdf:parseType="Collection">
-            <rdf:Description rdf:about="#MainBranch"/>
             <rdf:Description rdf:about="#Branch"/>
+            <rdf:Description rdf:about="#MainBranch"/>
             <rdf:Description rdf:about="#Branch"/>
             <owl:Class>
               <owl:oneOf rdf:parseType="Collection">
@@ -725,96 +725,96 @@
   <rdfs:subClassOf rdf:resource="#DefaultProject"/>
 </owl:Class>
 
-<Topic rdf:about="#topic1">
-  <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+<owl:NamedIndividual rdf:about="#topic1">
+  <rdf:type rdf:resource="#Topic"/>
   <has_content rdf:datatype="http://www.w3.org/2001/XMLSchema#string">python</has_content>
-</Topic>
+</owl:NamedIndividual>
 
-<Topic rdf:about="#topic2">
-  <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+<owl:NamedIndividual rdf:about="#topic2">
+  <rdf:type rdf:resource="#Topic"/>
   <has_content rdf:datatype="http://www.w3.org/2001/XMLSchema#string">svelte</has_content>
-</Topic>
+</owl:NamedIndividual>
 
-<Topic rdf:about="#topic3">
-  <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+<owl:NamedIndividual rdf:about="#topic3">
+  <rdf:type rdf:resource="#Topic"/>
   <has_content rdf:datatype="http://www.w3.org/2001/XMLSchema#string">git-management</has_content>
-</Topic>
+</owl:NamedIndividual>
 
-<Description rdf:about="#description1">
-  <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+<owl:NamedIndividual rdf:about="#description1">
+  <rdf:type rdf:resource="#Description"/>
   <has_content rdf:datatype="http://www.w3.org/2001/XMLSchema#string">QuaRe is a tool that allows users to test if GitHub repositories of interest comply with certain quality criteria that they should fulfill according to the type of project in the repository.</has_content>
-</Description>
+</owl:NamedIndividual>
 
-<Branch rdf:about="https://github.com/uniba-mi/quare/tree/dev">
-  <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+<owl:NamedIndividual rdf:about="https://github.com/uniba-mi/quare/tree/dev">
+  <rdf:type rdf:resource="#Branch"/>
   <has_content rdf:datatype="http://www.w3.org/2001/XMLSchema#string">dev</has_content>
-</Branch>
+</owl:NamedIndividual>
 
-<Branch rdf:about="https://github.com/uniba-mi/quare/tree/main">
-  <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+<owl:NamedIndividual rdf:about="https://github.com/uniba-mi/quare/tree/main">
+  <rdf:type rdf:resource="#Branch"/>
   <has_content rdf:datatype="http://www.w3.org/2001/XMLSchema#string">main</has_content>
-</Branch>
+</owl:NamedIndividual>
 
-<Readme rdf:about="https://github.com/uniba-mi/quare/blob/main/README.md">
-  <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
-</Readme>
+<owl:NamedIndividual rdf:about="https://github.com/uniba-mi/quare/blob/main/README.md">
+  <rdf:type rdf:resource="#Readme"/>
+</owl:NamedIndividual>
 
-<ReadmeSection rdf:about="#readmesection1">
-  <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+<owl:NamedIndividual rdf:about="#readmesection1">
+  <rdf:type rdf:resource="#ReadmeSection"/>
   <has_content rdf:datatype="http://www.w3.org/2001/XMLSchema#string">QuaRe: Validate your GitHub Repositories against Quality Criteria</has_content>
-</ReadmeSection>
+</owl:NamedIndividual>
 
-<ReadmeSection rdf:about="#readmesection2">
-  <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+<owl:NamedIndividual rdf:about="#readmesection2">
+  <rdf:type rdf:resource="#ReadmeSection"/>
   <has_content rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Summary</has_content>
-</ReadmeSection>
+</owl:NamedIndividual>
 
-<ReadmeSection rdf:about="#readmesection3">
-  <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+<owl:NamedIndividual rdf:about="#readmesection3">
+  <rdf:type rdf:resource="#ReadmeSection"/>
   <has_content rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Installation</has_content>
-</ReadmeSection>
+</owl:NamedIndividual>
 
-<ReadmeSection rdf:about="#readmesection4">
-  <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+<owl:NamedIndividual rdf:about="#readmesection4">
+  <rdf:type rdf:resource="#ReadmeSection"/>
   <has_content rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Usage</has_content>
-</ReadmeSection>
+</owl:NamedIndividual>
 
-<ReadmeSection rdf:about="#readmesection5">
-  <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+<owl:NamedIndividual rdf:about="#readmesection5">
+  <rdf:type rdf:resource="#ReadmeSection"/>
   <has_content rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Developer Information</has_content>
-</ReadmeSection>
+</owl:NamedIndividual>
 
-<ReadmeSection rdf:about="#readmesection6">
-  <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+<owl:NamedIndividual rdf:about="#readmesection6">
+  <rdf:type rdf:resource="#ReadmeSection"/>
   <has_content rdf:datatype="http://www.w3.org/2001/XMLSchema#string">License</has_content>
-</ReadmeSection>
+</owl:NamedIndividual>
 
-<ReadmeSection rdf:about="#readmesection7">
-  <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+<owl:NamedIndividual rdf:about="#readmesection7">
+  <rdf:type rdf:resource="#ReadmeSection"/>
   <has_content rdf:datatype="http://www.w3.org/2001/XMLSchema#string">The Validation Page</has_content>
-</ReadmeSection>
+</owl:NamedIndividual>
 
-<ReadmeSection rdf:about="#readmesection8">
-  <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+<owl:NamedIndividual rdf:about="#readmesection8">
+  <rdf:type rdf:resource="#ReadmeSection"/>
   <has_content rdf:datatype="http://www.w3.org/2001/XMLSchema#string">The Specification Page</has_content>
-</ReadmeSection>
+</owl:NamedIndividual>
 
-<ReadmeSection rdf:about="#readmesection9">
-  <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+<owl:NamedIndividual rdf:about="#readmesection9">
+  <rdf:type rdf:resource="#ReadmeSection"/>
   <has_content rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Running the Backend</has_content>
-</ReadmeSection>
+</owl:NamedIndividual>
 
-<ReadmeSection rdf:about="#readmesection10">
-  <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+<owl:NamedIndividual rdf:about="#readmesection10">
+  <rdf:type rdf:resource="#ReadmeSection"/>
   <has_content rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Running the Frontend</has_content>
-</ReadmeSection>
+</owl:NamedIndividual>
 
-<ReadmeSection rdf:about="#readmesection11">
-  <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+<owl:NamedIndividual rdf:about="#readmesection11">
+  <rdf:type rdf:resource="#ReadmeSection"/>
   <has_content rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Benchmarks</has_content>
-</ReadmeSection>
+</owl:NamedIndividual>
 
-<FinishedResearchProject rdf:about="https://github.com/uniba-mi/quare">
+<owl:NamedIndividual rdf:about="https://github.com/uniba-mi/quare">
   <rdf:type>
     <owl:Restriction>
       <owl:allValuesFrom>
@@ -900,7 +900,7 @@
       <owl:onProperty rdf:resource="#has_topic"/>
     </owl:Restriction>
   </rdf:type>
-  <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+  <rdf:type rdf:resource="#FinishedResearchProject"/>
   <has_topic rdf:resource="#topic1"/>
   <has_topic rdf:resource="#topic2"/>
   <has_topic rdf:resource="#topic3"/>
@@ -921,7 +921,7 @@
   <has_readme_section rdf:resource="#readmesection11"/>
   <has_license rdf:datatype="http://www.w3.org/2001/XMLSchema#string">GNU General Public License v3.0</has_license>
   <is_private rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</is_private>
-</FinishedResearchProject>
+</owl:NamedIndividual>
 
 <owl:AllDifferent>
   <owl:distinctMembers rdf:parseType="Collection">

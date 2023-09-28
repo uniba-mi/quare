@@ -107,20 +107,19 @@ def run_validator(github_access_token="", repo_name="", repo_type="", method="")
 
     if method == "owl":
 
-        cmd = ["./owl_validator.py", "--github_access_token", github_access_token,
+        cmd = ["python3", "owl_validator.py", "--github_access_token", github_access_token,
                "--repo_name", repo_name, "--expected_type", repo_type]
 
         try:
             output = run(cmd, capture_output=True)
+            results["returnCode"] = output.returncode
         except Exception as e:
             logger.exception(e)
-
-        print(output)
-
-        results["returnCode"] = output.returncode
+            
 
         if results["returnCode"]:
             stderr = output.stderr.decode()
+
             stderr = stderr.split("Explanation(s):")[1].strip()
             explanation = stderr.split("\n\n\n")[0]
 
