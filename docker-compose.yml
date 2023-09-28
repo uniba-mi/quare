@@ -17,4 +17,4 @@ services:
     ports:
       - "8080:8080"
       - "35729:35729"
-    command: bash -c "npm install && npm run launch"
+    command: bash -c "npm install && npm run dev"

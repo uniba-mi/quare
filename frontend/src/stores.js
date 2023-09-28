@@ -16,3 +16,5 @@ export const validationData = writable({
     verbalized: "",
   },
 });
+
+export let selectedPage = writable("Validation");
