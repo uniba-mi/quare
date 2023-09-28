@@ -7,6 +7,7 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 
 import validation_interface
+import verbalization_interface
 
 app = Flask(__name__)
 CORS(app)
@@ -33,8 +34,11 @@ def validate():
     repo_type = request_data["repoType"]
     method = request_data["method"]
 
-    results = validation_interface.run_validator(
-        github_access_token, repo_name, repo_type, method)
+    returncode, message = validation_interface.run_validator(github_access_token, repo_name, repo_type, method)
+    verbalized = verbalization_interface.run_verbalizer(message, repo_name, repo_type, method)
+
+    results = {"repoName": repo_name, "returnCode": returncode,
+               "message": message, "verbalized": verbalized}
 
     return jsonify(results)
 
