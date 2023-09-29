@@ -1,5 +1,6 @@
 <script>
   import {
+    mode,
     projectTypeSpecifications,
     validationSettings,
     validationData,
@@ -48,7 +49,7 @@
     Object.keys($validationData).forEach((index) => {
       const request_body = {
         accessToken: $validationSettings["accessToken"],
-        method: $validationSettings["method"],
+        method: $mode,
         repoName: $validationData[index]["repoName"],
         repoType: $validationData[index]["repoType"],
       };
@@ -147,7 +148,7 @@
                 bind:value={$validationData[i]["repoType"]}
                 required
               >
-                {#if $validationSettings["method"] == "shacl"}
+                {#if $mode == "shacl"}
                   {#each Object.keys($projectTypeSpecifications.shacl) as typeName, _}
                     <option>{typeName}</option>
                   {/each}
@@ -196,38 +197,6 @@
             </div>
           </div>
         {/each}
-
-        <!-- radio buttons for selecting shacl or owl backend -->
-        <div class="row mb-3">
-          <div class="col">
-            <div class="form-check form-check-inline">
-              <!-- use the shacl validator -->
-              <input
-                type="radio"
-                class="form-check-input"
-                name="method"
-                id="shacl"
-                autocomplete="off"
-                value="shacl"
-                bind:group={$validationSettings["method"]}
-              />
-              <label class="form-check-label" for="shacl">SHACL</label>
-            </div>
-            <div class="form-check form-check-inline">
-              <!-- use the owl validator -->
-              <input
-                type="radio"
-                class="form-check-input"
-                name="method"
-                id="owl"
-                autocomplete="off"
-                value="owl"
-                bind:group={$validationSettings["method"]}
-              />
-              <label class="form-check-label" for="owl">OWL</label>
-            </div>
-          </div>
-        </div>
 
         <!-- form buttons -->
         <div class="row">

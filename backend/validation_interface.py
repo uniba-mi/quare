@@ -30,19 +30,17 @@ def run_validator(github_access_token="", repo_name="", repo_type="", method="")
             stderr = output.stderr.decode()
 
             stderr = stderr.split("Explanation(s):")[1].strip()
-            explanation = stderr.split("\n\n\n")[0]
-
-            message = explanation
+            message = stderr.split("\n\n\n")[0]
 
     elif method == "shacl":
 
-        returncode, explanation = shacl_validator.test_repo_against_specs(
+        returncode, message = shacl_validator.test_repo_against_specs(
             github_access_token, repo_name, repo_type)
+        
+        logger.info(returncode)
 
+        # interpret boolean to as number 
         returncode = 0 if returncode else 1
-
-        if returncode:
-            message = explanation
 
     else:
         raise NotImplementedError()

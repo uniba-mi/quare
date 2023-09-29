@@ -85,10 +85,10 @@
       <owl:allValuesFrom>
         <owl:Class>
           <owl:unionOf rdf:parseType="Collection">
-            <rdf:Description rdf:about="#UsageSection"/>
+            <rdf:Description rdf:about="#InstallationSection"/>
             <rdf:Description rdf:about="#InstallationSection"/>
             <rdf:Description rdf:about="#UsageSection"/>
-            <rdf:Description rdf:about="#InstallationSection"/>
+            <rdf:Description rdf:about="#UsageSection"/>
             <owl:Class>
               <owl:oneOf rdf:parseType="Collection">
                 <rdf:Description rdf:about="#readmesection1"/>

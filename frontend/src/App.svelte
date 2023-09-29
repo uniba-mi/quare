@@ -10,9 +10,6 @@
     selectedPage,
   } from "./stores.js";
 
-  let theSelectedPage;
-  selectedPage.subscribe((value) => (theSelectedPage = value));
-
   // fetch the available repository types from the backend
   fetch("http://localhost:5000/project-type-specifications", {
     method: "GET",
@@ -47,7 +44,7 @@
 </header>
 
 <main>
-  {#if theSelectedPage == "Validation"}
+  {#if $selectedPage == "Validation"}
     <div class="container container-fluid">
       <div class="row">
         <div class="col">
@@ -57,7 +54,7 @@
     </div>
 
     <ValidationPage />
-  {:else if theSelectedPage == "Specification"}
+  {:else if $selectedPage == "Specification"}
     <div class="container container-fluid">
       <div class="row">
         <div class="col">

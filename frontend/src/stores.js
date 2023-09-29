@@ -1,10 +1,11 @@
 import { writable } from "svelte/store";
 
+export const mode = writable("shacl")
+
 export const projectTypeSpecifications = writable({ owl: {}, shacl: {} });
 
 export const validationSettings = writable({
-  accessToken: "",
-  method: "",
+  accessToken: ""
 });
 
 export const validationData = writable({
