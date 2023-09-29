@@ -8,13 +8,12 @@ services:
       - ./backend:/src
     ports:
       - "5000:5000"
-    command: bash -c "chmod +x ./backend_api.py && ./backend_api.py"
+    command: bash -c "chmod +x ./api.py && ./api.py"
   frontend:
     build: ./frontend
     container_name: frontend
     volumes:
       - ./frontend:/src
     ports:
-      - "8080:8080"
-      - "35729:35729"
-    command: bash -c "npm install && npm run launch"
+      - "3000:3000"
+    command: bash -c "npm install && npm run dev"
