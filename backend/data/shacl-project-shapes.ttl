@@ -115,3 +115,10 @@ types:InternalDocumentation
 		] ;
 		sh:qualifiedMinCount 1 ;
 	] .
+
+types:FairSoftware
+  a rdfs:Class, sh:NodeShape ;
+  sh:property [
+		sh:path props:is_private ;
+		sh:pattern "false" ;
+	] .

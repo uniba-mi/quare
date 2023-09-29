@@ -20,9 +20,9 @@ def hello_world():
     return jsonify({"response": "Hello, World!"})
 
 
-@app.route("/project-types-specifications", methods=['GET'])
+@app.route("/project-type-specifications", methods=['GET'])
 def repo_types():
-    return jsonify({"projectTypeSpecifications": validation_interface.get_project_type_specifcations()})
+    return jsonify(validation_interface.get_project_type_specifcations())
 
 
 @app.route("/validate", methods=['POST'])

@@ -147,9 +147,15 @@
                 bind:value={$validationData[i]["repoType"]}
                 required
               >
-                {#each Object.keys($projectTypeSpecifications.owl) as typeName, _}
-                  <option>{typeName}</option>
-                {/each}
+                {#if $validationSettings["method"] == "shacl"}
+                  {#each Object.keys($projectTypeSpecifications.shacl) as typeName, _}
+                    <option>{typeName}</option>
+                  {/each}
+                {:else}
+                  {#each Object.keys($projectTypeSpecifications.owl) as typeName, _}
+                    <option>{typeName}</option>
+                  {/each}
+                {/if}
               </select>
             </div>
             <div class="col-2">

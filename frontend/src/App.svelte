@@ -14,7 +14,7 @@
   selectedPage.subscribe((value) => (theSelectedPage = value));
 
   // fetch the available repository types from the backend
-  fetch("http://localhost:5000/project-types-specifications", {
+  fetch("http://localhost:5000/project-type-specifications", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",

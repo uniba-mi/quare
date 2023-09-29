@@ -57,7 +57,11 @@ def run_validator(github_access_token="", repo_name="", repo_type="", method="")
 
 def get_project_type_specifcations():
 
-    project_type_specifcations = {"owl": owl_validator.get_project_type_specifcations(),
-                                  "shacl": shacl_validator.get_project_type_specifcations()}
+    project_type_specifcations = {
+                                    "projectTypeSpecifications": {
+                                        "owl": owl_validator.get_project_type_specifcations(),
+                                        "shacl": shacl_validator.get_project_type_specifcations()
+                                    }
+                                }
 
     return project_type_specifcations
