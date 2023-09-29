@@ -3,7 +3,7 @@
     <br>
 </p>
     
-<h2 align="center">QuaRe: Validate your Git Repositories against Quality Criteria</h2>
+<h2 align="center">QuaRe: Validate your GitHub Repositories against Quality Criteria</h2>
 
 <p align="center">
     <a href="#summary">Summary</a>
@@ -19,7 +19,7 @@
 
 ## Summary
 
-QuaRe is a single-Page application that allows users to test if GitHub repositories of interest comply with certain quality criteria that they should fulfill according to the type of project in the repository. 
+QuaRe is a single-page application that allows users to test if GitHub repositories of interest comply with certain quality criteria that they should fulfill according to the type of project in the repository. 
 
 ## Installation
 
