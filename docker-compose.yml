@@ -15,6 +15,5 @@ services:
     volumes:
       - ./frontend:/src
     ports:
-      - "8080:8080"
-      - "35729:35729"
+      - "3000:3000"
     command: bash -c "npm install && npm run dev"

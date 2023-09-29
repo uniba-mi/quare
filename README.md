@@ -27,7 +27,7 @@ Thanks to Docker, only [Docker](https://www.docker.com/) and [Docker Compose](ht
 
 ## Usage 
 
-After cloning or downloading this repository, simply run `docker compose up` in a command line from the root folder of the repository to start the tool. The frontend can then be accessed it via [http://localhost:8080](http://localhost:8080). (If necessary, the backend can be accessed via [http://localhost:5000](http://localhost:5000).)
+After cloning or downloading this repository, simply run `docker compose up` in a command line from the root folder of the repository to start the tool. The frontend can then be accessed it via [http://localhost:3000](http://localhost:3000). (If necessary, the backend can be accessed via [http://localhost:5000](http://localhost:5000).)
 
 The frontend currently provides two pages, namely the [Validation page](#the-validation-page) and the [Specification page](#the-specification-page) which can be selected using the navigation bar.
 
