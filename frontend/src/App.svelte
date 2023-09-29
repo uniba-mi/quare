@@ -1,4 +1,7 @@
 <script>
+  // has to stay to enable bootstrap js functionality
+  import * as bootstrap from "bootstrap";
+  
   import Nav from "./Nav.svelte";
   import ValidationPage from "./ValidationPage.svelte";
   import SpecificationPage from "./SpecificationPage.svelte";
