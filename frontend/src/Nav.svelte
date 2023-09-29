@@ -35,10 +35,8 @@
                 >
               </li>
               <li class="nav-item">
-                <a
-                  class="nav-link"
-                  on:click={changePage}
-                  href="#Specification">Specification</a
+                <a class="nav-link" on:click={changePage} href="#Specification"
+                  >Specification</a
                 >
               </li>
             </ul>
