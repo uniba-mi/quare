@@ -1,4 +1,5 @@
 <script>
+  import * as bootstrap from "bootstrap";
   import {
     mode,
     projectTypeSpecifications,
@@ -17,9 +18,9 @@
   const handleMinusButtonPress = () => {
     const currentLength = Object.keys($validationData).length;
     if (currentLength > 1) {
-      // in contrast to using delete, this results in a rerender
-      const { [currentLength - 1]: _, ...rest } = $validationData;
-      $validationData = rest;
+      delete $validationData[currentLength - 1];
+      // required to trigger rerender
+      $validationData = $validationData;
     }
   };
 
@@ -40,6 +41,12 @@
       JSON.stringify($validationSettings)
     );
     localStorage.setItem("validationData", JSON.stringify($validationData));
+
+    const toastLiveExample = document.getElementById("liveToast");
+
+    const toastBootstrap =
+      bootstrap.Toast.getOrCreateInstance(toastLiveExample);
+    toastBootstrap.show();
   };
 
   const handleValidationRequest = () => {
@@ -65,7 +72,7 @@
         },
         body: JSON.stringify(request_body),
       })
-        .then((response) => (response = response.json()))
+        .then((response) => response.json())
         .then((response) => {
           switch (response["returnCode"]) {
             case 0:
@@ -110,7 +117,7 @@
       >
         <!-- access token can be specified only once -->
         <div class="row mb-3">
-          <div class="col-12">
+          <div class="col">
             <label for="validation-access-token" class="form-label"
               >GitHub Access Token (required for private repositories)</label
             >
@@ -143,7 +150,7 @@
                 >Project Type</label
               >
               <select
-                class="form-control"
+                class="form-select"
                 id="validation-type-{i}"
                 bind:value={$validationData[i]["repoType"]}
                 required
@@ -223,6 +230,28 @@
           </div>
         </div>
       </form>
+    </div>
+
+    <!-- toast for status messages -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+      <div
+        id="liveToast"
+        class="toast text-bg-success"
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
+      >
+        <div class="toast-header">
+          <strong class="me-auto">Success</strong>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="toast"
+            aria-label="Close"
+          />
+        </div>
+        <div class="toast-body">Entries have been saved!</div>
+      </div>
     </div>
   </div>
 
