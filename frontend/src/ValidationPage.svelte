@@ -36,6 +36,7 @@
   };
 
   const handleSaveButtonPress = () => {
+    localStorage.setItem("mode", JSON.stringify($mode));
     localStorage.setItem(
       "validationSettings",
       JSON.stringify($validationSettings)

@@ -1,12 +1,13 @@
 <script>
   // has to stay to enable bootstrap js functionality
-  import * as bootstrap from "bootstrap";
+  // import * as bootstrap from "bootstrap";
   
   import Nav from "./Nav.svelte";
   import ValidationPage from "./ValidationPage.svelte";
   import SpecificationPage from "./SpecificationPage.svelte";
 
   import {
+    mode,
     projectTypeSpecifications,
     validationSettings,
     validationData,
@@ -26,19 +27,25 @@
     })
     .catch((reason) => console.error(reason));
 
+  // retrieve data from localStorage
+  if (localStorage.getItem("mode")) {
+    const rawRepoTypeMapping = localStorage.getItem("mode");
+    $mode = JSON.parse(rawRepoTypeMapping);
+  }
+
   if (localStorage.getItem("validationData")) {
     const rawRepoTypeMapping = localStorage.getItem("validationData");
     $validationData = JSON.parse(rawRepoTypeMapping);
+  }
+  
+  if (localStorage.getItem("validationSettings")) {
+    const rawValidationSettings = localStorage.getItem("validationSettings");
+    $validationSettings = JSON.parse(rawValidationSettings);
   }
 
   // reset validation status
   for (const [key, value] of Object.entries($validationData)) {
     $validationData[key] = { ...value, status: "unknown" };
-  }
-
-  if (localStorage.getItem("validationSettings")) {
-    const rawValidationSettings = localStorage.getItem("validationSettings");
-    $validationSettings = JSON.parse(rawValidationSettings);
   }
 </script>
 
