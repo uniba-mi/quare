@@ -18,8 +18,7 @@
     const currentLength = Object.keys($validationData).length;
     if (currentLength > 1) {
       delete $validationData[currentLength - 1];
-      // required to trigger rerender
-      $validationData = $validationData;
+      $validationData = $validationData; // required to trigger rerender
     }
   };
 
@@ -44,8 +43,7 @@
 
     const statusToast = document.getElementById("liveToast");
 
-    const toastBootstrap =
-      bootstrap.Toast.getOrCreateInstance(statusToast);
+    const toastBootstrap = bootstrap.Toast.getOrCreateInstance(statusToast);
     toastBootstrap.show();
   };
 
