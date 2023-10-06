@@ -8,7 +8,7 @@ services:
       - ./backend:/src
     ports:
       - "5000:5000"
-    command: bash -c "chmod +x ./api.py && ./api.py"
+    command: bash -c "chmod +x api.py && python3 api.py"
   frontend:
     build: ./frontend
     container_name: frontend

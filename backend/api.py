@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import json
 import logging
 
@@ -15,13 +13,13 @@ CORS(app)
 logging.basicConfig(level=logging.INFO)
 
 
-@app.route("/", methods=['GET'])
-def hello_world():
-    return jsonify({"response": "Hello, World!"})
+@app.route("/", methods=["GET"])
+def base():
+    return jsonify({"response": "Hello from the QuaRe backend!"})
 
 
-@app.route("/project-type-specifications", methods=['GET'])
-def repo_types():
+@app.route("/project-type-specifications", methods=["GET"])
+def project_type_specifications():
     return jsonify(validation_interface.get_project_type_specifcations())
 
 
@@ -34,14 +32,14 @@ def validate():
     repo_type = request_data["repoType"]
     method = request_data["method"]
 
-    returncode, message = validation_interface.run_validator(github_access_token, repo_name, repo_type, method)
-    verbalized = verbalization_interface.run_verbalizer(message, repo_name, repo_type, method)
+    returncode, report = validation_interface.run_validator(github_access_token, repo_name, repo_type, method)
+    verbalized = verbalization_interface.run_verbalizer(report, repo_name, repo_type, method)
 
     results = {"repoName": repo_name, "returnCode": returncode,
-               "message": message, "verbalized": verbalized}
+               "report": report, "verbalized": verbalized}
 
     return jsonify(results)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")

@@ -13,7 +13,7 @@ export const validationData = writable({
     repoName: "",
     repoType: "",
     status: "unknown",
-    message: "",
+    report: "",
     verbalized: "",
   },
 });

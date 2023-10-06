@@ -1,5 +1,5 @@
-def verbalize(message, repo_name, repo_type):
-    splitlines = message.splitlines()
+def verbalize(report, repo_name, repo_type):
+    splitlines = report.splitlines()
     violations = []
 
     for index, line in enumerate(splitlines):
