@@ -22,7 +22,7 @@ def hello_world():
 
 @app.route("/project-type-specifications", methods=['GET'])
 def repo_types():
-    return jsonify(validation_interface.get_project_type_specifcations())
+    return jsonify(validation_interface.get_project_type_specifications())
 
 
 @app.route("/validate", methods=['POST'])
@@ -34,10 +34,10 @@ def validate():
     repo_type = request_data["repoType"]
     method = request_data["method"]
 
-    returncode, report = validation_interface.run_validator(github_access_token, repo_name, repo_type, method)
+    return_code, report = validation_interface.run_validator(github_access_token, repo_name, repo_type, method)
     verbalized = verbalization_interface.run_verbalizer(report, repo_name, repo_type, method)
 
-    results = {"repoName": repo_name, "returnCode": returncode,
+    results = {"repoName": repo_name, "returnCode": return_code,
                "report": report, "verbalized": verbalized}
 
     return jsonify(results)

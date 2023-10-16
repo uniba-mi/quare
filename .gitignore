@@ -7,3 +7,4 @@ backend/data/benchmarks/
 !backend/data/benchmarks/.gitkeep
 
 .DS_Store
+/.idea/

@@ -5,7 +5,7 @@ import logging
 import fire
 import markdown
 from bs4 import BeautifulSoup
-from github import Github
+from github import Github, UnknownObjectException
 from owlready2 import (AllDifferent, AllDisjoint, DataProperty,
                        FunctionalProperty, Not, Thing, close_world,
                        get_ontology, sync_reasoner_pellet)
@@ -168,7 +168,7 @@ def create_project_type_representation():
             ]
 
 
-def get_project_type_specifcations():
+def get_project_type_specifications():
 
     create_project_type_representation()
 
@@ -244,10 +244,12 @@ def create_repository_representation(github_access_token="", repo_name="", expec
             repo_entity_params["issues"] = issue_entities
 
         # process license information
-        license = repo.get_license()
-
-        if license:
-            repo_entity_params["license"] = license.license.name
+        try:
+            license = repo.get_license()
+            if license:
+                repo_entity_params["license"] = license.license.name
+        except UnknownObjectException as e:
+            logging.exception(f"No license could be retrieved due to: {e}")
 
         # process readme information
         try:
@@ -276,7 +278,7 @@ def create_repository_representation(github_access_token="", repo_name="", expec
                 AllDifferent(section_entities)
                 repo_entity_params["readme_sections"] = section_entities
 
-        except Exception as e:
+        except UnknownObjectException as e:
             logging.exception(f"No README file could be retrieved due to: {e}")
 
         # create and thereby test repo entity against expected type
