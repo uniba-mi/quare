@@ -30,11 +30,11 @@ def run_validator(github_access_token="", repo_name="", repo_type="", method="")
             stderr = output.stderr.decode()
 
             stderr = stderr.split("Explanation(s):")[1].strip()
-            message = stderr.split("\n\n\n")[0]
+            report = stderr.split("\n\n\n")[0]
 
     elif method == "shacl":
 
-        returncode, message = shacl_validator.test_repo_against_specs(
+        returncode, report = shacl_validator.test_repo_against_specs(
             github_access_token, repo_name, repo_type)
         
         logger.info(returncode)
@@ -50,7 +50,7 @@ def run_validator(github_access_token="", repo_name="", repo_type="", method="")
     logger.info("Validating the %s repository against the %s project type using the %s approach took %s seconds!",
                 repo_name, repo_type, method.upper(), '{:f}'.format(time_elapsed))
 
-    return returncode, message
+    return returncode, report
 
 
 def get_project_type_specifcations():

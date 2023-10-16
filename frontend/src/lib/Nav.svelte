@@ -1,5 +1,5 @@
 <script>
-  import { mode, selectedPage } from "./stores";
+  import { mode, selectedPage } from "../stores.js";
 
   const changePage = (event) => {
     document.querySelector(".nav-link.active").classList.remove("active");

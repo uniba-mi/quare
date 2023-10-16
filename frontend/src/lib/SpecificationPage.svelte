@@ -1,8 +1,13 @@
 <script>
-  import { mode, projectTypeSpecifications } from "./stores.js";
+  import { mode, projectTypeSpecifications } from "../stores.js";
 </script>
 
 <div class="container-fluid">
+  <div class="row">
+    <div class="col">
+      <h1 class="mt-3 text-center">Specification</h1>
+    </div>
+  </div>
   <div class="row justify-content-center mb-3">
     <div class="col-8">
       <h5 class="text-center">

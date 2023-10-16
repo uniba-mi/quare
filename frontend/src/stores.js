@@ -1,7 +1,7 @@
 import { writable } from "svelte/store";
 
 export const mode = writable("shacl")
-
+export const selectedPage = writable("Validation");
 export const projectTypeSpecifications = writable({ owl: {}, shacl: {} });
 
 export const validationSettings = writable({
@@ -13,9 +13,7 @@ export const validationData = writable({
     repoName: "",
     repoType: "",
     status: "unknown",
-    message: "",
+    report: "",
     verbalized: "",
   },
 });
-
-export let selectedPage = writable("Validation");

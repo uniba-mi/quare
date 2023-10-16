@@ -3,7 +3,7 @@ frontend/dist/
 
 backend/__pycache__
 backend/git_access_token
-backend/data/benchmarks/*
+backend/data/benchmarks/
 !backend/data/benchmarks/.gitkeep
 
 .DS_Store
