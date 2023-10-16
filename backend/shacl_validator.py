@@ -5,7 +5,7 @@ import logging
 import fire
 import markdown
 from bs4 import BeautifulSoup
-from github import Github
+from github import Github, UnknownObjectException
 from pyshacl import validate
 from rdflib import Graph, Literal, Namespace, URIRef
 from rdflib.namespace import RDF
@@ -15,9 +15,9 @@ props = Namespace("https://example.org/repo/props/")
 entities = Namespace("https://example.org/repo/entities/")
 
 
-def get_project_type_specifcations():
+def get_project_type_specifications():
 
-    project_type_specifcations = {}
+    project_type_specifications = {}
 
     with open("./data/shacl-project-shapes.ttl") as raw_shapes_graph:
 
@@ -42,10 +42,10 @@ def get_project_type_specifcations():
 
             specs = spec_block.split("], [")
 
-            project_type_specifcations[project_type.replace(
+            project_type_specifications[project_type.replace(
                 "types:", "")] = specs
 
-    return project_type_specifcations
+    return project_type_specifications
 
 
 def create_project_type_representation():
@@ -101,11 +101,13 @@ def create_repository_representation(access_token="", repo_name="", expected_typ
             graph.add((repo_entity, props["has_issue"], issue_entity))
 
     # process license information
-    license = repo.get_license()
-
-    if license:
-        graph.add((repo_entity, props["has_license"],
-                   Literal(license.license.name)))
+    try:
+        license = repo.get_license()
+        if license:
+            graph.add((repo_entity, props["has_license"],
+                       Literal(license.license.name)))
+    except UnknownObjectException as e:
+        logging.exception(f"No license could be retrieved due to: {e}")
 
     # process readme information
     try:
@@ -131,7 +133,7 @@ def create_repository_representation(access_token="", repo_name="", expected_typ
                 graph.add(
                     (readme_entity, props["has_section"], Literal(heading)))
 
-    except Exception as e:
+    except UnknownObjectException as e:
         logging.exception(f"No README file could be retrieved due to: {e}")
 
     return graph
@@ -160,9 +162,9 @@ def test_repo_against_specs(github_access_token="", repo_name="", expected_type=
     shapes_graph = create_project_type_representation()
     data_graph = create_repository_representation(
         github_access_token, repo_name, expected_type)
-    returncode, _, result_text = run_validation(data_graph, shapes_graph)
+    return_code, _, result_text = run_validation(data_graph, shapes_graph)
 
-    return returncode, result_text
+    return return_code, result_text
 
 
 if __name__ == "__main__":

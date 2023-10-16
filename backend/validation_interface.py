@@ -21,12 +21,12 @@ def run_validator(github_access_token="", repo_name="", repo_type="", method="")
 
         try:
             output = run(cmd, capture_output=True)
-            returncode = output.returncode
+            return_code = output.returncode
         except Exception as e:
             logger.exception(e)
             
 
-        if returncode:
+        if return_code:
             stderr = output.stderr.decode()
 
             stderr = stderr.split("Explanation(s):")[1].strip()
@@ -34,13 +34,13 @@ def run_validator(github_access_token="", repo_name="", repo_type="", method="")
 
     elif method == "shacl":
 
-        returncode, report = shacl_validator.test_repo_against_specs(
+        return_code, report = shacl_validator.test_repo_against_specs(
             github_access_token, repo_name, repo_type)
         
-        logger.info(returncode)
+        logger.info(return_code)
 
         # interpret boolean to as number 
-        returncode = 0 if returncode else 1
+        return_code = 0 if return_code else 1
 
     else:
         raise NotImplementedError()
@@ -50,15 +50,15 @@ def run_validator(github_access_token="", repo_name="", repo_type="", method="")
     logger.info("Validating the %s repository against the %s project type using the %s approach took %s seconds!",
                 repo_name, repo_type, method.upper(), '{:f}'.format(time_elapsed))
 
-    return returncode, report
+    return return_code, report
 
 
-def get_project_type_specifcations():
+def get_project_type_specifications():
 
     project_type_specifcations = {
                                     "projectTypeSpecifications": {
-                                        "owl": owl_validator.get_project_type_specifcations(),
-                                        "shacl": shacl_validator.get_project_type_specifcations()
+                                        "owl": owl_validator.get_project_type_specifications(),
+                                        "shacl": shacl_validator.get_project_type_specifications()
                                     }
                                 }
 
