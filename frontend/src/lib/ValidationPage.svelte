@@ -6,6 +6,7 @@
   let validationReportVerbalized = "";
 
   const revealValidationResult = (report, verbalized) => {
+    console.log(report)
     validationReport = report;
     validationReportVerbalized = verbalized;
   };

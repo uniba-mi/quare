@@ -5,7 +5,7 @@
 
 <div class="row justify-content-center">
   {#if validationReport}
-    <div class="col-6">
+    <div class="col-4">
       <p>Raw Explanation:</p>
       <textarea class="form-control" rows="15" readonly>
         {validationReport}
@@ -13,7 +13,7 @@
     </div>
   {/if}
   {#if validationReportVerbalized}
-    <div class="col-6">
+    <div class="col-4">
       <p>Verbalized Explanation:</p>
       <textarea class="form-control" rows="15" readonly>
         {validationReportVerbalized}

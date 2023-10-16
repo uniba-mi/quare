@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import json
 import logging
 
@@ -13,13 +15,13 @@ CORS(app)
 logging.basicConfig(level=logging.INFO)
 
 
-@app.route("/", methods=["GET"])
-def base():
-    return jsonify({"response": "Hello from the QuaRe backend!"})
+@app.route("/", methods=['GET'])
+def hello_world():
+    return jsonify({"response": "Hello, World!"})
 
 
-@app.route("/project-type-specifications", methods=["GET"])
-def project_type_specifications():
+@app.route("/project-type-specifications", methods=['GET'])
+def repo_types():
     return jsonify(validation_interface.get_project_type_specifcations())
 
 
@@ -41,5 +43,5 @@ def validate():
     return jsonify(results)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0")
