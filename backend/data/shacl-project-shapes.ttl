@@ -7,20 +7,25 @@
 types:FinishedResearchProject
   a rdfs:Class, sh:NodeShape ;
   sh:property [
+		# The repository has to be public.
 		sh:path props:is_private ;
 		sh:pattern "false" ;
 	], [
+	  	# There has to be at least one topic.
 		sh:path props:has_topic ;
 		sh:minCount 1 ;
 	], [
+	  	# There has to be exactly one description.
 		sh:path props:has_description ;
 		sh:minCount 1 ;
     	sh:maxCount 1 ;
 	], [
+	  	# There has to be exactly one branch.
 		sh:path props:has_branch ;
 		sh:minCount 1 ;
 		sh:maxCount 1 ;
 	], [
+	  	# There has to be exactly one branch named "main".
 		sh:path ( props:has_branch props:has_name ) ;
 		sh:qualifiedValueShape [
 			sh:pattern "main" ;
@@ -28,25 +33,31 @@ types:FinishedResearchProject
 		sh:qualifiedMinCount 1 ;
 		sh:qualifiedMaxCount 1 ;
 	], [
+	  	# There must not be any open issues.
 		sh:path ( props:has_issue props:has_state ) ;
 		sh:pattern "open" ;
 		sh:maxCount 0 ;
 	], [
+	  	# There has to be at least one release.
 		sh:path props:has_release ;
 		sh:minCount 1 ;
 	], [
+	  	# The license has to be "GNU General Public License v3.0".
 		sh:path props:has_license ;
 		sh:pattern "GNU General Public License v3.0" ;
 	], [
+	  	# There has to be at least one README file.
 		sh:path props:has_readme ;
 		sh:minCount 1 ;
 	], [
+	  	# There has to be a README file with an "Installation" section.
 		sh:path ( props:has_readme props:has_section );
 		sh:qualifiedValueShape [
 			sh:pattern "Installation" ;
 		] ;
 		sh:qualifiedMinCount 1 ;
 	], [
+	    # There has to be a README file with a "Usage" section.
 		sh:path ( props:has_readme props:has_section ) ;
 		sh:qualifiedValueShape [
 			sh:pattern "Usage" ;
@@ -57,9 +68,11 @@ types:FinishedResearchProject
 types:OngoingResearchProject
   a rdfs:Class, sh:NodeShape ;
   sh:property [
+        # The repository has to be private.
 		sh:path props:is_private ;
 		sh:pattern "true" ;
 	], [
+        # The repository has to have at least two branches.
 		sh:path props:has_branch ;
 		sh:minCount 2 ;
 	] .
@@ -67,28 +80,36 @@ types:OngoingResearchProject
 types:TeachingTool
   a rdfs:Class, sh:NodeShape ;
   sh:property [
+        # The repository has to be public.
 		sh:path props:is_private ;
 		sh:pattern "false" ;
 	], [
-		sh:path props:has_topic ;
+        # There has to be at least one topic.
+        sh:path props:has_topic ;
 		sh:minCount 1 ;
 	], [
-		sh:path props:has_description ;
+        # There has to be exactly one description.
+        sh:path props:has_description ;
 		sh:minCount 1 ;
     	sh:maxCount 1 ;
 	], [
+        # There have to be at least two branches.
 		sh:path props:has_branch ;
 		sh:minCount 2 ;
 	], [
-		sh:path props:has_release ;
+        # There has to be at least one release.
+        sh:path props:has_release ;
 		sh:minCount 1 ;
 	], [
-		sh:path props:has_license ;
+        # The license has to be "MIT License".
+        sh:path props:has_license ;
 		sh:pattern "MIT License" ;
 	], [
+        # There has to be at least one README file.
 		sh:path props:has_readme ;
 		sh:minCount 1 ;
 	], [
+        # There has to be a README file with a "Usage" section.
 		sh:path ( props:has_readme props:has_section ) ;
 		sh:qualifiedValueShape [
 			sh:pattern "Usage" ;
@@ -99,16 +120,20 @@ types:TeachingTool
 types:InternalDocumentation
   a rdfs:Class, sh:NodeShape ;
   sh:property [
-		sh:path props:is_private ;
+        # The repository has to be private.
+        sh:path props:is_private ;
 		sh:pattern "true" ;
 	], [
-		sh:path props:has_description ;
+        # There has to be exactly one description.
+        sh:path props:has_description ;
 		sh:minCount 1 ;
     	sh:maxCount 1 ;
 	], [
-		sh:path props:has_readme ;
+        # There has to be at least one README file.
+        sh:path props:has_readme ;
 		sh:minCount 1 ;
 	], [
+        # There has to be a README file with a "Purpose" section.
 		sh:path ( props:has_readme props:has_section );
 		sh:qualifiedValueShape [
 			sh:pattern "Purpose" ;
@@ -119,6 +144,7 @@ types:InternalDocumentation
 types:FAIRSoftware
   a rdfs:Class, sh:NodeShape ;
   sh:property [
+        # The repository has to be public.
 		sh:path props:is_private ;
 		sh:pattern "false" ;
 	] .
