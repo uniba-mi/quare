@@ -10,14 +10,14 @@ def verbalize(message, repo_name, repo_type):
             if "Qualified" in violation_type:
                 violation_type = splitline[4].split("#")[1].replace("):", "")
 
+            # TODO: E.g., a "Constraint Violation in OrConstraintComponent" doesn't have a "Result Path".
+            # TODO: Currently, in such cases nothing is appended.
             for other_line in splitlines[index:]:
                 if "Result Path" in other_line:
                     result_path_line = other_line
+                    violation_property = result_path_line.split("Result Path: ")[1].strip()
+                    violations.append((violation_type, violation_property))
                     break
-
-            violation_property = result_path_line.split("Result Path: ")[
-                1].strip()
-            violations.append((violation_type, violation_property))
 
     verbalized_explanation = f"{repo_name} does not comply with the quality criteria of {repo_type}:\n"
 
