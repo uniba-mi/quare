@@ -47,7 +47,7 @@ Instead of running frontend and backend using `docker compose up`, you can run b
 ### Running the Backend
 
 - Run `docker compose run --service-ports --entrypoint bash backend` to get a bash that is attached to the backend container.
-- Run `./backend_api.py` to start the backend. 
+- Run `./api.py` to start the backend. 
 
 ### Running the Frontend
 

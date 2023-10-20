@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import logging
+import re
 
 import fire
 import markdown
@@ -30,7 +31,8 @@ def get_project_type_specifications():
                 current_type = line.replace("\n", "").strip()
                 first_index = index + 3
 
-            if "] ." in line:
+            # With sh:property as the last component, the node shape ends with "] ." With e.g., sh:or, it is ") ."
+            if ("] ." in line) | (") ." in line):
                 last_index = index
 
                 type_spec_indices.append(
@@ -40,7 +42,8 @@ def get_project_type_specifications():
             spec_block = "".join(raw_shapes_graph[first_index:last_index])
             spec_block = spec_block.replace("\t", "")
 
-            specs = spec_block.split("], [")
+            # Two consecutive sh:property components are separated by "], [". For e.g., sh:or, it is "), (".
+            specs = re.split("], \[|\), \(", spec_block)
 
             project_type_specifications[project_type.replace(
                 "types:", "")] = specs
