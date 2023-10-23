@@ -189,7 +189,7 @@ types:FAIRSoftware
       # All tag names must match the semantic versioning pattern.
       sh:path props:has_tag_name ; # TODO: add to repository representation
       # adapted from https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
-      sh:pattern "^v?(\\d+)\\.(\\d+)\\.(\\d+)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$" ;
+      sh:pattern "^v?(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$";
     ]
     [
       # The increment/change between consecutive version numbers has to be valid.
