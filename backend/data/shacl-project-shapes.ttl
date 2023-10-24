@@ -1,336 +1,271 @@
-@prefix sh: <http://www.w3.org/ns/shacl#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix types: <https://example.org/repo/project-types/> .
-@prefix props: <https://example.org/repo/props/> .
+@prefix sh:       <http://www.w3.org/ns/shacl#> .
+@prefix rdfs:     <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix types:    <https://example.org/repo/project-types/> .
+@prefix props:    <https://example.org/repo/props/> .
 @prefix entities: <https://example.org/repo/entities/> .
 
 types:FinishedResearchProject
-  a rdfs:Class, sh:NodeShape ;
-  sh:property [
-		# The repository has to be public.
-		sh:path props:is_private ;
-		sh:pattern "false" ;
-	], [
-	  # There has to be at least one topic.
-		sh:path props:has_topic ;
-		sh:minCount 1 ;
-	], [
-	  # There has to be exactly one description.
-		sh:path props:has_description ;
-		sh:minCount 1 ;
-    	sh:maxCount 1 ;
-	], [
-	  # There has to be exactly one branch.
-		sh:path props:has_branch ;
-		sh:minCount 1 ;
-		sh:maxCount 1 ;
-	], [
-	  # There has to be exactly one branch named "main".
-		sh:path ( props:has_branch props:has_name ) ;
-		sh:qualifiedValueShape [
-			sh:pattern "main" ;
-		] ;
-		sh:qualifiedMinCount 1 ;
-		sh:qualifiedMaxCount 1 ;
-	], [
-	  # There must not be any open issues.
-		sh:path ( props:has_issue props:has_state ) ;
-		sh:pattern "open" ;
-		sh:maxCount 0 ;
-	], [
-	  # There has to be at least one release.
-		sh:path props:has_release ;
-		sh:minCount 1 ;
-	], [
-	  # The license has to be "GNU General Public License v3.0".
-		sh:path props:has_license ;
-		sh:pattern "GNU General Public License v3.0" ;
-	], [
-	  # There has to be at least one README file.
-		sh:path props:has_readme ;
-		sh:minCount 1 ;
-	], [
-	  # There has to be a README file with an "Installation" section.
-		sh:path ( props:has_readme props:has_section );
-		sh:qualifiedValueShape [
-			sh:pattern "Installation" ;
-		] ;
-		sh:qualifiedMinCount 1 ;
-	], [
-	  # There has to be a README file with a "Usage" section.
-		sh:path ( props:has_readme props:has_section ) ;
-		sh:qualifiedValueShape [
-			sh:pattern "Usage" ;
-		] ;
-		sh:qualifiedMinCount 1 ;
-	] .
+    a           rdfs:Class, sh:NodeShape ;
+    sh:property [
+                    # The repository has to be public.
+                    sh:path    props:is_private ;
+                    sh:pattern "false" ; ] ;
+    sh:property [
+                    # There has to be at least one topic.
+                    sh:path     props:has_topic ;
+                    sh:minCount 1 ; ] ;
+    sh:property [
+                    # There has to be exactly one description.
+                    sh:path     props:has_description ;
+                    sh:minCount 1 ;
+                    sh:maxCount 1 ; ] ;
+    sh:property [
+                    # There has to be exactly one branch.
+                    sh:path     props:has_branch ;
+                    sh:minCount 1 ;
+                    sh:maxCount 1 ; ] ;
+    sh:property [
+                    # There has to be exactly one branch named "main".
+                    sh:path                ( props:has_branch props:has_name ) ;
+                    sh:qualifiedValueShape [ sh:pattern "main" ; ] ;
+                    sh:qualifiedMinCount   1 ;
+                    sh:qualifiedMaxCount   1 ; ] ;
+    sh:property [
+                    # There must not be any open issues.
+                    sh:path     ( props:has_issue props:has_state ) ;
+                    sh:pattern  "open" ;
+                    sh:maxCount 0 ; ] ;
+    sh:property [
+                    # There has to be at least one release.
+                    sh:path     props:has_release ;
+                    sh:minCount 1 ; ] ;
+    sh:property [
+                    # There has to be a license and it has to be "GNU General Public License v3.0".
+                    sh:path     props:has_license ;
+                    sh:pattern  "GNU General Public License v3.0" ;
+                    sh:minCount 1 ] ;
+    sh:property [
+                    # There has to be at least one README file.
+                    sh:path     props:has_readme ;
+                    sh:minCount 1 ; ] ;
+    sh:property [
+                    # There has to be a README file with an "Installation" section.
+                    sh:path                ( props:has_readme props:has_section ) ;
+                    sh:qualifiedValueShape [ sh:pattern "Installation" ; ] ;
+                    sh:qualifiedMinCount   1 ; ] ;
+    sh:property [
+                    # There has to be a README file with a "Usage" section.
+                    sh:path                ( props:has_readme props:has_section ) ;
+                    sh:qualifiedValueShape [ sh:pattern "Usage" ; ] ;
+                    sh:qualifiedMinCount   1 ; ] .
 
 types:OngoingResearchProject
-  a rdfs:Class, sh:NodeShape ;
-  sh:property [
-    # The repository has to be private.
-		sh:path props:is_private ;
-		sh:pattern "true" ;
-	], [
-        # The repository has to have at least two branches.
-		sh:path props:has_branch ;
-		sh:minCount 2 ;
-	] .
+    a           rdfs:Class, sh:NodeShape ;
+    sh:property [
+                    # The repository has to be private.
+                    sh:path    props:is_private ;
+                    sh:pattern "true" ; ] ;
+    sh:property [
+                    # The repository has to have at least two branches.
+                    sh:path     props:has_branch ;
+                    sh:minCount 2 ; ] .
 
 types:TeachingTool
-  a rdfs:Class, sh:NodeShape ;
-  sh:property [
-    # The repository has to be public.
-		sh:path props:is_private ;
-		sh:pattern "false" ;
-	], [
-    # There has to be at least one topic.
-    sh:path props:has_topic ;
-		sh:minCount 1 ;
-	], [
-    # There has to be exactly one description.
-    sh:path props:has_description ;
-		sh:minCount 1 ;
-    sh:maxCount 1 ;
-	], [
-    # There have to be at least two branches.
-		sh:path props:has_branch ;
-		sh:minCount 2 ;
-	], [
-    # There has to be at least one release.
-    sh:path props:has_release ;
-		sh:minCount 1 ;
-	], [
-    # The license has to be "MIT License".
-    sh:path props:has_license ;
-		sh:pattern "MIT License" ;
-	], [
-    # There has to be at least one README file.
-		sh:path props:has_readme ;
-		sh:minCount 1 ;
-	], [
-    # There has to be a README file with a "Usage" section.
-		sh:path ( props:has_readme props:has_section ) ;
-		sh:qualifiedValueShape [
-			sh:pattern "Usage" ;
-		] ;
-		sh:qualifiedMinCount 1 ;
-	] .
+    a           rdfs:Class, sh:NodeShape ;
+    sh:property [
+                    # The repository has to be public.
+                    sh:path    props:is_private ;
+                    sh:pattern "false" ; ] ;
+    sh:property [
+                    # There has to be at least one topic.
+                    sh:path     props:has_topic ;
+                    sh:minCount 1 ; ] ;
+    sh:property [
+                    # There has to be exactly one description.
+                    sh:path     props:has_description ;
+                    sh:minCount 1 ;
+                    sh:maxCount 1 ; ] ;
+    sh:property [
+                    # There have to be at least two branches.
+                    sh:path     props:has_branch ;
+                    sh:minCount 2 ; ] ;
+    sh:property [
+                    # There has to be at least one release.
+                    sh:path     props:has_release ;
+                    sh:minCount 1 ; ] ;
+    sh:property [
+                    # There has to be a license and it has to be "MIT License".
+                    sh:path     props:has_license ;
+                    sh:pattern  "MIT License" ;
+                    sh:minCount 1 ] ;
+    sh:property [
+                    # There has to be at least one README file.
+                    sh:path     props:has_readme ;
+                    sh:minCount 1 ; ] ;
+    sh:property [
+                    # There has to be a README file with a "Usage" section.
+                    sh:path                ( props:has_readme props:has_section ) ;
+                    sh:qualifiedValueShape [ sh:pattern "Usage" ; ] ;
+                    sh:qualifiedMinCount   1 ; ] .
 
 types:InternalDocumentation
-  a rdfs:Class, sh:NodeShape ;
-  sh:property [
-    # The repository has to be private.
-    sh:path props:is_private ;
-		sh:pattern "true" ;
-	], [
-	  # There has to be exactly one description.
-    sh:path props:has_description ;
-		sh:minCount 1 ;
-    sh:maxCount 1 ;
-	], [
-    # There has to be at least one README file.
-    sh:path props:has_readme ;
-		sh:minCount 1 ;
-	], [
-    # There has to be a README file with a "Purpose" section.
-		sh:path ( props:has_readme props:has_section );
-		sh:qualifiedValueShape [
-			sh:pattern "Purpose" ;
-		] ;
-		sh:qualifiedMinCount 1 ;
-	] .
+    a           rdfs:Class, sh:NodeShape ;
+    sh:property [
+                    # The repository has to be private.
+                    sh:path    props:is_private ;
+                    sh:pattern "true" ; ] ;
+    sh:property [
+                    # There has to be exactly one description.
+                    sh:path     props:has_description ;
+                    sh:minCount 1 ;
+                    sh:maxCount 1 ; ] ;
+    sh:property [
+                    # There has to be at least one README file.
+                    sh:path     props:has_readme ;
+                    sh:minCount 1 ; ] ;
+    sh:property [
+                    # There has to be a README file with a "Purpose" section.
+                    sh:path                ( props:has_readme props:has_section ) ;
+                    sh:qualifiedValueShape [ sh:pattern "Purpose" ; ] ;
+                    sh:qualifiedMinCount   1 ; ] .
 
 types:FAIRSoftware
-  a rdfs:Class, sh:NodeShape ;
-	sh:or (
-    # Best practice 1: "A description (long or short) is available"
-		[
-	    # There has to be at least one README file.
-	    sh:path props:has_readme ;
-	    sh:minCount 1 ;
-	  ]
-	  [
-			# There has to be exactly one description.
-			sh:path props:has_description ;
-			sh:minCount 1 ;
-			sh:maxCount 1 ;
-		]
-	), (
-		# Best practice 2: "A persistent identifier (e.g., DOI) is available"
-    [
-      # There has to be at least one release.
-      sh:path props:has_release ;
-      sh:minCount 1 ;
-    ]
-    [
-      # The homepage link has to exist and has to be a DOI.
-      sh:path props:has_homepage ; # TODO: add to repository representation
-      # https://www.crossref.org/blog/dois-and-matching-regular-expressions/
-      sh:pattern "^https://doi.org/10.[0-9]{4,}/[-._;()/:A-Z0-9]+$" ;
-      sh:minCount 1 ;
-    ]
-		[
-			# The README file contains a DOI link.
-			sh:path props:readme_contains_doi ; # TODO: add to repository representation
-			sh:pattern "true" ;
-      sh:minCount 1 ;
-		]
-  ) ;
-  sh:property [
-	  # Best practice 3: "A download URL is available"
-	  # The repository has to be public.
-	  sh:path props:is_private ;
-	  sh:pattern "false" ;
-  ] ;
-  sh:and (
-    # Best practice 4: "A semantic versioning scheme is followed"
-    [
-      # All tag names must match the semantic versioning pattern.
-      sh:path props:has_tag_name ; # TODO: add to repository representation
-      # adapted from https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
-      sh:pattern "^v?(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$";
-    ]
-    [
-      # The increment/change between consecutive version numbers has to be valid.
-      sh:path props:versions_have_valid_increment ; # TODO: add to repository representation
-      sh:pattern "true" ;
-    ]
-  ) ;
-  sh:or (
-    # Best practice 5: "Usage documentation (including I/O) is available"
-    [
-      # There has to be a README file where the name of a section starts with "Usage".
-      sh:path ( props:has_readme props:has_section ) ;
-      sh:qualifiedValueShape [
-        sh:pattern "^Usage" ;
-      ] ;
-      sh:qualifiedMinCount 1 ;
-    ]
-    [
-      # There has to be a README file where the name of a section starts with "How to use" (case insensitive).
-      sh:path ( props:has_readme props:has_section ) ;
-      sh:qualifiedValueShape [
-        sh:pattern "^(?i)how to use" ;
-      ] ;
-      sh:qualifiedMinCount 1 ;
-    ]
-    [
-      # There has to be a README file where the name of a section starts with "Manual".
-      sh:path ( props:has_readme props:has_section ) ;
-      sh:qualifiedValueShape [
-        sh:pattern "^Manual" ;
-      ] ;
-      sh:qualifiedMinCount 1 ;
-    ]
-    [
-      # There has to be a README file where the name of a section starts with "User manual" (case insensitive).
-      sh:path ( props:has_readme props:has_section ) ;
-      sh:qualifiedValueShape [
-        sh:pattern "^(?i)user manual" ;
-      ] ;
-      sh:qualifiedMinCount 1 ;
-    ]
-  ) ;
-  sh:property [
-    # Best practice 6: "A license is declared"
-    # There has to be exactly one license.
-    sh:path props:has_license ;
-    sh:minCount 1 ;
-    sh:maxCount 1 ;
-  ] ;
-  sh:or (
-    # Best practice 7: "An explicit citation is provided"
-    [
-      # There has to be exactly one file CITATION.cff in the default branch.
-      sh:path props:has_citation_cff_in_default_branch ; # TODO: add to repository representation
-      sh:minCount 1 ;
-      sh:maxCount 1 ;
-    ]
-    [
-      # There has to be a README file where the name of a section starts with "Citation".
-      sh:path ( props:has_readme props:has_section ) ;
-      sh:qualifiedValueShape [
-        sh:pattern "^Citation" ;
-        ] ;
-      sh:qualifiedMinCount 1 ;
-    ]
-    [
-      # There has to be exactly one .bib file in the default branch.
-      sh:path props:has_bib_file_in_default_branch ; # TODO: add to repository representation
-      sh:minCount 1 ;
-      sh:maxCount 1 ;
-    ]
-  ) ;
-  sh:property [
-    # Best practice 8: "Software metadata (programming language, keywords, etc.) is available"
-	  # There has to be at least one topic.
-		sh:path props:has_topic ;
-		sh:minCount 1 ;
-  ] ;
-  sh:or (
-    # Best practice 9: "Installation instructions are available"
-    [
-      # There has to be a README file where the name of a section starts with "Installation".
-      sh:path ( props:has_readme props:has_section ) ;
-      sh:qualifiedValueShape [
-        sh:pattern "^Installation" ;
-        ] ;
-      sh:qualifiedMinCount 1 ;
-    ]
-    [
-      # There has to be a README file where the name of a section starts with "How to install" (case insensitive).
-      sh:path ( props:has_readme props:has_section ) ;
-      sh:qualifiedValueShape [
-        sh:pattern "^(?i)how to install" ;
-        ] ;
-      sh:qualifiedMinCount 1 ;
-    ]
-    [
-      # There has to be a README file where the name of a section starts with "Setup".
-      sh:path ( props:has_readme props:has_section ) ;
-      sh:qualifiedValueShape [
-        sh:pattern "^Setup" ;
-        ] ;
-      sh:qualifiedMinCount 1 ;
-    ]
-    [
-      # There has to be a README file where the name of a section starts with "Set up" (case insensitive).
-      sh:path ( props:has_readme props:has_section ) ;
-      sh:qualifiedValueShape [
-        sh:pattern "^(?i)set up" ;
-        ] ;
-      sh:qualifiedMinCount 1 ;
-    ]
-    [
-      # There has to be a README file where the name of a section starts with "Setting up" (case insensitive).
-      sh:path ( props:has_readme props:has_section ) ;
-      sh:qualifiedValueShape [
-        sh:pattern "^(?i)setting up" ;
-        ] ;
-      sh:qualifiedMinCount 1 ;
-    ]
-  ), (
-    # Best practice 10: "Software requirements are available"
-    [
-      # There has to be a README file where the name of a section starts with "Dependencies".
-      sh:path ( props:has_readme props:has_section ) ;
-      sh:qualifiedValueShape [
-        sh:pattern "^Dependencies" ;
-        ] ;
-      sh:qualifiedMinCount 1 ;
-    ]
-    [
-      # There has to be a README file where the name of a section starts with "Requirements".
-      sh:path ( props:has_readme props:has_section ) ;
-      sh:qualifiedValueShape [
-        sh:pattern "^Requirements" ;
-        ] ;
-      sh:qualifiedMinCount 1 ;
-    ]
-    [
-      # There has to be the correct requirements file, depending on the programming language.
-      sh:path props:has_language_specific_requirements_file ; # TODO: add to repository representation
-      sh:minCount 1 ;
-    ]
-  ) .
+    a           rdfs:Class, sh:NodeShape ;
+    sh:or       (
+                # Best practice 1: "A description (long or short) is available"
+                [
+                    # There has to be at least one README file.
+                    sh:path     props:has_readme ;
+                    sh:minCount 1 ; ] [
+
+                    # There has to be exactly one description.
+                    sh:path     props:has_description ;
+                    sh:minCount 1 ;
+                    sh:maxCount 1 ; ] ) ;
+    sh:or       (
+                # Best practice 2: "A persistent identifier (e.g., DOI) is available"
+                [
+                    # There has to be at least one release.
+                    sh:path     props:has_release ;
+                    sh:minCount 1 ; ] [
+
+                    # The homepage link has to exist and has to be a DOI.
+                    sh:path     props:has_homepage ; # TODO: add to repository representation
+                    # https://www.crossref.org/blog/dois-and-matching-regular-expressions/
+                    sh:pattern  "^https://doi.org/10.[0-9]{4,}/[-._;()/:A-Z0-9]+$" ;
+                    sh:minCount 1 ; ] [
+
+                    # The README file contains a DOI link.
+                    sh:path     props:readme_contains_doi ; # TODO: add to repository representation
+                    sh:pattern  "true" ;
+                    sh:minCount 1 ; ] ) ;
+    sh:property [
+                    # Best practice 3: "A download URL is available"
+                    # The repository has to be public.
+                    sh:path    props:is_private ;
+                    sh:pattern "false" ; ] ;
+    sh:and      (
+                # Best practice 4: "A semantic versioning scheme is followed"
+                [
+                    # All tag names must match the semantic versioning pattern.
+                    sh:path props:has_tag_name ; # TODO: add to repository representation
+                    # adapted from https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
+                    sh:pattern
+                            "^v?(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$" ; ]
+                [
+                    # The increment/change between consecutive version numbers has to be valid.
+                    sh:path    props:versions_have_valid_increment ; # TODO: add to repository representation
+                    sh:pattern "true" ; ] ) ;
+    sh:or       (
+                # Best practice 5: "Usage documentation (including I/O) is available"
+                [
+                    # There has to be a README file where the name of a section starts with "Usage".
+                    sh:path                ( props:has_readme props:has_section ) ;
+                    sh:qualifiedValueShape [ sh:pattern "^Usage" ; ] ;
+                    sh:qualifiedMinCount   1 ; ] [
+
+                    # There has to be a README file where the name of a section starts with "How to use" (case insensitive).
+                    sh:path                ( props:has_readme props:has_section ) ;
+                    sh:qualifiedValueShape [ sh:pattern "^(?i)how to use" ; ] ;
+                    sh:qualifiedMinCount   1 ; ] [
+
+                    # There has to be a README file where the name of a section starts with "Manual".
+                    sh:path                ( props:has_readme props:has_section ) ;
+                    sh:qualifiedValueShape [ sh:pattern "^Manual" ; ] ;
+                    sh:qualifiedMinCount   1 ; ] [
+
+                    # There has to be a README file where the name of a section starts with "User manual" (case insensitive).
+                    sh:path                ( props:has_readme props:has_section ) ;
+                    sh:qualifiedValueShape [ sh:pattern "^(?i)user manual" ; ] ;
+                    sh:qualifiedMinCount   1 ; ] ) ;
+    sh:property [
+                    # Best practice 6: "A license is declared"
+                    # There has to be exactly one license.
+                    sh:path     props:has_license ;
+                    sh:minCount 1 ;
+                    sh:maxCount 1 ; ] ;
+    sh:or       (
+                # Best practice 7: "An explicit citation is provided"
+                [
+                    # There has to be exactly one file CITATION.cff in the default branch.
+                    sh:path     props:has_citation_cff_in_default_branch ; # TODO: add to repository representation
+                    sh:minCount 1 ;
+                    sh:maxCount 1 ; ] [
+
+                    # There has to be a README file where the name of a section starts with "Citation".
+                    sh:path                ( props:has_readme props:has_section ) ;
+                    sh:qualifiedValueShape [ sh:pattern "^Citation" ; ] ;
+                    sh:qualifiedMinCount   1 ; ] [
+
+                    # There has to be exactly one .bib file in the default branch.
+                    sh:path     props:has_bib_file_in_default_branch ; # TODO: add to repository representation
+                    sh:minCount 1 ;
+                    sh:maxCount 1 ; ] ) ;
+    sh:property [
+                    # Best practice 8: "Software metadata (programming language, keywords, etc.) is available"
+                    # There has to be at least one topic.
+                    sh:path     props:has_topic ;
+                    sh:minCount 1 ; ] ;
+    sh:or       (
+                # Best practice 9: "Installation instructions are available"
+                [
+                    # There has to be a README file where the name of a section starts with "Installation".
+                    sh:path                ( props:has_readme props:has_section ) ;
+                    sh:qualifiedValueShape [ sh:pattern "^Installation" ; ] ;
+                    sh:qualifiedMinCount   1 ; ] [
+
+                    # There has to be a README file where the name of a section starts with "How to install" (case insensitive).
+                    sh:path                ( props:has_readme props:has_section ) ;
+                    sh:qualifiedValueShape [ sh:pattern "^(?i)how to install" ; ] ;
+                    sh:qualifiedMinCount   1 ; ] [
+
+                    # There has to be a README file where the name of a section starts with "Setup".
+                    sh:path                ( props:has_readme props:has_section ) ;
+                    sh:qualifiedValueShape [ sh:pattern "^Setup" ; ] ;
+                    sh:qualifiedMinCount   1 ; ] [
+
+                    # There has to be a README file where the name of a section starts with "Set up" (case insensitive).
+                    sh:path                ( props:has_readme props:has_section ) ;
+                    sh:qualifiedValueShape [ sh:pattern "^(?i)set up" ; ] ;
+                    sh:qualifiedMinCount   1 ; ] [
+
+                    # There has to be a README file where the name of a section starts with "Setting up" (case insensitive).
+                    sh:path                ( props:has_readme props:has_section ) ;
+                    sh:qualifiedValueShape [ sh:pattern "^(?i)setting up" ; ] ;
+                    sh:qualifiedMinCount   1 ; ] ) ;
+    sh:or       (
+                # Best practice 10: "Software requirements are available"
+                [
+                    # There has to be a README file where the name of a section starts with "Dependencies".
+                    sh:path                ( props:has_readme props:has_section ) ;
+                    sh:qualifiedValueShape [ sh:pattern "^Dependencies" ; ] ;
+                    sh:qualifiedMinCount   1 ; ] [
+
+                    # There has to be a README file where the name of a section starts with "Requirements".
+                    sh:path                ( props:has_readme props:has_section ) ;
+                    sh:qualifiedValueShape [ sh:pattern "^Requirements" ; ] ;
+                    sh:qualifiedMinCount   1 ; ] [
+
+                    # There has to be the correct requirements file, depending on the programming language.
+                    sh:path     props:has_language_specific_requirements_file ; # TODO: add to repository representation
+                    sh:minCount 1 ; ] ) .
