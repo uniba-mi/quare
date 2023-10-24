@@ -22,18 +22,17 @@ def verbalize(message, repo_name, repo_type):
     verbalized_explanation = f"{repo_name} does not comply with the quality criteria of {repo_type}:\n"
 
     for violation_type, violation_property in violations:
-
-        if violation_type == "MinCountConstraintComponent":
-            verbalized_explanation += f"- It seems like there are too few {violation_property} properties.\n"
-        elif violation_type == "MaxCountConstraintComponent":
-            verbalized_explanation += f"- It seems like there are too many {violation_property} properties.\n"
-        elif violation_type == "PatternConstraintComponent":
-            verbalized_explanation += f"- It seems like a {violation_property} property does not have the correct value.\n"
-        elif violation_type == "QualifiedMinCountConstraintComponent":
-            verbalized_explanation += f"- It seems like there are too few nodes at the end of the path {violation_property} with the correct value.\n"
-        elif violation_type == "QualifiedMaxCountConstraintComponent":
-            verbalized_explanation += f"- It seems like there are too many nodes at the end of the path {violation_property} with the correct value.\n"
-        else:
-            verbalized_explanation += f"- It seems like the {violation_property} property does not comply with {violation_type}.\n"
-    
+        match violation_type:
+            case "MinCountConstraintComponent":
+                verbalized_explanation += f"- It seems like there are too few {violation_property} properties.\n"
+            case "MaxCountConstraintComponent":
+                verbalized_explanation += f"- It seems like there are too many {violation_property} properties.\n"
+            case "PatternConstraintComponent":
+                verbalized_explanation += f"- It seems like a {violation_property} property does not have the correct value.\n"
+            case "QualifiedMinCountConstraintComponent":
+                verbalized_explanation += f"- It seems like there are too few nodes at the end of the path {violation_property} with the correct value.\n"
+            case "QualifiedMaxCountConstraintComponent":
+                verbalized_explanation += f"- It seems like there are too many nodes at the end of the path {violation_property} with the correct value.\n"
+            case _:
+                verbalized_explanation += f"- It seems like the {violation_property} property does not comply with {violation_type}.\n"
     return verbalized_explanation
