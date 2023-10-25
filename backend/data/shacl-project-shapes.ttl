@@ -152,6 +152,7 @@ types:FAIRSoftware
                     # The homepage link has to exist and has to be a DOI.
                     sh:path     props:has_homepage ; # TODO: add to repository representation
                     # https://www.crossref.org/blog/dois-and-matching-regular-expressions/
+                    # Put into the right format with the help of ChatGPT.
                     sh:pattern  "^https://doi.org/10.[0-9]{4,}/[-._;()/:A-Z0-9]+$" ;
                     sh:minCount 1 ; ] [
 
@@ -169,7 +170,8 @@ types:FAIRSoftware
                 [
                     # All tag names must match the semantic versioning pattern.
                     sh:path props:has_tag_name ; # TODO: add to repository representation
-                    # adapted from https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
+                    # Adapted from https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
+                    # Put into the right format with the help of ChatGPT.
                     sh:pattern
                             "^v?(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$" ; ]
                 [
@@ -207,8 +209,8 @@ types:FAIRSoftware
     sh:or       (
                 # Best practice 7: "An explicit citation is provided"
                 [
-                    # There has to be exactly one file CITATION.cff in the default branch.
-                    sh:path     props:has_citation_cff_in_default_branch ; # TODO: add to repository representation
+                    # There has to be exactly one file CITATION.cff in the root directory of the default branch.
+                    sh:path     props:has_citation_cff_in_root_directory ; # TODO: add to repository representation
                     sh:minCount 1 ;
                     sh:maxCount 1 ; ] [
 
@@ -217,8 +219,8 @@ types:FAIRSoftware
                     sh:qualifiedValueShape [ sh:pattern "^Citation" ; ] ;
                     sh:qualifiedMinCount   1 ; ] [
 
-                    # There has to be exactly one .bib file in the default branch.
-                    sh:path     props:has_bib_file_in_default_branch ; # TODO: add to repository representation
+                    # There has to be exactly one .bib file in the root directory of the default branch.
+                    sh:path     props:has_bib_file_in_root_directory ; # TODO: add to repository representation
                     sh:minCount 1 ;
                     sh:maxCount 1 ; ] ) ;
     sh:property [
@@ -266,6 +268,7 @@ types:FAIRSoftware
                     sh:qualifiedValueShape [ sh:pattern "^Requirements" ; ] ;
                     sh:qualifiedMinCount   1 ; ] [
 
-                    # There has to be the correct requirements file, depending on the programming language.
-                    sh:path     props:has_language_specific_requirements_file ; # TODO: add to repository representation
+                    # Depending on the programming language, there has to be the correct requirements file in the
+                    # root directory of the default branch.
+                    sh:path     props:has_language_specific_requirements_file_in_root_directory ; # TODO: add to repository representation
                     sh:minCount 1 ; ] ) .
