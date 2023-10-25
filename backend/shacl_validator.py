@@ -42,8 +42,8 @@ def get_project_type_specifications():
             spec_block = "".join(raw_shapes_graph[first_index:last_index])
             spec_block = spec_block.replace("\t", "")
 
-            # Two consecutive sh:property components are separated by "], [". For e.g., sh:or, it is "), (".
-            specs = re.split("], \[|\), \(", spec_block)
+            # TODO: fix splitting for FAIR project type
+            specs = re.split("sh:property\s*\[|sh:or\s+\(|sh:and\s+\(|sh:node\s+", spec_block)
 
             project_type_specifications[project_type.replace(
                 "types:", "")] = specs
