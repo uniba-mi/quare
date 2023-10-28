@@ -17,7 +17,6 @@ entities = Namespace("https://example.org/repo/entities/")
 
 
 def get_project_type_specifications():
-
     project_type_specifications = {}
 
     with open("./data/shacl-project-shapes.ttl") as raw_shapes_graph:
@@ -35,8 +34,7 @@ def get_project_type_specifications():
             if ("] ." in line) | (") ." in line):
                 last_index = index
 
-                type_spec_indices.append(
-                    (current_type, first_index, last_index))
+                type_spec_indices.append((current_type, first_index, last_index))
 
         for project_type, first_index, last_index in type_spec_indices:
             spec_block = "".join(raw_shapes_graph[first_index:last_index])
@@ -45,8 +43,7 @@ def get_project_type_specifications():
             # TODO: fix splitting for FAIR project type
             specs = re.split("sh:property\s*\[|sh:or\s+\(|sh:and\s+\(|sh:node\s+", spec_block)
 
-            project_type_specifications[project_type.replace(
-                "types:", "")] = specs
+            project_type_specifications[project_type.replace("types:", "")] = specs
 
     return project_type_specifications
 
@@ -78,22 +75,27 @@ def create_repository_representation(access_token="", repo_name="", expected_typ
 
     # process description
     if repo.description:
-        graph.add(
-            (repo_entity, props["has_description"], Literal(repo.description)))
+        graph.add((repo_entity, props["has_description"], Literal(repo.description)))
 
-    # process release information
+    # process homepage
+    if repo.homepage:
+        graph.add((repo_entity, props["has_homepage"], Literal(repo.homepage)))
+
+    # process release and tag information
     release_list = repo.get_releases()
     if release_list:
         for release in release_list:
-            graph.add(
-                (repo_entity, props["has_release"], URIRef(release.html_url)))
+            release_entity = URIRef(release.html_url)
+            graph.add((release_entity, props["has_tag_name"], Literal(release.tag_name)))
+            graph.add((repo_entity, props["has_release"], release_entity))
 
     # process branch information
     branch_list = repo.get_branches()
     if branch_list:
         for branch in branch_list:
-            graph.add((repo_entity, props["has_branch"], URIRef(
-                f"{repo.html_url}/tree/{branch.name}")))
+            branch_entity = URIRef(f"{repo.html_url}/tree/{branch.name}")
+            graph.add((branch_entity, props["has_name"], Literal(branch.name)))
+            graph.add((repo_entity, props["has_branch"], branch_entity))
 
     # process issue information
     issue_list = repo.get_issues()
@@ -107,8 +109,7 @@ def create_repository_representation(access_token="", repo_name="", expected_typ
     try:
         license = repo.get_license()
         if license:
-            graph.add((repo_entity, props["has_license"],
-                       Literal(license.license.name)))
+            graph.add((repo_entity, props["has_license"], Literal(license.license.name)))
     except UnknownObjectException as e:
         logging.exception(f"No license could be retrieved due to: {e}")
 
@@ -133,8 +134,15 @@ def create_repository_representation(access_token="", repo_name="", expected_typ
             graph.add((repo_entity, props["has_readme"], readme_entity))
 
             for heading in headings:
-                graph.add(
-                    (readme_entity, props["has_section"], Literal(heading)))
+                graph.add((readme_entity, props["has_section"], Literal(heading)))
+
+            # Check whether there is at least one DOI in the README file (as text or link href).
+            # Regex adapted from https://www.crossref.org/blog/dois-and-matching-regular-expressions/
+            doi_pattern = re.compile(r"https://doi\.org/10\.\d{4,}/[-._;()/:A-Z0-9]+")
+            if soup.find_all(string=doi_pattern) or soup.find_all(href=doi_pattern):
+                graph.add((readme_entity, props["contains_doi"], Literal("true")))
+            else:
+                graph.add((readme_entity, props["contains_doi"], Literal("false")))
 
     except UnknownObjectException as e:
         logging.exception(f"No README file could be retrieved due to: {e}")
@@ -159,7 +167,6 @@ def run_validation(data_graph, shapes_graph):
 
 
 def test_repo_against_specs(github_access_token="", repo_name="", expected_type=""):
-
     logging.info(f"Validating repo {repo_name} using the SHACL approach..")
 
     shapes_graph = create_project_type_representation()

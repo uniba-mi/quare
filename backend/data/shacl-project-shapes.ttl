@@ -194,14 +194,14 @@ subTypes:PersistentId
             sh:minCount 1 ; ]
 
           # The homepage link has to exist and has to be a DOI.
-          [ sh:path     props:has_homepage ; # TODO: add to repository representation
+          [ sh:path     props:has_homepage ;
             # https://www.crossref.org/blog/dois-and-matching-regular-expressions/
             # Put into the right format with the help of ChatGPT.
-            sh:pattern  "^https://doi.org/10.[0-9]{4,}/[-._;()/:A-Z0-9]+$" ;
+            sh:pattern  "^https://doi\\.org/10\\.[0-9]{4,}/[-._;()/:A-Z0-9]+$" ;
             sh:minCount 1 ; ]
 
           # The README file contains a DOI link.
-          [ sh:path     props:readme_contains_doi ; # TODO: add to repository representation
+          [ sh:path     ( props:has_readme props:contains_doi ) ;
             sh:pattern  "true" ;
             sh:minCount 1 ; ] ) .
 
@@ -209,7 +209,7 @@ subTypes:SemanticVersioning
     a      sh:NodeShape ;
     sh:and (
            # All tag names must match the semantic versioning pattern.
-           [ sh:path props:has_tag_name ; # TODO: add to repository representation
+           [ sh:path ( props:has_release props:has_tag_name ) ;
              # Adapted from https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
              # Put into the right format with the help of ChatGPT.
              sh:pattern
