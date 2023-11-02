@@ -4,73 +4,72 @@
 @prefix nodeShapes:     <https://example.org/repo/node-shapes/> .
 @prefix propertyShapes: <https://example.org/repo/property-shapes/> .
 
-#TODO project types cannot be selected
 types:FinishedResearchProject
-    a           rdfs:Class, sh:NodeShape ;
-    sh:property propertyShapes:PublicRepository ;
-    sh:property propertyShapes:AtLeastOneTopic ;
-    sh:property propertyShapes:DescriptionFilled ;
-    sh:property propertyShapes:ExactlyOneBranch ;
-    sh:property propertyShapes:MainBranchExistent ;
-    sh:property propertyShapes:NoOpenIssues ;
-    sh:property propertyShapes:AtLeastOneRelease ;
-    sh:property propertyShapes:GnuGplV3License ;
-    sh:property propertyShapes:ReadMeFileExistent ;
-    sh:property propertyShapes:InstallationSection ;
-    sh:property propertyShapes:UsageSection .
+		a           rdfs:Class, sh:NodeShape ;
+		sh:property propertyShapes:PublicRepository ;
+		sh:property propertyShapes:AtLeastOneTopic ;
+		sh:property propertyShapes:DescriptionFilled ;
+		sh:property propertyShapes:ExactlyOneBranch ;
+		sh:property propertyShapes:MainBranchExistent ;
+		sh:property propertyShapes:NoOpenIssues ;
+		sh:property propertyShapes:AtLeastOneRelease ;
+		sh:property propertyShapes:GnuGplV3License ;
+		sh:property propertyShapes:ReadMeFileExistent ;
+		sh:property propertyShapes:InstallationSection ;
+		sh:property propertyShapes:UsageSection .
 
 types:OngoingResearchProject
-    a           rdfs:Class, sh:NodeShape ;
-    sh:property propertyShapes:PrivateRepository ;
-    sh:property propertyShapes:AtLeastTwoBranches .
+		a           rdfs:Class, sh:NodeShape ;
+		sh:property propertyShapes:PrivateRepository ;
+		sh:property propertyShapes:AtLeastTwoBranches .
 
 types:TeachingTool
-    a           rdfs:Class, sh:NodeShape ;
-    sh:property propertyShapes:PublicRepository ;
-    sh:property propertyShapes:AtLeastOneTopic ;
-    sh:property propertyShapes:DescriptionFilled ;
-    sh:property propertyShapes:AtLeastTwoBranches ;
-    sh:property propertyShapes:AtLeastOneRelease ;
-    sh:property propertyShapes:MitLicense ;
-    sh:property propertyShapes:ReadMeFileExistent ;
-    sh:property propertyShapes:UsageSection .
+		a           rdfs:Class, sh:NodeShape ;
+		sh:property propertyShapes:PublicRepository ;
+		sh:property propertyShapes:AtLeastOneTopic ;
+		sh:property propertyShapes:DescriptionFilled ;
+		sh:property propertyShapes:AtLeastTwoBranches ;
+		sh:property propertyShapes:AtLeastOneRelease ;
+		sh:property propertyShapes:MitLicense ;
+		sh:property propertyShapes:ReadMeFileExistent ;
+		sh:property propertyShapes:UsageSection .
 
 types:InternalDocumentation
-    a           rdfs:Class, sh:NodeShape ;
-    sh:property propertyShapes:PrivateRepository ;
-    sh:property propertyShapes:DescriptionFilled ;
-    sh:property propertyShapes:ReadMeFileExistent ;
-    sh:property propertyShapes:PurposeSection .
+		a           rdfs:Class, sh:NodeShape ;
+		sh:property propertyShapes:PrivateRepository ;
+		sh:property propertyShapes:DescriptionFilled ;
+		sh:property propertyShapes:ReadMeFileExistent ;
+		sh:property propertyShapes:PurposeSection .
 
 types:FAIRSoftware
-    a           rdfs:Class, sh:NodeShape ;
+		a           rdfs:Class, sh:NodeShape ;
 
-    # Best practice 1: "A description (long or short) is available"
-    sh:node     nodeShapes:DescriptionOrReadme ;
+		# Best practice 1: "A description (long or short) is available"
+		sh:node     nodeShapes:DescriptionOrReadme ;
 
-    # Best practice 2: "A persistent identifier (e.g., DOI) is available"
-    sh:node     nodeShapes:PersistentId ;
+		# Best practice 2: "A persistent identifier (e.g., DOI) is available"
+		sh:node     nodeShapes:PersistentId ;
 
-    # Best practice 3: "A download URL is available"
-    sh:property propertyShapes:PublicRepository ;
+		# Best practice 3: "A download URL is available"
+		sh:property propertyShapes:PublicRepository ;
 
-    # Best practice 4: "A semantic versioning scheme is followed"
-    sh:node     nodeShapes:SemanticVersioning ;
+		# Best practice 4: "A semantic versioning scheme is followed"
+		sh:node     nodeShapes:SemanticVersioning ;
 
-    # Best practice 5: "Usage documentation (including I/O) is available"
-    sh:node     nodeShapes:UsageDocumentation ;
+		# Best practice 5: "Usage documentation (including I/O) is available"
+		sh:node     nodeShapes:UsageDocumentation ;
 
-    # Best practice 6: "A license is declared"
-    sh:property propertyShapes:ExactlyOneLicense ;
+		# Best practice 6: "A license is declared"
+		sh:property propertyShapes:ExactlyOneLicense ;
 
-    # Best practice 7: "An explicit citation is provided"
-    sh:node     nodeShapes:ExplicitCitation ;
+		# Best practice 7: "An explicit citation is provided"
+		sh:node     nodeShapes:ExplicitCitation ;
 
-    # Best practice 8: "Software metadata (programming language, keywords, etc.) is available"
-    sh:property propertyShapes:AtLeastOneTopic ;
+		# Best practice 8: "Software metadata (programming language, keywords, etc.) is available"
+		sh:property propertyShapes:AtLeastOneTopic ;
 
-    # Best practice 9: "Installation instructions are available"
-    sh:node     nodeShapes:InstallationInstructions ;
+		# Best practice 9: "Installation instructions are available"
+		sh:node     nodeShapes:InstallationInstructions ;
 
-    # Best practice 10: "Software requirements are available"
-    sh:node     nodeShapes:SoftwareRequirements .
+		# Best practice 10: "Software requirements are available"
+		sh:node     nodeShapes:SoftwareRequirements .

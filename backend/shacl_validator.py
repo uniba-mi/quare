@@ -14,9 +14,8 @@ from rdflib.namespace import RDF
 types = Namespace("https://example.org/repo/project-types/")
 props = Namespace("https://example.org/repo/props/")
 
-def get_project_type_specifications():
-    project_type_specifications = {}
 
+def get_project_type_specifications():
     with open("data/shacl/project-shapes.ttl") as raw_shapes_graph:
 
         raw_shapes_graph = list(raw_shapes_graph)
@@ -26,22 +25,37 @@ def get_project_type_specifications():
         for index, line in enumerate(raw_shapes_graph):
             if line.startswith("types:"):
                 current_type = line.replace("\n", "").strip()
-                first_index = index + 3
+                first_index = index + 2
 
-            # With sh:property as the last component, the node shape ends with "] ." With e.g., sh:or, it is ") ."
-            if ("] ." in line) | (") ." in line):
-                last_index = index
-
+            if (("sh:property" in line) | ("sh:node" in line)) & (" ." in line):
+                last_index = index + 1
                 type_spec_indices.append((current_type, first_index, last_index))
 
-        for project_type, first_index, last_index in type_spec_indices:
-            spec_block = "".join(raw_shapes_graph[first_index:last_index])
-            spec_block = spec_block.replace("\t", "")
+    return process_project_types_for_display(raw_shapes_graph, type_spec_indices)
 
-            # TODO: fix splitting for FAIR project type
-            specs = re.split("sh:property\s*\[|sh:or\s+\(|sh:and\s+\(|sh:node\s+", spec_block)
 
-            project_type_specifications[project_type.replace("types:", "")] = specs
+def process_project_types_for_display(raw_shapes_graph, type_spec_indices):
+    project_type_specifications = {}
+    for project_type, first_index, last_index in type_spec_indices:
+        spec_block = "".join(raw_shapes_graph[first_index:last_index])
+
+        spec_block = spec_block.replace("\t", "")
+        spec_block = spec_block.replace("propertyShapes:", "")
+        spec_block = spec_block.replace("nodeShapes:", "")
+
+        split_by_comments = re.split("# ", spec_block)
+
+        # If there are comments on this project type, split based on these.
+        if len(split_by_comments) > 1:
+            specs = [spec.replace("sh:node ", "→ ") for spec in split_by_comments]
+            specs = [spec.replace("sh:property ", "→ ") for spec in specs]
+        else:
+            specs = re.split("sh:property\s+|sh:node\s+", spec_block)
+
+        specs = [spec.strip().removesuffix(";") for spec in specs]
+        specs = [spec.strip().removesuffix(".") for spec in specs]
+
+        project_type_specifications[project_type.removeprefix("types:")] = specs[1:]  # At index 0 of specs is "".
 
     return project_type_specifications
 

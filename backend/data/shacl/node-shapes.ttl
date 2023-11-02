@@ -3,67 +3,67 @@
 @prefix propertyShapes: <https://example.org/repo/property-shapes/> .
 
 nodeShapes:DescriptionOrReadme
-    a     sh:NodeShape ;
-    sh:or ( [ sh:property propertyShapes:ReadMeFileExistent ]
-            [ sh:property propertyShapes:DescriptionFilled ] ) .
+		a     sh:NodeShape ;
+		sh:or ( [ sh:property propertyShapes:ReadMeFileExistent ]
+		        [ sh:property propertyShapes:DescriptionFilled ] ) .
 
 nodeShapes:ExplicitCitation
-    a     sh:NodeShape ;
-    sh:or ( [ sh:property propertyShapes:CitationCffFileExistent ]
-            [ sh:property propertyShapes:ExactlyOneBibFile ]
-            [ sh:property propertyShapes:CitationSection ] ) .
+		a     sh:NodeShape ;
+		sh:or ( [ sh:property propertyShapes:CitationCffFileExistent ]
+		        [ sh:property propertyShapes:ExactlyOneBibFile ]
+		        [ sh:property propertyShapes:CitationSection ] ) .
 
 nodeShapes:InstallationInstructions
-    a     sh:NodeShape ;
-    sh:or ( [ sh:property propertyShapes:InstallationSection ]
-            [ sh:property propertyShapes:HowToInstallSection ]
-            [ sh:property propertyShapes:SetupSection ]
-            [ sh:property propertyShapes:SettingUpSection ] ) .
+		a     sh:NodeShape ;
+		sh:or ( [ sh:property propertyShapes:InstallationSection ]
+		        [ sh:property propertyShapes:HowToInstallSection ]
+		        [ sh:property propertyShapes:SetupSection ]
+		        [ sh:property propertyShapes:SettingUpSection ] ) .
 
 nodeShapes:LanguageSpecificRequirementsFile
-    a     sh:NodeShape ;
-    sh:or (
-          # In Java repositories, there has to be either a file "build.gradle" or "pom.xml" in the root directory of
-          # the default branch.
-          [ sh:property propertyShapes:MainLanguageJava ;
-            sh:xone     ( [ sh:property propertyShapes:BuildGradleFileExistent ]
-                          [ sh:property propertyShapes:PomXmlFileExistent ] ) ]
+		a     sh:NodeShape ;
+		sh:or (
+		      # In Java repositories, there has to be either a file "build.gradle" or "pom.xml" in the root directory of
+		      # the default branch.
+		      [ sh:property propertyShapes:MainLanguageJava ;
+		        sh:xone     ( [ sh:property propertyShapes:BuildGradleFileExistent ]
+		                      [ sh:property propertyShapes:PomXmlFileExistent ] ) ]
 
-          # In JavaScript repositories, there has to be a file "package.json" in the root directory of the default branch.
-          [ sh:property propertyShapes:MainLanguageJavaScript ;
-            sh:property propertyShapes:PackageJsonFileExistent ]
+		      # In JavaScript repositories, there has to be a file "package.json" in the root directory of the default branch.
+		      [ sh:property propertyShapes:MainLanguageJavaScript ;
+		        sh:property propertyShapes:PackageJsonFileExistent ]
 
-          # In Python repositories, there has to be either a file "requirements.txt" or "environment.yaml" or
-          # "environment.yml" in the root directory of the default branch.
-          [ sh:property propertyShapes:MainLanguagePython ;
-            sh:xone     ( [ sh:property propertyShapes:RequirementsTxtFileExistent ]
-                          [ sh:property propertyShapes:EnvironmentYamlFileExistent ]
-                          [ sh:property propertyShapes:EnvironmentYmlFileExistent ] ) ]
+		      # In Python repositories, there has to be either a file "requirements.txt" or "environment.yaml" or
+		      # "environment.yml" in the root directory of the default branch.
+		      [ sh:property propertyShapes:MainLanguagePython ;
+		        sh:xone     ( [ sh:property propertyShapes:RequirementsTxtFileExistent ]
+		                      [ sh:property propertyShapes:EnvironmentYamlFileExistent ]
+		                      [ sh:property propertyShapes:EnvironmentYmlFileExistent ] ) ]
 
-          # In TypeScript repositories, there has to be a file "package.json" in the root directory of the default branch.
-          [ sh:property propertyShapes:MainLanguageTypeScript ;
-            sh:property propertyShapes:PackageJsonFileExistent ] ) .
+		      # In TypeScript repositories, there has to be a file "package.json" in the root directory of the default branch.
+		      [ sh:property propertyShapes:MainLanguageTypeScript ;
+		        sh:property propertyShapes:PackageJsonFileExistent ] ) .
 
 nodeShapes:PersistentId
-    a     sh:NodeShape ;
-    sh:or ( [ sh:property propertyShapes:AtLeastOneRelease ]
-            [ sh:property propertyShapes:DoiAsHomepage ]
-            [ sh:property propertyShapes:ReadMeFileWithDoi ] ) .
+		a     sh:NodeShape ;
+		sh:or ( [ sh:property propertyShapes:AtLeastOneRelease ]
+		        [ sh:property propertyShapes:DoiAsHomepage ]
+		        [ sh:property propertyShapes:ReadMeFileWithDoi ] ) .
 
 nodeShapes:SemanticVersioning
-    a      sh:NodeShape ;
-    sh:and ( [ sh:property propertyShapes:SemanticVersioningTags ]
-             [ sh:property propertyShapes:ValidVersionIncrement ] ) .
+		a      sh:NodeShape ;
+		sh:and ( [ sh:property propertyShapes:SemanticVersioningTags ]
+		         [ sh:property propertyShapes:ValidVersionIncrement ] ) .
 
 nodeShapes:SoftwareRequirements
-    a     sh:NodeShape ;
-    sh:or ( [ sh:property propertyShapes:DependenciesSection ]
-            [ sh:property propertyShapes:RequirementsSection ]
-            [ sh:node nodeShapes:LanguageSpecificRequirementsFile ] ) .
+		a     sh:NodeShape ;
+		sh:or ( [ sh:property propertyShapes:DependenciesSection ]
+		        [ sh:property propertyShapes:RequirementsSection ]
+		        [ sh:node nodeShapes:LanguageSpecificRequirementsFile ] ) .
 
 nodeShapes:UsageDocumentation
-    a     sh:NodeShape ;
-    sh:or ( [ sh:property propertyShapes:UsageSection ]
-            [ sh:property propertyShapes:HowToUseSection ]
-            [ sh:property propertyShapes:ManualSection ]
-            [ sh:property propertyShapes:UserManualSection ] ) .
+		a     sh:NodeShape ;
+		sh:or ( [ sh:property propertyShapes:UsageSection ]
+		        [ sh:property propertyShapes:HowToUseSection ]
+		        [ sh:property propertyShapes:ManualSection ]
+		        [ sh:property propertyShapes:UserManualSection ] ) .
