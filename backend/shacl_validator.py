@@ -13,13 +13,11 @@ from rdflib.namespace import RDF
 
 types = Namespace("https://example.org/repo/project-types/")
 props = Namespace("https://example.org/repo/props/")
-entities = Namespace("https://example.org/repo/entities/")
-
 
 def get_project_type_specifications():
     project_type_specifications = {}
 
-    with open("./data/shacl-project-shapes.ttl") as raw_shapes_graph:
+    with open("data/shacl/project-shapes.ttl") as raw_shapes_graph:
 
         raw_shapes_graph = list(raw_shapes_graph)
 
@@ -49,8 +47,11 @@ def get_project_type_specifications():
 
 
 def create_project_type_representation():
+    # Here, "graph merging" is used (https://rdflib.readthedocs.io/en/stable/merging.html).
     graph = Graph()
-    graph.parse("./data/shacl-project-shapes.ttl")
+    graph.parse("./data/shacl/property-shapes.ttl")
+    graph.parse("./data/shacl/node-shapes.ttl")
+    graph.parse("./data/shacl/project-shapes.ttl")
 
     return graph
 
