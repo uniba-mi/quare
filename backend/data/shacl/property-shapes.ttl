@@ -24,7 +24,7 @@ propertyShapes:BuildGradleFileExistent
 		a                      sh:PropertyShape ;
 		# The file build.gradle has to exist in the root directory of the default branch.
 		sh:path                ( props:has_default_branch
-		                         props:has_file_in_root_directory ) ; # TODO: add to repository representation
+		                         props:has_file_in_root_directory ) ;
 		sh:qualifiedValueShape [ sh:pattern "build.gradle" ] ;
 		sh:qualifiedMinCount   1 .
 
@@ -32,7 +32,7 @@ propertyShapes:CitationCffFileExistent
 		a                      sh:PropertyShape ;
 		# The file CITATION.cff has to exist in the root directory of the default branch.
 		sh:path                ( props:has_default_branch
-		                         props:has_file_in_root_directory ) ; # TODO: add to repository representation
+		                         props:has_file_in_root_directory ) ;
 		sh:qualifiedValueShape [ sh:pattern "^CITATION.cff$" ] ;
 		sh:qualifiedMinCount   1 .
 
@@ -70,7 +70,7 @@ propertyShapes:EnvironmentYmlFileExistent
 		a                      sh:PropertyShape ;
 		# The file environment.yml has to exist in the root directory of the default branch.
 		sh:path                ( props:has_default_branch
-		                         props:has_file_in_root_directory ) ; # TODO: add to repository representation
+		                         props:has_file_in_root_directory ) ;
 		sh:qualifiedValueShape [ sh:pattern "environment.yml" ] ;
 		sh:qualifiedMinCount   1 .
 
@@ -78,7 +78,7 @@ propertyShapes:EnvironmentYamlFileExistent
 		a                      sh:PropertyShape ;
 		# The file environment.yaml has to exist in the root directory of the default branch.
 		sh:path                ( props:has_default_branch
-		                         props:has_file_in_root_directory ) ; # TODO: add to repository representation
+		                         props:has_file_in_root_directory ) ;
 		sh:qualifiedValueShape [ sh:pattern "environment.yaml" ] ;
 		sh:qualifiedMinCount   1 .
 
@@ -86,7 +86,7 @@ propertyShapes:ExactlyOneBibFile
 		a                      sh:PropertyShape ;
 		# There has to be exactly one .bib file in the root directory of the default branch.
 		sh:path                ( props:has_default_branch
-		                         props:has_file_in_root_directory ) ; # TODO: add to repository representation
+		                         props:has_file_in_root_directory ) ;
 		sh:qualifiedValueShape [ sh:pattern "\\.bib$" ] ;
 		sh:qualifiedMinCount   1 ;
 		sh:qualifiedMaxCount   1 .
@@ -145,25 +145,25 @@ propertyShapes:MainBranchExistent
 propertyShapes:MainLanguageJava
 		a          sh:PropertyShape ;
 		# The main language has to be "Java".
-		sh:path    props:has_main_language ; # TODO: add to repository representation
+		sh:path    props:has_main_language ;
 		sh:pattern "Java$" .
 
 propertyShapes:MainLanguageJavaScript
 		a          sh:PropertyShape ;
 		# The main language has to be "JavaScript".
-		sh:path    props:has_main_language ; # TODO: add to repository representation
+		sh:path    props:has_main_language ;
 		sh:pattern "JavaScript" .
 
 propertyShapes:MainLanguagePython
 		a          sh:PropertyShape ;
 		# The main language has to be "Python".
-		sh:path    props:has_main_language ; # TODO: add to repository representation
+		sh:path    props:has_main_language ;
 		sh:pattern "Python" .
 
 propertyShapes:MainLanguageTypeScript
 		a          sh:PropertyShape ;
 		# The main language has to be "TypeScript".
-		sh:path    props:has_main_language ; # TODO: add to repository representation
+		sh:path    props:has_main_language ;
 		sh:pattern "TypeScript" .
 
 propertyShapes:ManualSection
@@ -191,7 +191,7 @@ propertyShapes:PackageJsonFileExistent
 		a                      sh:PropertyShape ;
 		# The file package.json has to exist in the root directory of the default branch.
 		sh:path                ( props:has_default_branch
-		                         props:has_file_in_root_directory ) ; # TODO: add to repository representation
+		                         props:has_file_in_root_directory ) ;
 		sh:qualifiedValueShape [ sh:pattern "package.json" ] ;
 		sh:qualifiedMinCount   1 .
 
@@ -199,7 +199,7 @@ propertyShapes:PomXmlFileExistent
 		a                      sh:PropertyShape ;
 		# The file pom.xml has to exist in the root directory of the default branch.
 		sh:path                ( props:has_default_branch
-		                         props:has_file_in_root_directory ) ; # TODO: add to repository representation
+		                         props:has_file_in_root_directory ) ;
 		sh:qualifiedValueShape [ sh:pattern "pom.xml" ] ;
 		sh:qualifiedMinCount   1 .
 
@@ -247,7 +247,7 @@ propertyShapes:RequirementsTxtFileExistent
 		# The file requirements.txt has to exist in the root directory of the default branch.
 		sh:path                ( props:has_default_branch
 		                         props:has_file_in_root_directory ) ;
-		sh:qualifiedValueShape [ sh:pattern "requirements.txt" ] ; # TODO: add to repository representation
+		sh:qualifiedValueShape [ sh:pattern "requirements.txt" ] ;
 		sh:qualifiedMinCount   1 .
 
 propertyShapes:SemanticVersioningTags

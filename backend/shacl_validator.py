@@ -96,6 +96,10 @@ def create_repository_representation(access_token="", repo_name="", expected_typ
     if repo.homepage:
         graph.add((repo_entity, props["has_homepage"], Literal(repo.homepage)))
 
+    # process main language
+    if repo.language:
+        graph.add((repo_entity, props["has_main_language"], Literal(repo.language)))
+
     # process release and tag information
     release_list = repo.get_releases()
     if release_list:
@@ -111,6 +115,17 @@ def create_repository_representation(access_token="", repo_name="", expected_typ
             branch_entity = URIRef(f"{repo.html_url}/tree/{branch.name}")
             graph.add((branch_entity, props["has_name"], Literal(branch.name)))
             graph.add((repo_entity, props["has_branch"], branch_entity))
+
+    default_branch_name = repo.default_branch
+    if default_branch_name:
+        branch_entity = URIRef(f"{repo.html_url}/tree/{default_branch_name}")
+        graph.add((repo_entity, props["has_default_branch"], branch_entity))
+
+        # process files in the root directory of the default branch
+        git_tree = repo.get_git_tree(default_branch_name)
+        for item in git_tree.tree:
+            if item.type == "blob":
+                graph.add((branch_entity, props["has_file_in_root_directory"], Literal(item.path)))
 
     # process issue information
     issue_list = repo.get_issues()
