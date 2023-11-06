@@ -2,11 +2,14 @@
 
 import logging
 import re
+from itertools import pairwise
 
 import fire
 import markdown
 from bs4 import BeautifulSoup
 from github import Github, UnknownObjectException
+from packaging import version
+from packaging.version import Version
 from pyshacl import validate
 from rdflib import Graph, Literal, Namespace, URIRef
 from rdflib.namespace import RDF
@@ -108,6 +111,23 @@ def create_repository_representation(access_token="", repo_name="", expected_typ
             graph.add((release_entity, props["has_tag_name"], Literal(release.tag_name)))
             graph.add((repo_entity, props["has_release"], release_entity))
 
+        sorted_version_list = []
+        try:
+            # adapted from https://stackoverflow.com/a/11887885
+            version_list = [version.parse(release.tag_name.removeprefix("v")) for release in release_list]
+            sorted_version_list = sorted(version_list)
+        except ValueError:
+            graph.add((repo_entity, props["versions_have_valid_increment"], Literal("false")))
+
+        if sorted_version_list:
+            versions_have_valid_increment = True
+            for pair in pairwise(sorted_version_list):
+                if not pair_has_valid_version_increment(pair):
+                    versions_have_valid_increment = False
+                    break
+
+            graph.add((repo_entity, props["versions_have_valid_increment"], Literal(versions_have_valid_increment)))
+
     # process branch information
     branch_list = repo.get_branches()
     if branch_list:
@@ -178,6 +198,27 @@ def create_repository_representation(access_token="", repo_name="", expected_typ
         logging.exception(f"No README file could be retrieved due to: {e}")
 
     return graph
+
+
+def pair_has_valid_version_increment(pair: tuple[Version, Version]):
+    # If the first number (major) is increased, the second (minor) and third (micro) must be set to zero.
+    if (pair[0].major + 1 == pair[1].major) & (pair[1].minor == 0) & (pair[1].micro == 0):
+        return True
+
+    # If minor in increased, micro must be set to zero.
+    if (pair[0].major == pair[1].major) & (pair[0].minor + 1 == pair[1].minor) & (pair[1].micro == 0):
+        return True
+
+    # If micro is increased, major and minor must be unchanged.
+    if (pair[0].major == pair[1].major) & (pair[0].minor == pair[1].minor) & (pair[0].micro + 1 == pair[1].micro):
+        return True
+
+    # If major, minor and macro are the same in both versions, the versions have to differ in the suffix.
+    if (pair[0].major == pair[1].major) & (pair[0].minor == pair[1].minor) & (pair[0].micro == pair[1].micro) & (
+            pair[0] != pair[1]):
+        return True
+
+    return False
 
 
 def run_validation(data_graph, shapes_graph):

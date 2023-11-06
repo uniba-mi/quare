@@ -290,5 +290,5 @@ propertyShapes:UserManualSection
 propertyShapes:ValidVersionIncrement
 		a          sh:PropertyShape ;
 		# The increment/change between consecutive version numbers has to be valid.
-		sh:path    props:versions_have_valid_increment ; # TODO: add to repository representation
+		sh:path    props:versions_have_valid_increment ;
 		sh:pattern "true" .
