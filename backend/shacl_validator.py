@@ -30,7 +30,7 @@ def get_project_type_specifications():
                 current_type = line.replace("\n", "").strip()
                 first_index = index + 2
 
-            if (("sh:property" in line) | ("sh:node" in line)) & (" ." in line):
+            if (("sh:property" in line) or ("sh:node" in line)) & (" ." in line):
                 last_index = index + 1
                 type_spec_indices.append((current_type, first_index, last_index))
 
@@ -53,7 +53,7 @@ def process_project_types_for_display(raw_shapes_graph, type_spec_indices):
             specs = [spec.replace("sh:node ", "→ ") for spec in split_by_comments]
             specs = [spec.replace("sh:property ", "→ ") for spec in specs]
         else:
-            specs = re.split("sh:property\s+|sh:node\s+", spec_block)
+            specs = re.split(r"sh:property\s+|sh:node\s+", spec_block)
 
         specs = [spec.strip().removesuffix(";") for spec in specs]
         specs = [spec.strip().removesuffix(".") for spec in specs]
@@ -82,121 +82,86 @@ def create_repository_representation(access_token="", repo_name="", expected_typ
     repo_entity = URIRef(repo.html_url)
     graph.add((repo_entity, RDF.type, types[expected_type]))
 
-    # process visibility
-    graph.add((repo_entity, props["is_private"], Literal(repo.private)))
+    return add_required_properties_to_graph(graph, repo_entity, repo)
 
-    # process topics
+
+# TODO always the same parameters
+def add_required_properties_to_graph(graph, repo_entity, repo):
+    # TODO make method calls dependent on project type
+    graph = include_visibility(graph, repo_entity, repo)
+    graph = include_topics(graph, repo_entity, repo)
+    graph = include_description(graph, repo_entity, repo)
+    graph = include_homepage(graph, repo_entity, repo)
+    graph = include_main_language(graph, repo_entity, repo)
+    graph = include_releases(graph, repo_entity, repo, check_version_increment=True)  # TODO type dependent
+    graph = include_branches(graph, repo_entity, repo)
+    graph = include_default_branch(graph, repo_entity, repo, include_root_directory_files=True)  # TODO type dependent
+    graph = include_issues(graph, repo_entity, repo)
+    graph = include_license(graph, repo_entity, repo)
+    graph = include_readme(graph, repo_entity, repo, include_sections=True,
+                           include_check_for_doi=True)  # TODO type dependent
+    return graph
+
+
+def include_visibility(graph, repo_entity, repo):
+    return graph.add((repo_entity, props["is_private"], Literal(repo.private)))
+
+
+def include_topics(graph, repo_entity, repo):
     topic_list = repo.get_topics()
     if topic_list:
         for topic in topic_list:
             graph.add((repo_entity, props["has_topic"], Literal(topic)))
+    return graph
 
-    # process description
+
+def include_description(graph, repo_entity, repo):
     if repo.description:
         graph.add((repo_entity, props["has_description"], Literal(repo.description)))
+    return graph
 
-    # process homepage
+
+def include_homepage(graph, repo_entity, repo):
     if repo.homepage:
         graph.add((repo_entity, props["has_homepage"], Literal(repo.homepage)))
+    return graph
 
-    # process main language
+
+def include_main_language(graph, repo_entity, repo):
     if repo.language:
         graph.add((repo_entity, props["has_main_language"], Literal(repo.language)))
+    return graph
 
-    # process release and tag information
+
+def include_releases(graph, repo_entity, repo, check_version_increment=False):
     release_list = repo.get_releases()
-    if release_list:
-        for release in release_list:
-            release_entity = URIRef(release.html_url)
-            graph.add((release_entity, props["has_tag_name"], Literal(release.tag_name)))
-            graph.add((repo_entity, props["has_release"], release_entity))
+    if not release_list:
+        return graph
 
-        sorted_version_list = []
-        try:
-            # adapted from https://stackoverflow.com/a/11887885
-            version_list = [version.parse(release.tag_name.removeprefix("v")) for release in release_list]
-            sorted_version_list = sorted(version_list)
-        except ValueError:
-            graph.add((repo_entity, props["versions_have_valid_increment"], Literal("false")))
+    for release in release_list:
+        release_entity = URIRef(release.html_url)
+        graph.add((release_entity, props["has_tag_name"], Literal(release.tag_name)))
+        graph.add((repo_entity, props["has_release"], release_entity))
 
-        if sorted_version_list:
-            versions_have_valid_increment = True
-            for pair in pairwise(sorted_version_list):
-                if not pair_has_valid_version_increment(pair):
-                    versions_have_valid_increment = False
-                    break
+    if not check_version_increment:
+        return graph
 
-            graph.add((repo_entity, props["versions_have_valid_increment"], Literal(versions_have_valid_increment)))
-
-    # process branch information
-    branch_list = repo.get_branches()
-    if branch_list:
-        for branch in branch_list:
-            branch_entity = URIRef(f"{repo.html_url}/tree/{branch.name}")
-            graph.add((branch_entity, props["has_name"], Literal(branch.name)))
-            graph.add((repo_entity, props["has_branch"], branch_entity))
-
-    default_branch_name = repo.default_branch
-    if default_branch_name:
-        branch_entity = URIRef(f"{repo.html_url}/tree/{default_branch_name}")
-        graph.add((repo_entity, props["has_default_branch"], branch_entity))
-
-        # process files in the root directory of the default branch
-        git_tree = repo.get_git_tree(default_branch_name)
-        for item in git_tree.tree:
-            if item.type == "blob":
-                graph.add((branch_entity, props["has_file_in_root_directory"], Literal(item.path)))
-
-    # process issue information
-    issue_list = repo.get_issues()
-    if issue_list:
-        for issue in issue_list:
-            issue_entity = URIRef(issue.html_url)
-            graph.add((issue_entity, props["has_state"], Literal(issue.state)))
-            graph.add((repo_entity, props["has_issue"], issue_entity))
-
-    # process license information
+    sorted_version_list = []
     try:
-        license = repo.get_license()
-        if license:
-            graph.add((repo_entity, props["has_license"], Literal(license.license.name)))
-    except UnknownObjectException as e:
-        logging.exception(f"No license could be retrieved due to: {e}")
+        # adapted from https://stackoverflow.com/a/11887885
+        version_list = [version.parse(release.tag_name.removeprefix("v")) for release in release_list]
+        sorted_version_list = sorted(version_list)
+    except ValueError:
+        graph.add((repo_entity, props["versions_have_valid_increment"], Literal("false")))
 
-    # process readme information
-    try:
-        readme = repo.get_readme()
-        if readme:
-            # identify sections
-            md = markdown.Markdown()
-            html = md.convert(readme.decoded_content.decode())
-            soup = BeautifulSoup(html, "html.parser")
+    if sorted_version_list:
+        versions_have_valid_increment = True
+        for pair in pairwise(sorted_version_list):
+            if not pair_has_valid_version_increment(pair):
+                versions_have_valid_increment = False
+                break
 
-            heading_tags = ["h" + str(ctr) for ctr in range(1, 7)]
-            headings_elems = [soup.find_all(tag)
-                              for tag in heading_tags if soup.find_all(tag)]
-            headings_elems = [
-                item for sublist in headings_elems for item in sublist]
-            headings = [item.text for item in headings_elems]
-
-            # create entities
-            readme_entity = URIRef(readme.html_url)
-            graph.add((repo_entity, props["has_readme"], readme_entity))
-
-            for heading in headings:
-                graph.add((readme_entity, props["has_section"], Literal(heading)))
-
-            # Check whether there is at least one DOI in the README file (as text or link href).
-            # Regex adapted from https://www.crossref.org/blog/dois-and-matching-regular-expressions/
-            doi_pattern = re.compile(r"https://doi\.org/10\.\d{4,}/[-._;()/:A-Z0-9]+")
-            if soup.find_all(string=doi_pattern) or soup.find_all(href=doi_pattern):
-                graph.add((readme_entity, props["contains_doi"], Literal("true")))
-            else:
-                graph.add((readme_entity, props["contains_doi"], Literal("false")))
-
-    except UnknownObjectException as e:
-        logging.exception(f"No README file could be retrieved due to: {e}")
-
+        graph.add((repo_entity, props["versions_have_valid_increment"], Literal(versions_have_valid_increment)))
     return graph
 
 
@@ -219,6 +184,99 @@ def pair_has_valid_version_increment(pair: tuple[Version, Version]):
         return True
 
     return False
+
+
+def include_branches(graph, repo_entity, repo):
+    branch_list = repo.get_branches()
+    if branch_list:
+        for branch in branch_list:
+            branch_entity = URIRef(f"{repo.html_url}/tree/{branch.name}")
+            graph.add((branch_entity, props["has_name"], Literal(branch.name)))
+            graph.add((repo_entity, props["has_branch"], branch_entity))
+    return graph
+
+
+def include_default_branch(graph, repo_entity, repo, include_root_directory_files=False):
+    default_branch_name = repo.default_branch
+    if not default_branch_name:
+        return graph
+
+    branch_entity = URIRef(f"{repo.html_url}/tree/{default_branch_name}")
+    graph.add((branch_entity, props["has_name"], Literal(default_branch_name)))
+    graph.add((repo_entity, props["has_default_branch"], branch_entity))
+
+    if not include_root_directory_files:
+        return graph
+
+    git_tree = repo.get_git_tree(default_branch_name)
+    for item in git_tree.tree:
+        if item.type == "blob":
+            graph.add((branch_entity, props["has_file_in_root_directory"], Literal(item.path)))
+    return graph
+
+
+def include_issues(graph, repo_entity, repo):
+    issue_list = repo.get_issues()
+    if issue_list:
+        for issue in issue_list:
+            issue_entity = URIRef(issue.html_url)
+            graph.add((issue_entity, props["has_state"], Literal(issue.state)))
+            graph.add((repo_entity, props["has_issue"], issue_entity))
+    return graph
+
+
+def include_license(graph, repo_entity, repo):
+    try:
+        license_data = repo.get_license()
+        if license_data:
+            graph.add((repo_entity, props["has_license"], Literal(license_data.license.name)))
+    except UnknownObjectException as e:
+        logging.exception(f"No license could be retrieved due to: {e}")
+
+    return graph
+
+
+def include_readme(graph, repo_entity, repo, include_sections=False, include_check_for_doi=False):
+    try:
+        readme = repo.get_readme()
+    except UnknownObjectException as e:
+        logging.exception(f"No README file could be retrieved due to: {e}")
+        return graph
+
+    if not readme:
+        return graph
+
+    readme_entity = URIRef(readme.html_url)
+    graph.add((repo_entity, props["has_readme"], readme_entity))
+
+    if not (include_sections or include_check_for_doi):
+        return graph
+
+    md = markdown.Markdown()
+    html = md.convert(readme.decoded_content.decode())
+    soup = BeautifulSoup(html, "html.parser")
+
+    if include_sections:
+        heading_tags = ["h" + str(ctr) for ctr in range(1, 7)]
+        headings_elems = [soup.find_all(tag)
+                          for tag in heading_tags if soup.find_all(tag)]
+        headings_elems = [
+            item for sublist in headings_elems for item in sublist]
+        headings = [item.text for item in headings_elems]
+
+        for heading in headings:
+            graph.add((readme_entity, props["has_section"], Literal(heading)))
+
+    if include_check_for_doi:
+        # Check whether there is at least one DOI in the README file (as text or link href).
+        # Regex adapted from https://www.crossref.org/blog/dois-and-matching-regular-expressions/
+        doi_pattern = re.compile(r"https://doi\.org/10\.\d{4,}/[-._;()/:A-Z0-9]+")
+        if soup.find_all(string=doi_pattern) or soup.find_all(href=doi_pattern):
+            graph.add((readme_entity, props["contains_doi"], Literal("true")))
+        else:
+            graph.add((readme_entity, props["contains_doi"], Literal("false")))
+
+    return graph
 
 
 def run_validation(data_graph, shapes_graph):
