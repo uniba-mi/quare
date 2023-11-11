@@ -16,12 +16,16 @@ types:FinishedResearchProject
 		sh:property propertyShapes:GnuGplV3License ;
 		sh:property propertyShapes:ReadMeFileExistent ;
 		sh:property propertyShapes:InstallationSection ;
-		sh:property propertyShapes:UsageSection .
+		sh:property propertyShapes:UsageSection ;
+		sh:description
+		            "The following repository properties are required to validate this project type: Visibility, Topics, Description, Branches, Issues, Releases, License, ReadmeIncludingSections." .
 
 types:OngoingResearchProject
 		a           rdfs:Class, sh:NodeShape ;
 		sh:property propertyShapes:PrivateRepository ;
-		sh:property propertyShapes:AtLeastTwoBranches .
+		sh:property propertyShapes:AtLeastTwoBranches ;
+		sh:description
+		            "The following repository properties are required to validate this project type: Visibility, Branches." .
 
 types:TeachingTool
 		a           rdfs:Class, sh:NodeShape ;
@@ -32,14 +36,18 @@ types:TeachingTool
 		sh:property propertyShapes:AtLeastOneRelease ;
 		sh:property propertyShapes:MitLicense ;
 		sh:property propertyShapes:ReadMeFileExistent ;
-		sh:property propertyShapes:UsageSection .
+		sh:property propertyShapes:UsageSection ;
+		sh:description
+		            "The following repository properties are required to validate this project type: Visibility, Topics, Description, Branches, Releases, License, ReadmeIncludingSections." .
 
 types:InternalDocumentation
 		a           rdfs:Class, sh:NodeShape ;
 		sh:property propertyShapes:PrivateRepository ;
 		sh:property propertyShapes:DescriptionFilled ;
 		sh:property propertyShapes:ReadMeFileExistent ;
-		sh:property propertyShapes:PurposeSection .
+		sh:property propertyShapes:PurposeSection ;
+		sh:description
+		            "The following repository properties are required to validate this project type: Visibility, Description, ReadmeIncludingSections." .
 
 types:FAIRSoftware
 		a           rdfs:Class, sh:NodeShape ;
@@ -72,4 +80,6 @@ types:FAIRSoftware
 		sh:node     nodeShapes:InstallationInstructions ;
 
 		# Best practice 10: "Software requirements are available"
-		sh:node     nodeShapes:SoftwareRequirements .
+		sh:node     nodeShapes:SoftwareRequirements ;
+		sh:description
+		            "The following repository properties are required to validate this project type: Description, ReadmeIncludingSectionsAndCheckForDoi, ReleasesIncludingIncrementCheck, Homepage, Visibility, License, DefaultBranchIncludingRootDirectoryFiles, Topics, MainLanguage." .

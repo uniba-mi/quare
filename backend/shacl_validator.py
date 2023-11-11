@@ -19,7 +19,7 @@ props = Namespace("https://example.org/repo/props/")
 
 
 def get_project_type_specifications():
-    with open("data/shacl/project-shapes.ttl") as raw_shapes_graph:
+    with open("data/shacl/project_shapes.ttl") as raw_shapes_graph:
 
         raw_shapes_graph = list(raw_shapes_graph)
 
@@ -30,7 +30,7 @@ def get_project_type_specifications():
                 current_type = line.replace("\n", "").strip()
                 first_index = index + 2
 
-            if (("sh:property" in line) or ("sh:node" in line)) & (" ." in line):
+            if (" ." in line) & ("@prefix" not in line):
                 last_index = index + 1
                 type_spec_indices.append((current_type, first_index, last_index))
 
@@ -45,8 +45,9 @@ def process_project_types_for_display(raw_shapes_graph, type_spec_indices):
         spec_block = spec_block.replace("\t", "")
         spec_block = spec_block.replace("propertyShapes:", "")
         spec_block = spec_block.replace("nodeShapes:", "")
+        spec_block = re.sub(r"sh:description\n?\s+\".*[;.]", "", spec_block)
 
-        split_by_comments = re.split("# ", spec_block)
+        split_by_comments = spec_block.split("# ")
 
         # If there are comments on this project type, split based on these.
         if len(split_by_comments) > 1:
@@ -55,25 +56,34 @@ def process_project_types_for_display(raw_shapes_graph, type_spec_indices):
         else:
             specs = re.split(r"sh:property\s+|sh:node\s+", spec_block)
 
-        specs = [spec.strip().removesuffix(";") for spec in specs]
-        specs = [spec.strip().removesuffix(".") for spec in specs]
+        specs = [spec.strip().removesuffix(";").strip() for spec in specs]
+        specs = [spec.strip().removesuffix(".").strip() for spec in specs]
 
         project_type_specifications[project_type.removeprefix("types:")] = specs[1:]  # At index 0 of specs is "".
 
     return project_type_specifications
 
 
-def create_project_type_representation():
+def create_project_type_representation(expected_type=""):
     # Here, "graph merging" is used (https://rdflib.readthedocs.io/en/stable/merging.html).
     graph = Graph()
-    graph.parse("./data/shacl/property-shapes.ttl")
-    graph.parse("./data/shacl/node-shapes.ttl")
-    graph.parse("./data/shacl/project-shapes.ttl")
+    graph.parse("./data/shacl/property_shapes.ttl")
+    graph.parse("./data/shacl/node_shapes.ttl")
+    graph.parse("./data/shacl/project_shapes.ttl")
 
-    return graph
+    project_type_node = URIRef("https://example.org/repo/project-types/" + expected_type)
+    predicate = URIRef("http://www.w3.org/ns/shacl#description")
+
+    # https://rdflib.readthedocs.io/en/stable/intro_to_graphs.html#graph-methods-for-accessing-triples
+    # Tries to get the value of "sh:description" of the project type. If there are multiple ones, an error is raised.
+    description_literal = graph.value(subject=project_type_node, predicate=predicate, object=None, any=False)
+    if not description_literal:
+        raise ValueError("Project type '" + expected_type + "' is missing the mandatory triple with sh:description.")
+
+    return graph, description_literal
 
 
-def create_repository_representation(access_token="", repo_name="", expected_type=""):
+def create_repository_representation(access_token="", repo_name="", expected_type="", description_literal=""):
     graph = Graph()
     github = Github(access_token) if access_token else Github()
 
@@ -82,24 +92,40 @@ def create_repository_representation(access_token="", repo_name="", expected_typ
     repo_entity = URIRef(repo.html_url)
     graph.add((repo_entity, RDF.type, types[expected_type]))
 
-    return add_required_properties_to_graph(graph, repo_entity, repo)
+    return add_required_properties_to_graph(graph, repo_entity, repo, description_literal)
 
 
-# TODO always the same parameters
-def add_required_properties_to_graph(graph, repo_entity, repo):
-    # TODO make method calls dependent on project type
-    graph = include_visibility(graph, repo_entity, repo)
-    graph = include_topics(graph, repo_entity, repo)
-    graph = include_description(graph, repo_entity, repo)
-    graph = include_homepage(graph, repo_entity, repo)
-    graph = include_main_language(graph, repo_entity, repo)
-    graph = include_releases(graph, repo_entity, repo, check_version_increment=True)  # TODO type dependent
-    graph = include_branches(graph, repo_entity, repo)
-    graph = include_default_branch(graph, repo_entity, repo, include_root_directory_files=True)  # TODO type dependent
-    graph = include_issues(graph, repo_entity, repo)
-    graph = include_license(graph, repo_entity, repo)
-    graph = include_readme(graph, repo_entity, repo, include_sections=True,
-                           include_check_for_doi=True)  # TODO type dependent
+def add_required_properties_to_graph(graph, repo_entity, repo, description_literal):
+    requirements_function_mapping = {
+        "Branches": include_branches,
+        "DefaultBranch": include_default_branch,
+        "DefaultBranchIncludingRootDirectoryFiles": include_default_branch_with_root_directory_files,
+        "Description": include_description,
+        "Homepage": include_homepage,
+        "Issues": include_issues,
+        "License": include_license,
+        "MainLanguage": include_main_language,
+        "ReadmeIncludingSections": include_readme_with_sections,
+        "ReadmeIncludingCheckForDoi": include_readme_with_check_for_doi,
+        "ReadmeIncludingSectionsAndCheckForDoi": include_readme_with_sections_and_check_for_doi,
+        "Releases": include_releases,
+        "ReleasesIncludingIncrementCheck": include_releases_with_increment_check,
+        "Topics": include_topics,
+        "Visibility": include_visibility
+    }
+
+    requirements_str = description_literal.removeprefix("The following repository properties are required to validate "
+                                                        "this project type:")
+    requirements_list = requirements_str.split(",")
+    requirements_list = [requirement.strip() for requirement in requirements_list]
+    requirements_list[-1] = requirements_list[-1].removesuffix(".")
+
+    for requirement in requirements_list:
+        if not requirements_function_mapping[requirement]:
+            logging.exception(f"No function found for the requirement: {requirement}")
+            continue
+        graph = requirements_function_mapping[requirement](graph, repo_entity, repo)
+
     return graph
 
 
@@ -165,6 +191,10 @@ def include_releases(graph, repo_entity, repo, check_version_increment=False):
     return graph
 
 
+def include_releases_with_increment_check(graph, repo_entity, repo):
+    return include_releases(graph, repo_entity, repo, check_version_increment=True)
+
+
 def pair_has_valid_version_increment(pair: tuple[Version, Version]):
     # If the first number (major) is increased, the second (minor) and third (micro) must be set to zero.
     if (pair[0].major + 1 == pair[1].major) & (pair[1].minor == 0) & (pair[1].micro == 0):
@@ -213,6 +243,10 @@ def include_default_branch(graph, repo_entity, repo, include_root_directory_file
         if item.type == "blob":
             graph.add((branch_entity, props["has_file_in_root_directory"], Literal(item.path)))
     return graph
+
+
+def include_default_branch_with_root_directory_files(graph, repo_entity, repo):
+    return include_default_branch(graph, repo_entity, repo, include_root_directory_files=True)
 
 
 def include_issues(graph, repo_entity, repo):
@@ -279,6 +313,18 @@ def include_readme(graph, repo_entity, repo, include_sections=False, include_che
     return graph
 
 
+def include_readme_with_sections(graph, repo_entity, repo):
+    return include_readme(graph, repo_entity, repo, include_sections=True)
+
+
+def include_readme_with_check_for_doi(graph, repo_entity, repo):
+    return include_readme(graph, repo_entity, repo, include_check_for_doi=True)
+
+
+def include_readme_with_sections_and_check_for_doi(graph, repo_entity, repo):
+    return include_readme(graph, repo_entity, repo, include_sections=True, include_check_for_doi=True)
+
+
 def run_validation(data_graph, shapes_graph):
     result = validate(data_graph,
                       shacl_graph=shapes_graph,
@@ -298,9 +344,9 @@ def run_validation(data_graph, shapes_graph):
 def test_repo_against_specs(github_access_token="", repo_name="", expected_type=""):
     logging.info(f"Validating repo {repo_name} using the SHACL approach..")
 
-    shapes_graph = create_project_type_representation()
+    shapes_graph, description_literal = create_project_type_representation(expected_type)
     data_graph = create_repository_representation(
-        github_access_token, repo_name, expected_type)
+        github_access_token, repo_name, expected_type, description_literal.__str__())
     return_code, _, result_text = run_validation(data_graph, shapes_graph)
 
     return return_code, result_text
