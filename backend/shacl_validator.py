@@ -8,6 +8,7 @@ import fire
 import markdown
 from bs4 import BeautifulSoup
 from github import Github, UnknownObjectException
+from github.Repository import Repository
 from packaging import version
 from packaging.version import Version
 from pyshacl import validate
@@ -64,13 +65,17 @@ def process_project_types_for_display(raw_shapes_graph, type_spec_indices):
     return project_type_specifications
 
 
-def create_project_type_representation(expected_type=""):
+def create_project_type_representation() -> Graph:
     # Here, "graph merging" is used (https://rdflib.readthedocs.io/en/stable/merging.html).
     graph = Graph()
     graph.parse("./data/shacl/property_shapes.ttl")
     graph.parse("./data/shacl/node_shapes.ttl")
     graph.parse("./data/shacl/project_shapes.ttl")
 
+    return graph
+
+
+def get_requirements_list_for_repository_representation(graph: Graph, expected_type: str) -> list[str]:
     project_type_node = URIRef("https://example.org/repo/project-types/" + expected_type)
     predicate = URIRef("http://www.w3.org/ns/shacl#description")
 
@@ -80,10 +85,17 @@ def create_project_type_representation(expected_type=""):
     if not description_literal:
         raise ValueError("Project type '" + expected_type + "' is missing the mandatory triple with sh:description.")
 
-    return graph, description_literal
+    requirements_str = description_literal.__str__().removeprefix(
+        "The following repository properties are required to validate this project type:")
+    requirements_list = requirements_str.split(",")
+    requirements_list = [requirement.strip() for requirement in requirements_list]
+    requirements_list[-1] = requirements_list[-1].removesuffix(".")
+
+    return requirements_list
 
 
-def create_repository_representation(access_token="", repo_name="", expected_type="", description_literal=""):
+def create_repository_representation(requirements_list: list[str], access_token: str = "", repo_name: str = "",
+                                     expected_type: str = "") -> Graph:
     graph = Graph()
     github = Github(access_token) if access_token else Github()
 
@@ -92,10 +104,11 @@ def create_repository_representation(access_token="", repo_name="", expected_typ
     repo_entity = URIRef(repo.html_url)
     graph.add((repo_entity, RDF.type, types[expected_type]))
 
-    return add_required_properties_to_graph(graph, repo_entity, repo, description_literal)
+    return add_required_properties_to_graph(graph, repo_entity, repo, requirements_list)
 
 
-def add_required_properties_to_graph(graph, repo_entity, repo, description_literal):
+def add_required_properties_to_graph(graph: Graph, repo_entity: URIRef, repo: Repository,
+                                     requirements_list: list[str]) -> Graph:
     requirements_function_mapping = {
         "Branches": include_branches,
         "DefaultBranch": include_default_branch,
@@ -114,55 +127,48 @@ def add_required_properties_to_graph(graph, repo_entity, repo, description_liter
         "Visibility": include_visibility
     }
 
-    requirements_str = description_literal.removeprefix("The following repository properties are required to validate "
-                                                        "this project type:")
-    requirements_list = requirements_str.split(",")
-    requirements_list = [requirement.strip() for requirement in requirements_list]
-    requirements_list[-1] = requirements_list[-1].removesuffix(".")
-
     for requirement in requirements_list:
         if not requirements_function_mapping[requirement]:
             logging.exception(f"No function found for the requirement: {requirement}")
             continue
-        graph = requirements_function_mapping[requirement](graph, repo_entity, repo)
+
+        # Manipulates the graph in-place
+        requirements_function_mapping[requirement](graph, repo_entity, repo)
 
     return graph
 
 
-def include_visibility(graph, repo_entity, repo):
-    return graph.add((repo_entity, props["is_private"], Literal(repo.private)))
+def include_visibility(graph: Graph, repo_entity: URIRef, repo: Repository) -> None:
+    graph.add((repo_entity, props["is_private"], Literal(repo.private)))
 
 
-def include_topics(graph, repo_entity, repo):
+def include_topics(graph: Graph, repo_entity: URIRef, repo: Repository) -> None:
     topic_list = repo.get_topics()
     if topic_list:
         for topic in topic_list:
             graph.add((repo_entity, props["has_topic"], Literal(topic)))
-    return graph
 
 
-def include_description(graph, repo_entity, repo):
+def include_description(graph: Graph, repo_entity: URIRef, repo: Repository) -> None:
     if repo.description:
         graph.add((repo_entity, props["has_description"], Literal(repo.description)))
-    return graph
 
 
-def include_homepage(graph, repo_entity, repo):
+def include_homepage(graph: Graph, repo_entity: URIRef, repo: Repository) -> None:
     if repo.homepage:
         graph.add((repo_entity, props["has_homepage"], Literal(repo.homepage)))
-    return graph
 
 
-def include_main_language(graph, repo_entity, repo):
+def include_main_language(graph: Graph, repo_entity: URIRef, repo: Repository) -> None:
     if repo.language:
         graph.add((repo_entity, props["has_main_language"], Literal(repo.language)))
-    return graph
 
 
-def include_releases(graph, repo_entity, repo, check_version_increment=False):
+def include_releases(graph: Graph, repo_entity: URIRef, repo: Repository,
+                     check_version_increment: bool = False) -> None:
     release_list = repo.get_releases()
     if not release_list:
-        return graph
+        return
 
     for release in release_list:
         release_entity = URIRef(release.html_url)
@@ -170,8 +176,7 @@ def include_releases(graph, repo_entity, repo, check_version_increment=False):
         graph.add((repo_entity, props["has_release"], release_entity))
 
     if not check_version_increment:
-        return graph
-
+        return
     sorted_version_list = []
     try:
         # adapted from https://stackoverflow.com/a/11887885
@@ -188,10 +193,9 @@ def include_releases(graph, repo_entity, repo, check_version_increment=False):
                 break
 
         graph.add((repo_entity, props["versions_have_valid_increment"], Literal(versions_have_valid_increment)))
-    return graph
 
 
-def include_releases_with_increment_check(graph, repo_entity, repo):
+def include_releases_with_increment_check(graph: Graph, repo_entity: URIRef, repo: Repository) -> None:
     return include_releases(graph, repo_entity, repo, check_version_increment=True)
 
 
@@ -216,50 +220,48 @@ def pair_has_valid_version_increment(pair: tuple[Version, Version]):
     return False
 
 
-def include_branches(graph, repo_entity, repo):
+def include_branches(graph: Graph, repo_entity: URIRef, repo: Repository) -> None:
     branch_list = repo.get_branches()
     if branch_list:
         for branch in branch_list:
             branch_entity = URIRef(f"{repo.html_url}/tree/{branch.name}")
             graph.add((branch_entity, props["has_name"], Literal(branch.name)))
             graph.add((repo_entity, props["has_branch"], branch_entity))
-    return graph
 
 
-def include_default_branch(graph, repo_entity, repo, include_root_directory_files=False):
+def include_default_branch(graph: Graph, repo_entity: URIRef, repo: Repository,
+                           include_root_directory_files: bool = False) -> None:
     default_branch_name = repo.default_branch
     if not default_branch_name:
-        return graph
+        return
 
     branch_entity = URIRef(f"{repo.html_url}/tree/{default_branch_name}")
     graph.add((branch_entity, props["has_name"], Literal(default_branch_name)))
     graph.add((repo_entity, props["has_default_branch"], branch_entity))
 
     if not include_root_directory_files:
-        return graph
+        return
 
     git_tree = repo.get_git_tree(default_branch_name)
     for item in git_tree.tree:
         if item.type == "blob":
             graph.add((branch_entity, props["has_file_in_root_directory"], Literal(item.path)))
-    return graph
 
 
-def include_default_branch_with_root_directory_files(graph, repo_entity, repo):
+def include_default_branch_with_root_directory_files(graph: Graph, repo_entity: URIRef, repo: Repository) -> None:
     return include_default_branch(graph, repo_entity, repo, include_root_directory_files=True)
 
 
-def include_issues(graph, repo_entity, repo):
+def include_issues(graph: Graph, repo_entity: URIRef, repo: Repository) -> None:
     issue_list = repo.get_issues()
     if issue_list:
         for issue in issue_list:
             issue_entity = URIRef(issue.html_url)
             graph.add((issue_entity, props["has_state"], Literal(issue.state)))
             graph.add((repo_entity, props["has_issue"], issue_entity))
-    return graph
 
 
-def include_license(graph, repo_entity, repo):
+def include_license(graph: Graph, repo_entity: URIRef, repo: Repository) -> None:
     try:
         license_data = repo.get_license()
         if license_data:
@@ -267,24 +269,23 @@ def include_license(graph, repo_entity, repo):
     except UnknownObjectException as e:
         logging.exception(f"No license could be retrieved due to: {e}")
 
-    return graph
 
-
-def include_readme(graph, repo_entity, repo, include_sections=False, include_check_for_doi=False):
+def include_readme(graph: Graph, repo_entity: URIRef, repo: Repository, include_sections: bool = False,
+                   include_check_for_doi: bool = False) -> None:
     try:
         readme = repo.get_readme()
     except UnknownObjectException as e:
         logging.exception(f"No README file could be retrieved due to: {e}")
-        return graph
+        return
 
     if not readme:
-        return graph
+        return
 
     readme_entity = URIRef(readme.html_url)
     graph.add((repo_entity, props["has_readme"], readme_entity))
 
     if not (include_sections or include_check_for_doi):
-        return graph
+        return
 
     md = markdown.Markdown()
     html = md.convert(readme.decoded_content.decode())
@@ -310,18 +311,16 @@ def include_readme(graph, repo_entity, repo, include_sections=False, include_che
         else:
             graph.add((readme_entity, props["contains_doi"], Literal("false")))
 
-    return graph
 
-
-def include_readme_with_sections(graph, repo_entity, repo):
+def include_readme_with_sections(graph: Graph, repo_entity: URIRef, repo: Repository) -> None:
     return include_readme(graph, repo_entity, repo, include_sections=True)
 
 
-def include_readme_with_check_for_doi(graph, repo_entity, repo):
+def include_readme_with_check_for_doi(graph: Graph, repo_entity: URIRef, repo: Repository) -> None:
     return include_readme(graph, repo_entity, repo, include_check_for_doi=True)
 
 
-def include_readme_with_sections_and_check_for_doi(graph, repo_entity, repo):
+def include_readme_with_sections_and_check_for_doi(graph: Graph, repo_entity: URIRef, repo: Repository) -> None:
     return include_readme(graph, repo_entity, repo, include_sections=True, include_check_for_doi=True)
 
 
@@ -341,12 +340,13 @@ def run_validation(data_graph, shapes_graph):
     return result
 
 
-def test_repo_against_specs(github_access_token="", repo_name="", expected_type=""):
+def test_repo_against_specs(github_access_token: str = "", repo_name: str = "",
+                            expected_type: str = "") -> tuple[bool, str]:
     logging.info(f"Validating repo {repo_name} using the SHACL approach..")
 
-    shapes_graph, description_literal = create_project_type_representation(expected_type)
-    data_graph = create_repository_representation(
-        github_access_token, repo_name, expected_type, description_literal.__str__())
+    shapes_graph = create_project_type_representation()
+    requirements_list = get_requirements_list_for_repository_representation(shapes_graph, expected_type)
+    data_graph = create_repository_representation(requirements_list, github_access_token, repo_name, expected_type)
     return_code, _, result_text = run_validation(data_graph, shapes_graph)
 
     return return_code, result_text
