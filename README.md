@@ -51,18 +51,18 @@ title: Ontology for GitHub repositories - maximum cardinality in round brackets
 flowchart LR
 %% NODE SECTION
 %% IRIs and Literals that are directly linked to the repository node
-    repo([Repository]):::iri
+    repo([<b>Repository</b>]):::iri
     visibility[Boolean]:::literal
     topic[String]:::literal
     description[String]:::literal
     homepage[String]:::literal
     mainLanguage[String]:::literal
-    release([Release]):::iri
+    release([<b>Release</b>]):::iri
     validVersionIncrement[Boolean]:::literal
-    branch([Branch]):::iri
-    issue([Issue]):::iri
+    branch([<b>Branch</b>]):::iri
+    issue([<b>Issue</b>]):::iri
     license[String]:::literal
-    readme([Readme file]):::iri
+    readme([<b>Readme file</b>]):::iri
 
 %% Literals that can be reached from the other IRIs
     tagName[String]:::literal
@@ -97,7 +97,7 @@ flowchart LR
 
 %% STYLING
     classDef literal fill:#FFEA85, stroke:#000
-    classDef iri fill:#00407A, color:white, font-weight: bold, stroke:#000
+    classDef iri fill:#00407A, color:white, stroke:#000
 ```
 
 ## Developer Information
