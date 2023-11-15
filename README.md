@@ -41,6 +41,65 @@ When you have filled out the form, you can issue the validation of the specified
 
 Here you can view the available project types and the quality constraints that are assigned to them. In the future, it is planned that the project types and criteria can be edited directly here. Currently, you have to edit the SHACL shapes graph or the ontology manually. If you want to change the criteria or add other project types, we strongly recommend editing the shapes graph and thereby using the SHACL approach because this is far easier than editing the ontology.  
 
+## Ontology used for the representation of repositories
+A representation of the given repository is created for validation. Its individual components depend on the corresponding project type. The following diagram shows all possible nodes and edges of this ontology. IRIs (Internationalized Resource Identifiers) are depicted in blue, literals in yellow. 
+
+```mermaid
+  ---
+title: Ontology for GitHub repositories - maximum cardinality in round brackets
+---
+flowchart LR
+%% NODE SECTION
+%% IRIs and Literals that are directly linked to the repository node
+    repo([Repository]):::iri
+    visibility[Boolean]:::literal
+    topic[String]:::literal
+    description[String]:::literal
+    homepage[String]:::literal
+    mainLanguage[String]:::literal
+    release([Release]):::iri
+    validVersionIncrement[Boolean]:::literal
+    branch([Branch]):::iri
+    issue([Issue]):::iri
+    license[String]:::literal
+    readme([Readme file]):::iri
+
+%% Literals that can be reached from the other IRIs
+    tagName[String]:::literal
+    branchName[String]:::literal
+    fileInRootDirectory[String]:::literal
+    issueState[String]:::literal
+    readmeSection[String]:::literal
+    doiInReadme[Boolean]:::literal
+
+%% LINK SECTION
+%% Outgoing links of the repository node
+    repo -- "props:is_private (1)" --> visibility
+    repo -- "props:has_topic (*)" --> topic
+    repo -- "props:has_description (1)" --> description
+    repo -- "props:has_homepage (1)" --> homepage
+    repo -- "props:has_main_language (1)" --> mainLanguage
+    repo -- "props:has_release (*)" --> release
+    repo -- "props:versions_have_valid_increment (1)" --> validVersionIncrement
+    repo -- "props:has_branch (*)" --> branch
+    repo -- "props:has_default_branch (1)" --> branch
+    repo -- "props:has_issue (*)" --> issue
+    repo -- "props:has_license (1)" --> license
+    repo -- "props:has_readme (1)" --> readme
+
+%% Outgoing links of the other IRIs
+    release -- "props:has_tag_name (1)" --> tagName
+    branch -- "props:has_name (1)" --> branchName
+    branch -- "props:has_file_in_root_directory (*)" --> fileInRootDirectory
+    issue -- "props:has_state (1)" --> issueState
+    readme -- "props:has_section (*)" --> readmeSection
+    readme -- "props:contains_doi (1)" --> doiInReadme
+
+%% STYLING
+    classDef literal fill:#FFEA85, stroke:#000
+    classDef iri fill:#00407A, color:white, font-weight: bold, stroke:#000
+```
+
 ## Developer Information
 
 Instead of running frontend and backend using `docker compose up`, you can run backend and frontend independently for easier debugging.
