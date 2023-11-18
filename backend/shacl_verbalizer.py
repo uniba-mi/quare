@@ -1,6 +1,3 @@
-import re
-
-
 def verbalize(message: str, repo_name: str, repo_type: str) -> str:
     splitlines = message.splitlines()
     violations = []
@@ -28,13 +25,10 @@ def extract_violation_property(lines: list[str], violation_type: str) -> str:
                 return result_path_line.split("Result Path: ")[1].strip()
     else:
         for other_line in lines:
-            if "Message: " in other_line:
+            if "Source Shape: " in other_line:
                 result_path_line = other_line
-                violation_property = re.split(r"^\s*Message: Node <.* in", result_path_line)[1].strip()
-                violation_property = violation_property.replace("[ sh:node nodeShapes:", "")
-                violation_property = violation_property.replace("[ sh:property propertyShapes:", "")
-                violation_property = violation_property.replace(" ] ", "")
-                return violation_property.removesuffix(" ]")
+                violation_property = result_path_line.split("Source Shape: ")[1].strip()
+                return violation_property.removeprefix("nodeShapes:")
 
 
 def generate_verbalization_for_violations(repo_name: str, repo_type: str, violations: list[tuple[str, str]]) -> str:
@@ -42,11 +36,11 @@ def generate_verbalization_for_violations(repo_name: str, repo_type: str, violat
     for violation_type, violation_property in violations:
         match violation_type:
             case "AndConstraintComponent":
-                verbalized_explanation += (f"- It seems like not all of these conditions are fulfilled: "
-                                           f"{violation_property}.\n")
+                verbalized_explanation += (f"- It seems like not all conditions of {violation_property} are "
+                                           f"fulfilled.\n")
             case "OrConstraintComponent":
-                verbalized_explanation += (f"- It seems like none (not at least one) of these conditions is fulfilled: "
-                                           f"{violation_property}.\n")
+                verbalized_explanation += (f"- It seems like none (not at least one) of the conditions of "
+                                           f"{violation_property} is fulfilled.\n")
             case "MinCountConstraintComponent":
                 verbalized_explanation += f"- It seems like there are too few {violation_property} properties.\n"
             case "MaxCountConstraintComponent":
@@ -61,8 +55,8 @@ def generate_verbalization_for_violations(repo_name: str, repo_type: str, violat
                 verbalized_explanation += (f"- It seems like there are too many nodes at the end of the path "
                                            f"{violation_property} with the correct value.\n")
             case "XoneConstraintComponent":
-                verbalized_explanation += (f"- It seems like not exactly one of these conditions is fulfilled: "
-                                           f"{violation_property}.\n")
+                verbalized_explanation += (f"- It seems like not exactly one of the conditions of {violation_property} "
+                                           f"is fulfilled.\n")
             case _:
                 verbalized_explanation += (f"- It seems like the {violation_property} property does not comply with "
                                            f"{violation_type}.\n")
