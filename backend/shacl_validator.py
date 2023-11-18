@@ -177,6 +177,7 @@ def include_releases(graph: Graph, repo_entity: URIRef, repo: Repository,
 
     if not check_version_increment:
         return
+
     sorted_version_list = []
     try:
         # adapted from https://stackoverflow.com/a/11887885

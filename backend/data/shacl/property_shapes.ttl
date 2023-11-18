@@ -288,7 +288,8 @@ propertyShapes:UserManualSection
 		sh:qualifiedMinCount   1 .
 
 propertyShapes:ValidVersionIncrement
-		a          sh:PropertyShape ;
+		a           sh:PropertyShape ;
 		# The increment/change between consecutive version numbers has to be valid.
-		sh:path    props:versions_have_valid_increment ;
-		sh:pattern "true" .
+		sh:path     props:versions_have_valid_increment ;
+		sh:pattern  "true" ;
+		sh:minCount 1 .

@@ -45,7 +45,7 @@ Here you can view the available project types and the quality constraints that a
 A representation of the given repository is created for validation. Its individual components depend on the corresponding project type. The following diagram shows all possible nodes and edges of this ontology. IRIs (Internationalized Resource Identifiers) are depicted in blue, literals in yellow. 
 
 ```mermaid
-  ---
+---
 title: Ontology for GitHub repositories - maximum cardinality in round brackets
 ---
 flowchart LR
