@@ -7,7 +7,7 @@ from itertools import pairwise
 import fire
 import markdown
 from bs4 import BeautifulSoup
-from github import Github, UnknownObjectException
+from github import Github, UnknownObjectException, GithubException
 from github.Repository import Repository
 from packaging import version
 from packaging.version import Version
@@ -111,8 +111,7 @@ def add_required_properties_to_graph(graph: Graph, repo_entity: URIRef, repo: Re
                                      requirements_list: list[str]) -> Graph:
     requirements_function_mapping = {
         "Branches": include_branches,
-        "DefaultBranch": include_default_branch,
-        "DefaultBranchIncludingRootDirectoryFiles": include_default_branch_with_root_directory_files,
+        "BranchesIncludingRootDirFilesOfDefaultBranch": include_branches_with_root_dir_files_of_default_branch,
         "Description": include_description,
         "Homepage": include_homepage,
         "Issues": include_issues,
@@ -221,36 +220,38 @@ def pair_has_valid_version_increment(pair: tuple[Version, Version]) -> bool:
     return False
 
 
-def include_branches(graph: Graph, repo_entity: URIRef, repo: Repository) -> None:
+def include_branches(graph: Graph, repo_entity: URIRef, repo: Repository,
+                     include_root_dir_files_of_default_branch: bool = False) -> None:
     branch_list = repo.get_branches()
-    if branch_list:
-        for branch in branch_list:
-            branch_entity = URIRef(f"{repo.html_url}/tree/{branch.name}")
-            graph.add((branch_entity, props["has_name"], Literal(branch.name)))
-            graph.add((repo_entity, props["has_branch"], branch_entity))
-
-
-def include_default_branch(graph: Graph, repo_entity: URIRef, repo: Repository,
-                           include_root_directory_files: bool = False) -> None:
     default_branch_name = repo.default_branch
-    if not default_branch_name:
+
+    for branch in branch_list:
+        branch_entity = URIRef(f"{repo.html_url}/tree/{branch.name}")
+        graph.add((branch_entity, props["has_name"], Literal(branch.name)))
+        graph.add((repo_entity, props["has_branch"], branch_entity))
+
+        if branch.name == default_branch_name:
+            graph.add((branch_entity, props["is_default_branch"], Literal(True)))
+        else:
+            graph.add((branch_entity, props["is_default_branch"], Literal(False)))
+
+    if not include_root_dir_files_of_default_branch:
         return
 
-    branch_entity = URIRef(f"{repo.html_url}/tree/{default_branch_name}")
-    graph.add((branch_entity, props["has_name"], Literal(default_branch_name)))
-    graph.add((repo_entity, props["has_default_branch"], branch_entity))
-
-    if not include_root_directory_files:
+    try:
+        git_tree = repo.get_git_tree(default_branch_name)
+    except GithubException as e:
+        logging.exception(f"No files of the default branch could be retrieved due to: {e}")
         return
 
-    git_tree = repo.get_git_tree(default_branch_name)
+    default_branch_entity = URIRef(f"{repo.html_url}/tree/{default_branch_name}")
     for item in git_tree.tree:
         if item.type == "blob":
-            graph.add((branch_entity, props["has_file_in_root_directory"], Literal(item.path)))
+            graph.add((default_branch_entity, props["has_file_in_root_directory"], Literal(item.path)))
 
 
-def include_default_branch_with_root_directory_files(graph: Graph, repo_entity: URIRef, repo: Repository) -> None:
-    return include_default_branch(graph, repo_entity, repo, include_root_directory_files=True)
+def include_branches_with_root_dir_files_of_default_branch(graph: Graph, repo_entity: URIRef, repo: Repository) -> None:
+    return include_branches(graph, repo_entity, repo, include_root_dir_files_of_default_branch=True)
 
 
 def include_issues(graph: Graph, repo_entity: URIRef, repo: Repository) -> None:

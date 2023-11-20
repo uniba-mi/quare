@@ -67,6 +67,7 @@ flowchart LR
 %% Literals that can be reached from the other IRIs
     tagName[String]:::literal
     branchName[String]:::literal
+    isDefaultBranch[Boolean]:::literal
     fileInRootDirectory[String]:::literal
     issueState[String]:::literal
     readmeSection[String]:::literal
@@ -82,7 +83,6 @@ flowchart LR
     repo -- "props:has_release (*)" --> release
     repo -- "props:versions_have_valid_increment (1)" --> validVersionIncrement
     repo -- "props:has_branch (*)" --> branch
-    repo -- "props:has_default_branch (1)" --> branch
     repo -- "props:has_issue (*)" --> issue
     repo -- "props:has_license (1)" --> license
     repo -- "props:has_readme (1)" --> readme
@@ -90,6 +90,7 @@ flowchart LR
 %% Outgoing links of the other IRIs
     release -- "props:has_tag_name (1)" --> tagName
     branch -- "props:has_name (1)" --> branchName
+    branch -- "props:is_default_branch (1)" --> isDefaultBranch
     branch -- "props:has_file_in_root_directory (*)" --> fileInRootDirectory
     issue -- "props:has_state (1)" --> issueState
     readme -- "props:has_section (*)" --> readmeSection

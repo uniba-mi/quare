@@ -82,4 +82,4 @@ types:FAIRSoftware
 		# Best practice 10: "Software requirements are available"
 		sh:node     nodeShapes:SoftwareRequirements ;
 		sh:description
-		            "The following repository properties are required to validate this project type: Description, ReadmeIncludingSectionsAndCheckForDoi, ReleasesIncludingIncrementCheck, Homepage, Visibility, License, DefaultBranchIncludingRootDirectoryFiles, Topics, MainLanguage." .
+		            "The following repository properties are required to validate this project type: Description, ReadmeIncludingSectionsAndCheckForDoi, ReleasesIncludingIncrementCheck, Homepage, Visibility, License, BranchesIncludingRootDirFilesOfDefaultBranch, Topics, MainLanguage." .
