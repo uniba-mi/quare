@@ -42,7 +42,7 @@ When you have filled out the form, you can issue the validation of the specified
 Here you can view the available project types and the quality constraints that are assigned to them. In the future, it is planned that the project types and criteria can be edited directly here. Currently, you have to edit the SHACL shapes graph or the ontology manually. If you want to change the criteria or add other project types, we strongly recommend editing the shapes graph and thereby using the SHACL approach because this is far easier than editing the ontology.  
 
 ## Ontology used for the representation of repositories
-A representation of the given repository is created for validation. Its individual components depend on the corresponding project type. The following diagram shows all possible nodes and edges of this ontology. IRIs (Internationalized Resource Identifiers) are depicted in blue, literals in yellow. 
+A representation of the given repository is created for validation. Its individual components depend on the corresponding project type. The following visualization shows all possible nodes and edges of this ontology. IRIs (Internationalized Resource Identifiers) are depicted in blue, literals in yellow. 
 
 ```mermaid
 ---
@@ -99,6 +99,12 @@ flowchart LR
     classDef literal fill:#FFEA85, stroke:#000
     classDef iri fill:#00407A, color:white, stroke:#000
 ```
+The IRIs mentioned have the following URL structure:
+* Repository: `https://github.com/<user_or_organization_name>/<repository_name>`
+* Release: `<repository_URL>/releases/tag/<tag_name>`
+* Branch: `<repository_URL>/tree/<branch_name>`
+* Issue: `<repository_URL>/issues/<issue_id>`
+* Readme file: `<repository_URL>/blob/<path_to_readme_file>`
 
 ## Developer Information
 
