@@ -154,28 +154,34 @@ propertyShapes:MainBranchExistent
 
 
 propertyShapes:MainLanguageJava
-		a          sh:PropertyShape ;
+		a           sh:PropertyShape ;
 		# The main language has to be "Java".
 		sh:path    props:has_main_language ;
 		sh:pattern "Java$" .
+		sh:path     props:has_main_language ;
+		sh:minCount 1 ;
+		sh:pattern  "Java$" .
 
 propertyShapes:MainLanguageJavaScript
-		a          sh:PropertyShape ;
+		a           sh:PropertyShape ;
 		# The main language has to be "JavaScript".
-		sh:path    props:has_main_language ;
-		sh:pattern "JavaScript" .
+		sh:path     props:has_main_language ;
+		sh:minCount 1 ;
+		sh:pattern  "JavaScript" .
 
 propertyShapes:MainLanguagePython
-		a          sh:PropertyShape ;
+		a           sh:PropertyShape ;
 		# The main language has to be "Python".
-		sh:path    props:has_main_language ;
-		sh:pattern "Python" .
+		sh:path     props:has_main_language ;
+		sh:minCount 1 ;
+		sh:pattern  "Python" .
 
 propertyShapes:MainLanguageTypeScript
-		a          sh:PropertyShape ;
+		a           sh:PropertyShape ;
 		# The main language has to be "TypeScript".
-		sh:path    props:has_main_language ;
-		sh:pattern "TypeScript" .
+		sh:path     props:has_main_language ;
+		sh:minCount 1 ;
+		sh:pattern  "TypeScript" .
 
 propertyShapes:ManualSection
 		a                      sh:PropertyShape ;
@@ -268,13 +274,13 @@ propertyShapes:RequirementsTxtFileExistent
 		sh:qualifiedMinCount   1 .
 
 propertyShapes:SemanticVersioningTags
-		a       sh:PropertyShape ;
-		# All tag names must match the semantic versioning pattern.
-		sh:path ( props:has_release props:has_tag_name ) ;
+		a           sh:PropertyShape ;
+		# There has to be at least one tag name. All of them have to match the semantic versioning pattern.
+		sh:path     ( props:has_release props:has_tag_name ) ;
+		sh:minCount 1 ;
 		# Adapted from https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
 		# Put into the right format with the help of ChatGPT.
-		sh:pattern
-		        "^v?(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$" .
+		sh:pattern  "^v?(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$" .
 
 propertyShapes:SettingUpSection
 		a                      sh:PropertyShape ;
