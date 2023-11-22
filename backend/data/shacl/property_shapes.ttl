@@ -22,8 +22,8 @@ propertyShapes:AtLeastTwoBranches
 
 propertyShapes:BuildGradleFileExistent
 		a                      sh:PropertyShape ;
-		# The file build.gradle has to exist in the root directory of the default branch.
-		sh:path                ( props:has_default_branch
+		# The file build.gradle has to exist in the root directory.
+		sh:path                ( props:has_branch
 		                         props:has_file_in_root_directory ) ;
 		sh:minCount            1 ;
 		sh:qualifiedValueShape [ sh:pattern "build.gradle" ] ;
@@ -31,8 +31,8 @@ propertyShapes:BuildGradleFileExistent
 
 propertyShapes:CitationCffFileExistent
 		a                      sh:PropertyShape ;
-		# The file CITATION.cff has to exist in the root directory of the default branch.
-		sh:path                ( props:has_default_branch
+		# The file CITATION.cff has to exist in the root directory.
+		sh:path                ( props:has_branch
 		                         props:has_file_in_root_directory ) ;
 		sh:minCount            1 ;
 		sh:qualifiedValueShape [ sh:pattern "^CITATION.cff$" ] ;
@@ -45,6 +45,12 @@ propertyShapes:CitationSection
 		sh:minCount            1 ;
 		sh:qualifiedValueShape [ sh:pattern "^Citation" ] ;
 		sh:qualifiedMinCount   1 .
+
+propertyShapes:DefaultBranch
+		a          sh:PropertyShape ;
+		# The considered branch has to be the default one.
+		sh:path    props:is_default_branch ;
+		sh:pattern "true" .
 
 propertyShapes:DependenciesSection
 		a                      sh:PropertyShape ;
@@ -72,8 +78,8 @@ propertyShapes:DoiAsHomepage
 
 propertyShapes:EnvironmentYmlFileExistent
 		a                      sh:PropertyShape ;
-		# The file environment.yml has to exist in the root directory of the default branch.
-		sh:path                ( props:has_default_branch
+		# The file environment.yml has to exist in the root directory.
+		sh:path                ( props:has_branch
 		                         props:has_file_in_root_directory ) ;
 		sh:minCount            1 ;
 		sh:qualifiedValueShape [ sh:pattern "environment.yml" ] ;
@@ -81,8 +87,8 @@ propertyShapes:EnvironmentYmlFileExistent
 
 propertyShapes:EnvironmentYamlFileExistent
 		a                      sh:PropertyShape ;
-		# The file environment.yaml has to exist in the root directory of the default branch.
-		sh:path                ( props:has_default_branch
+		# The file environment.yaml has to exist in the root directory.
+		sh:path                ( props:has_branch
 		                         props:has_file_in_root_directory ) ;
 		sh:minCount            1 ;
 		sh:qualifiedValueShape [ sh:pattern "environment.yaml" ] ;
@@ -90,8 +96,8 @@ propertyShapes:EnvironmentYamlFileExistent
 
 propertyShapes:ExactlyOneBibFile
 		a                      sh:PropertyShape ;
-		# There has to be exactly one .bib file in the root directory of the default branch.
-		sh:path                ( props:has_default_branch
+		# There has to be exactly one .bib file in the root directory.
+		sh:path                ( props:has_branch
 		                         props:has_file_in_root_directory ) ;
 		sh:minCount            1 ;
 		sh:qualifiedValueShape [ sh:pattern "\\.bib$" ] ;
@@ -156,8 +162,6 @@ propertyShapes:MainBranchExistent
 propertyShapes:MainLanguageJava
 		a           sh:PropertyShape ;
 		# The main language has to be "Java".
-		sh:path    props:has_main_language ;
-		sh:pattern "Java$" .
 		sh:path     props:has_main_language ;
 		sh:minCount 1 ;
 		sh:pattern  "Java$" .
@@ -198,6 +202,12 @@ propertyShapes:MitLicense
 		sh:pattern  "MIT License" ;
 		sh:minCount 1 .
 
+propertyShapes:NonDefaultBranch
+		a          sh:PropertyShape ;
+		# The considered branch must not be the default one.
+		sh:path    props:is_default_branch ;
+		sh:pattern "false" .
+
 propertyShapes:NoOpenIssues
 		a           sh:PropertyShape ;
 		# There must not be any open issues.
@@ -207,8 +217,8 @@ propertyShapes:NoOpenIssues
 
 propertyShapes:PackageJsonFileExistent
 		a                      sh:PropertyShape ;
-		# The file package.json has to exist in the root directory of the default branch.
-		sh:path                ( props:has_default_branch
+		# The file package.json has to exist in the root directory.
+		sh:path                ( props:has_branch
 		                         props:has_file_in_root_directory ) ;
 		sh:minCount            1 ;
 		sh:qualifiedValueShape [ sh:pattern "package.json" ] ;
@@ -216,8 +226,8 @@ propertyShapes:PackageJsonFileExistent
 
 propertyShapes:PomXmlFileExistent
 		a                      sh:PropertyShape ;
-		# The file pom.xml has to exist in the root directory of the default branch.
-		sh:path                ( props:has_default_branch
+		# The file pom.xml has to exist in the root directory.
+		sh:path                ( props:has_branch
 		                         props:has_file_in_root_directory ) ;
 		sh:minCount            1 ;
 		sh:qualifiedValueShape [ sh:pattern "pom.xml" ] ;
@@ -266,8 +276,8 @@ propertyShapes:RequirementsSection
 
 propertyShapes:RequirementsTxtFileExistent
 		a                      sh:PropertyShape ;
-		# The file requirements.txt has to exist in the root directory of the default branch.
-		sh:path                ( props:has_default_branch
+		# The file requirements.txt has to exist in the root directory.
+		sh:path                ( props:has_branch
 		                         props:has_file_in_root_directory ) ;
 		sh:minCount            1 ;
 		sh:qualifiedValueShape [ sh:pattern "requirements.txt" ] ;
