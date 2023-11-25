@@ -10,8 +10,9 @@ import shacl_validator
 logger = logging.getLogger(__name__)
 
 
-def run_validator(github_access_token="", repo_name="", repo_type="", method=""):
-
+def run_validator(github_access_token: str = "", repo_name: str = "", repo_type: str = "", method: str = "") \
+        -> tuple[int, int | None, str]:
+    number_of_violations = None
     time_start = perf_counter()
 
     if method == "owl":
@@ -24,7 +25,6 @@ def run_validator(github_access_token="", repo_name="", repo_type="", method="")
             return_code = output.returncode
         except Exception as e:
             logger.exception(e)
-            
 
         if return_code:
             stderr = output.stderr.decode()
@@ -34,12 +34,12 @@ def run_validator(github_access_token="", repo_name="", repo_type="", method="")
 
     elif method == "shacl":
 
-        return_code, report = shacl_validator.test_repo_against_specs(
+        return_code, number_of_violations, report = shacl_validator.test_repo_against_specs(
             github_access_token, repo_name, repo_type)
-        
+
         logger.info(return_code)
 
-        # interpret boolean to as number 
+        # interpret boolean as number
         return_code = 0 if return_code else 1
 
     else:
@@ -50,16 +50,15 @@ def run_validator(github_access_token="", repo_name="", repo_type="", method="")
     logger.info("Validating the %s repository against the %s project type using the %s approach took %s seconds!",
                 repo_name, repo_type, method.upper(), '{:f}'.format(time_elapsed))
 
-    return return_code, report
+    return return_code, number_of_violations, report
 
 
 def get_project_type_specifications():
-
     project_type_specifcations = {
-                                    "projectTypeSpecifications": {
-                                        "owl": owl_validator.get_project_type_specifications(),
-                                        "shacl": shacl_validator.get_project_type_specifications()
-                                    }
-                                }
+        "projectTypeSpecifications": {
+            "owl": owl_validator.get_project_type_specifications(),
+            "shacl": shacl_validator.get_project_type_specifications()
+        }
+    }
 
     return project_type_specifcations

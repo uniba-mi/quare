@@ -343,7 +343,8 @@ def run_validation(data_graph, shapes_graph):
 
 
 def test_repo_against_specs(github_access_token: str = "", repo_name: str = "",
-                            expected_type: str = "") -> tuple[bool, str]:
+                            expected_type: str = "") -> tuple[bool, int, str]:
+    number_of_violations = 0
     logging.info(f"Validating repo {repo_name} using the SHACL approach..")
 
     shapes_graph = create_project_type_representation()
@@ -351,7 +352,11 @@ def test_repo_against_specs(github_access_token: str = "", repo_name: str = "",
     data_graph = create_repository_representation(requirements_list, github_access_token, repo_name, expected_type)
     return_code, _, result_text = run_validation(data_graph, shapes_graph)
 
-    return return_code, result_text
+    if not return_code:
+        line_with_number_of_violations = result_text.splitlines()[2]
+        number_of_violations = re.search(r"Results\s+\((\d+)\)", line_with_number_of_violations).group(1)
+
+    return return_code, number_of_violations, result_text
 
 
 if __name__ == "__main__":
