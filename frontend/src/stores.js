@@ -13,6 +13,8 @@ export const validationData = writable({
     repoName: "",
     repoType: "",
     status: "unknown",
+    numberOfCriteria: 0,
+    numberOfFulfilledCriteria: undefined,
     report: "",
     verbalized: "",
   },

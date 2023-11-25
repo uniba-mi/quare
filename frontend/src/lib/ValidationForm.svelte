@@ -28,6 +28,8 @@
       repoName: "",
       repoType: "",
       status: "unknown",
+      numberOfCriteria: 0,
+      numberOfFulfilledCriteria: undefined,
       report: "",
       verbalized: "",
     };
@@ -49,14 +51,17 @@
 
   const handleValidationRequest = () => {
     Object.keys($validationData).forEach((index) => {
+      const repoType = $validationData[index]["repoType"];
       const request_body = {
         accessToken: $validationSettings["accessToken"],
         method: $mode,
         repoName: $validationData[index]["repoName"],
-        repoType: $validationData[index]["repoType"],
+        repoType: repoType,
       };
 
       $validationData[index]["status"] = "loading";
+      $validationData[index]["numberOfCriteria"] =
+        $projectTypeSpecifications[$mode][repoType].length;
 
       fetch("http://localhost:5000/validate", {
         method: "POST",
@@ -67,6 +72,12 @@
       })
         .then((response) => response.json())
         .then((response) => {
+          if (response["numberOfViolations"] !== null) {
+            $validationData[index]["numberOfFulfilledCriteria"] =
+              $validationData[index]["numberOfCriteria"] -
+              response["numberOfViolations"];
+          }
+
           switch (response["returnCode"]) {
             case 0:
               $validationData[index]["status"] = "success";
@@ -143,7 +154,7 @@
               bind:value={$validationData[i]["repoType"]}
               required
             >
-              {#if $mode == "shacl"}
+              {#if $mode === "shacl"}
                 {#each Object.keys($projectTypeSpecifications.shacl) as typeName, _}
                   <option>{typeName}</option>
                 {/each}
@@ -158,22 +169,63 @@
             <div class="row justify-content-center">
               <p class="form-label">Result</p>
               <div class="btn-group" role="group">
-                {#if $validationData[i]["status"] == "success"}
-                  <button class="btn btn-success disabled">
-                    <CheckCircleIcon size="20" />
-                  </button>
-                {:else if $validationData[i]["status"] == "failure"}
-                  <button class="btn btn-danger disabled">
-                    <AlertCircleIcon size="20" />
-                  </button>
-                  <button
-                    on:click|preventDefault={handleResultButtonPress}
-                    class="btn btn-outline-danger"
-                    id="result-button-{i}"
-                  >
-                    View
-                  </button>
-                {:else if $validationData[i]["status"] == "loading"}
+                {#if $validationData[i]["status"] === "success"}
+                  {#if $validationData[i]["numberOfFulfilledCriteria"]}
+                    <button class="btn btn-success disabled">
+                      <span
+                        role="progressbar"
+                        aria-valuenow={$validationData[i][
+                          "numberOfFulfilledCriteria"
+                        ]}
+                        aria-valuemin={0}
+                        aria-valuemax={$validationData[i]["numberOfCriteria"]}
+                        style="--actual-value: {$validationData[i]
+                          .numberOfFulfilledCriteria}; --max-value: {$validationData[
+                          i
+                        ].numberOfCriteria}"
+                      ></span>
+                    </button>
+                  {:else}
+                    <button class="btn btn-success disabled">
+                      <CheckCircleIcon size="20" />
+                    </button>
+                  {/if}
+                {:else if $validationData[i]["status"] === "failure"}
+                  {#if $validationData[i]["numberOfFulfilledCriteria"]}
+                    <button class="btn btn-danger disabled">
+                      <span
+                        role="progressbar"
+                        aria-valuenow={$validationData[i][
+                          "numberOfFulfilledCriteria"
+                        ]}
+                        aria-valuemin={0}
+                        aria-valuemax={$validationData[i]["numberOfCriteria"]}
+                        style="--actual-value: {$validationData[i]
+                          .numberOfFulfilledCriteria}; --max-value: {$validationData[
+                          i
+                        ].numberOfCriteria}"
+                      ></span>
+                    </button>
+                    <button
+                      on:click|preventDefault={handleResultButtonPress}
+                      class="btn btn-outline-danger"
+                      id="result-button-{i}"
+                    >
+                      View
+                    </button>
+                  {:else}
+                    <button class="btn btn-danger disabled">
+                      <AlertCircleIcon size="20" />
+                    </button>
+                    <button
+                      on:click|preventDefault={handleResultButtonPress}
+                      class="btn btn-outline-danger"
+                      id="result-button-{i}"
+                    >
+                      View
+                    </button>
+                  {/if}
+                {:else if $validationData[i]["status"] === "loading"}
                   <button class="btn btn-secondary disabled">
                     <span
                       class="spinner-border spinner-border"
@@ -182,7 +234,7 @@
                       aria-hidden="true"
                     />
                   </button>
-                {:else if $validationData[i]["status"] == "unknown"}
+                {:else if $validationData[i]["status"] === "unknown"}
                   <button class="btn btn-secondary disabled">
                     <CircleIcon size="20" />
                   </button>
