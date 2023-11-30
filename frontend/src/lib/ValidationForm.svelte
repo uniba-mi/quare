@@ -1,5 +1,6 @@
 <script>
   import * as bootstrap from "bootstrap";
+  import '../validation-form-style.css';
   import {
     mode,
     projectTypeSpecifications,
@@ -131,7 +132,7 @@
 
       <!-- one row for each repository to be validated -->
       {#each { length: Object.keys($validationData).length } as _, i}
-        <div class="row mb-3">
+        <div class="row mb-3 vertically-centered-row">
           <div class="col">
             <label for="validation-repository-{i}" class="form-label"
               >Repository Name</label
@@ -168,10 +169,10 @@
           <div class="col-2">
             <div class="row justify-content-center">
               <p class="form-label">Result</p>
-              <div class="btn-group" role="group">
+              <div class="btn-group result-button" role="group">
                 {#if $validationData[i]["status"] === "success"}
                   {#if $validationData[i]["numberOfFulfilledCriteria"]}
-                    <button class="btn btn-success disabled">
+                    <button class="btn btn-success disabled button-with-progressbar">
                       <span
                         role="progressbar"
                         aria-valuenow={$validationData[i][
@@ -187,12 +188,12 @@
                     </button>
                   {:else}
                     <button class="btn btn-success disabled">
-                      <CheckCircleIcon size="20" />
+                      <CheckCircleIcon size="35" />
                     </button>
                   {/if}
                 {:else if $validationData[i]["status"] === "failure"}
                   {#if $validationData[i]["numberOfFulfilledCriteria"]}
-                    <button class="btn btn-danger disabled">
+                    <button class="btn btn-danger disabled button-with-progressbar">
                       <span
                         role="progressbar"
                         aria-valuenow={$validationData[i][
@@ -215,7 +216,7 @@
                     </button>
                   {:else}
                     <button class="btn btn-danger disabled">
-                      <AlertCircleIcon size="20" />
+                      <AlertCircleIcon size="35" />
                     </button>
                     <button
                       on:click|preventDefault={handleResultButtonPress}
@@ -229,14 +230,14 @@
                   <button class="btn btn-secondary disabled">
                     <span
                       class="spinner-border spinner-border"
-                      style="width: 1rem; height: 1rem;"
+                      style="width: 1.65rem; height: 1.65rem;"
                       role="status"
                       aria-hidden="true"
                     />
                   </button>
                 {:else if $validationData[i]["status"] === "unknown"}
                   <button class="btn btn-secondary disabled">
-                    <CircleIcon size="20" />
+                    <CircleIcon size="30" />
                   </button>
                 {/if}
               </div>
