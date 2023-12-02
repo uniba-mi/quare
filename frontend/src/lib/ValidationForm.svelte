@@ -171,7 +171,7 @@
               <p class="form-label">Result</p>
               <div class="btn-group result-button" role="group">
                 {#if $validationData[i]["status"] === "success"}
-                  {#if $validationData[i]["numberOfFulfilledCriteria"]}
+                  {#if $validationData[i]["numberOfFulfilledCriteria"] !== undefined}
                     <button class="btn btn-success disabled button-with-progressbar">
                       <span
                         role="progressbar"
@@ -192,7 +192,7 @@
                     </button>
                   {/if}
                 {:else if $validationData[i]["status"] === "failure"}
-                  {#if $validationData[i]["numberOfFulfilledCriteria"]}
+                  {#if $validationData[i]["numberOfFulfilledCriteria"] !== undefined}
                     <button class="btn btn-danger disabled button-with-progressbar">
                       <span
                         role="progressbar"

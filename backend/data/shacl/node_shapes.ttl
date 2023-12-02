@@ -9,8 +9,7 @@ nodeShapes:DescriptionOrReadme
 
 nodeShapes:ExplicitCitation
 		a     sh:NodeShape ;
-		sh:or ( [ sh:property propertyShapes:CitationCffFileExistent ]
-		        [ sh:property propertyShapes:ExactlyOneBibFile ]
+		sh:or ( [ sh:property propertyShapes:CitationOrBibFileInDefaultBranch ]
 		        [ sh:property propertyShapes:CitationSection ] ) .
 
 nodeShapes:InstallationInstructions
@@ -26,23 +25,20 @@ nodeShapes:LanguageSpecificRequirementsFile
 		      # In Java repositories, there has to be either a file "build.gradle" or "pom.xml" in the root directory of
 		      # the default branch.
 		      [ sh:property propertyShapes:MainLanguageJava ;
-		        sh:xone     ( [ sh:property propertyShapes:BuildGradleFileExistent ]
-		                      [ sh:property propertyShapes:PomXmlFileExistent ] ) ]
+		        sh:property propertyShapes:ExactlyOneJavaRequirementsFileInDefaultBranch ]
 
 		      # In JavaScript repositories, there has to be a file "package.json" in the root directory of the default branch.
 		      [ sh:property propertyShapes:MainLanguageJavaScript ;
-		        sh:property propertyShapes:PackageJsonFileExistent ]
+		        sh:property propertyShapes:PackageJsonFileInDefaultBranch ]
 
 		      # In Python repositories, there has to be either a file "requirements.txt" or "environment.yaml" or
 		      # "environment.yml" in the root directory of the default branch.
 		      [ sh:property propertyShapes:MainLanguagePython ;
-		        sh:xone     ( [ sh:property propertyShapes:RequirementsTxtFileExistent ]
-		                      [ sh:property propertyShapes:EnvironmentYamlFileExistent ]
-		                      [ sh:property propertyShapes:EnvironmentYmlFileExistent ] ) ]
+		        sh:property propertyShapes:ExactlyOnePythonRequirementsFileInDefaultBranch ]
 
 		      # In TypeScript repositories, there has to be a file "package.json" in the root directory of the default branch.
 		      [ sh:property propertyShapes:MainLanguageTypeScript ;
-		        sh:property propertyShapes:PackageJsonFileExistent ] ) .
+		        sh:property propertyShapes:PackageJsonFileInDefaultBranch ] ) .
 
 nodeShapes:PersistentId
 		a     sh:NodeShape ;
