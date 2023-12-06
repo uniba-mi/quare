@@ -61,7 +61,7 @@ flowchart LR
     validVersionIncrement[Boolean]:::literal
     branch([<b>Branch</b>]):::iri
     issue([<b>Issue</b>]):::iri
-    license[String]:::literal
+    license([<b>License</b>]):::iri
     readme([<b>Readme file</b>]):::iri
 
 %% Literals that can be reached from the other IRIs
@@ -70,29 +70,31 @@ flowchart LR
     isDefaultBranch[Boolean]:::literal
     fileInRootDirectory[String]:::literal
     issueState[String]:::literal
+    licenseName[String]:::literal
     readmeSection[String]:::literal
     doiInReadme[Boolean]:::literal
 
 %% LINK SECTION
 %% Outgoing links of the repository node
     repo -- "props:is_private (1)" --> visibility
-    repo -- "props:has_topic (*)" --> topic
-    repo -- "props:has_description (1)" --> description
-    repo -- "props:has_homepage (1)" --> homepage
-    repo -- "props:has_main_language (1)" --> mainLanguage
-    repo -- "props:has_release (*)" --> release
+    repo -- "sd:keywords (*)" --> topic
+    repo -- "sd:description (1)" --> description
+    repo -- "sd:website (1)" --> homepage
+    repo -- "sd:programmingLanguage (1)" --> mainLanguage
+    repo -- "sd:hasVersion (*)" --> release
     repo -- "props:versions_have_valid_increment (1)" --> validVersionIncrement
     repo -- "props:has_branch (*)" --> branch
     repo -- "props:has_issue (*)" --> issue
-    repo -- "props:has_license (1)" --> license
-    repo -- "props:has_readme (1)" --> readme
+    repo -- "sd:license (1)" --> license
+    repo -- "sd:readme (1)" --> readme
 
 %% Outgoing links of the other IRIs
-    release -- "props:has_tag_name (1)" --> tagName
-    branch -- "props:has_name (1)" --> branchName
+    release -- "sd:hasVersionId (1)" --> tagName
+    branch -- "sd:name (1)" --> branchName
     branch -- "props:is_default_branch (1)" --> isDefaultBranch
     branch -- "props:has_file_in_root_directory (*)" --> fileInRootDirectory
     issue -- "props:has_state (1)" --> issueState
+    license -- "sd:name (1)" --> licenseName
     readme -- "props:has_section (*)" --> readmeSection
     readme -- "props:contains_doi (1)" --> doiInReadme
 
@@ -105,6 +107,7 @@ The IRIs mentioned have the following URL structure:
 * Release: `<repository_URL>/releases/tag/<tag_name>`
 * Branch: `<repository_URL>/tree/<branch_name>`
 * Issue: `<repository_URL>/issues/<issue_id>`
+* License: `<repository_URL>/blob/<path_to_license_file>`
 * Readme file: `<repository_URL>/blob/<path_to_readme_file>`
 
 ## Developer Information

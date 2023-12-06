@@ -1,22 +1,24 @@
 @prefix sh:             <http://www.w3.org/ns/shacl#> .
+# Software Description Ontology (SD)
+@prefix sd:             <https://w3id.org/okn/o/sd#> .
 @prefix propertyShapes: <https://example.org/repo/property-shapes/> .
 @prefix props:          <https://example.org/repo/props/> .
 
 propertyShapes:AtLeastOneRelease
 		a           sh:PropertyShape ;
-		# There has to be at least one release.
-		sh:path     props:has_release ;
+		# There has to be at least one release (internally mapped via the "hasVersion" property).
+		sh:path     sd:hasVersion ;
 		sh:minCount 1 .
 
 propertyShapes:AtLeastOneTopic
 		a           sh:PropertyShape ;
-		# There has to be at least one topic.
-		sh:path     props:has_topic ;
+		# There has to be at least one topic (internally mapped via the "keywords" property).
+		sh:path     sd:keywords;
 		sh:minCount 1 .
 
 propertyShapes:AtLeastTwoBranches
 		a           sh:PropertyShape ;
-		# The repository has to have at least two branches.
+		# There have to be at least two branches.
 		sh:path     props:has_branch ;
 		sh:minCount 2 .
 
@@ -49,7 +51,7 @@ propertyShapes:CitationOrBibFileInDefaultBranch
 propertyShapes:CitationSection
 		a                      sh:PropertyShape ;
 		# There has to be a README file where the name of a section starts with "Citation".
-		sh:path                ( props:has_readme props:has_section ) ;
+		sh:path                ( sd:readme props:has_section ) ;
 		sh:minCount            1 ;
 		sh:qualifiedValueShape [ sh:pattern "^Citation" ] ;
 		sh:qualifiedMinCount   1 .
@@ -63,7 +65,7 @@ propertyShapes:DefaultBranch
 propertyShapes:DependenciesSection
 		a                      sh:PropertyShape ;
 		# There has to be a README file where the name of a section starts with "Dependencies".
-		sh:path                ( props:has_readme props:has_section ) ;
+		sh:path                ( sd:readme props:has_section ) ;
 		sh:minCount            1 ;
 		sh:qualifiedValueShape [ sh:pattern "^Dependencies" ] ;
 		sh:qualifiedMinCount   1 .
@@ -71,14 +73,14 @@ propertyShapes:DependenciesSection
 propertyShapes:DescriptionFilled
 		a           sh:PropertyShape ;
 		# There has to be exactly one description.
-		sh:path     props:has_description ;
+		sh:path     sd:description ;
 		sh:minCount 1 ;
 		sh:maxCount 1 .
 
 propertyShapes:DoiAsHomepage
 		a           sh:PropertyShape ;
-		# The homepage link has to exist and has to be a DOI.
-		sh:path     props:has_homepage ;
+		# The homepage link (internally mapped via the "website" property) has to exist and has to be a DOI.
+		sh:path     sd:website ;
 		# https://www.crossref.org/blog/dois-and-matching-regular-expressions/
 		# Put into the right format with the help of ChatGPT.
 		sh:pattern  "^https://doi\\.org/10\\.[0-9]{4,}/[-._;()/:A-Z0-9]+$" ;
@@ -128,7 +130,7 @@ propertyShapes:ExactlyOneBranch
 propertyShapes:ExactlyOneLicense
 		a           sh:PropertyShape ;
 		# There has to be exactly one license.
-		sh:path     props:has_license ;
+		sh:path     sd:license ;
 		sh:minCount 1 ;
 		sh:maxCount 1 .
 
@@ -146,14 +148,15 @@ propertyShapes:ExactlyOnePythonRequirementsFileInDefaultBranch
 propertyShapes:GnuGplV3License
 		a           sh:PropertyShape ;
 		# There has to be a license and it has to be "GNU General Public License v3.0".
-		sh:path     props:has_license ;
-		sh:pattern  "GNU General Public License v3.0" ;
-		sh:minCount 1 .
+		sh:path     (sd:license sd:name);
+		sh:minCount 1 ;
+		sh:qualifiedValueShape [ sh:pattern "GNU General Public License v3.0" ] ;
+		sh:qualifiedMinCount   1 .
 
 propertyShapes:HowToInstallSection
 		a                      sh:PropertyShape ;
 		# There has to be a README file where the name of a section starts with "How to install" (case insensitive).
-		sh:path                ( props:has_readme props:has_section ) ;
+		sh:path                ( sd:readme props:has_section ) ;
 		sh:minCount            1 ;
 		sh:qualifiedValueShape [ sh:pattern "^(?i)how to install" ] ;
 		sh:qualifiedMinCount   1 .
@@ -161,7 +164,7 @@ propertyShapes:HowToInstallSection
 propertyShapes:HowToUseSection
 		a                      sh:PropertyShape ;
 		# There has to be a README file where the name of a section starts with "How to use" (case insensitive).
-		sh:path                ( props:has_readme props:has_section ) ;
+		sh:path                ( sd:readme props:has_section ) ;
 		sh:minCount            1 ;
 		sh:qualifiedValueShape [ sh:pattern "^(?i)how to use" ] ;
 		sh:qualifiedMinCount   1 .
@@ -169,7 +172,7 @@ propertyShapes:HowToUseSection
 propertyShapes:InstallationSection
 		a                      sh:PropertyShape ;
 		# There has to be a README file where the name of a section starts with "Installation".
-		sh:path                ( props:has_readme props:has_section ) ;
+		sh:path                ( sd:readme props:has_section ) ;
 		sh:minCount            1 ;
 		sh:qualifiedValueShape [ sh:pattern "^Installation" ] ;
 		sh:qualifiedMinCount   1 .
@@ -177,7 +180,7 @@ propertyShapes:InstallationSection
 propertyShapes:MainBranchExistent
 		a                      sh:PropertyShape ;
 		# There has to be exactly one branch named "main".
-		sh:path                ( props:has_branch props:has_name ) ;
+		sh:path                ( props:has_branch sd:name ) ;
 		sh:minCount            1 ;
 		sh:qualifiedValueShape [ sh:pattern "main" ] ;
 		sh:qualifiedMinCount   1 ;
@@ -186,36 +189,36 @@ propertyShapes:MainBranchExistent
 
 propertyShapes:MainLanguageJava
 		a           sh:PropertyShape ;
-		# The main language has to be "Java".
-		sh:path     props:has_main_language ;
+		# The main programming language has to be "Java".
+		sh:path     sd:programmingLanguage ;
 		sh:minCount 1 ;
 		sh:pattern  "Java$" .
 
 propertyShapes:MainLanguageJavaScript
 		a           sh:PropertyShape ;
-		# The main language has to be "JavaScript".
-		sh:path     props:has_main_language ;
+		# The main programming language has to be "JavaScript".
+		sh:path     sd:programmingLanguage ;
 		sh:minCount 1 ;
 		sh:pattern  "JavaScript" .
 
 propertyShapes:MainLanguagePython
 		a           sh:PropertyShape ;
-		# The main language has to be "Python".
-		sh:path     props:has_main_language ;
+		# The main programming language has to be "Python".
+		sh:path     sd:programmingLanguage ;
 		sh:minCount 1 ;
 		sh:pattern  "Python" .
 
 propertyShapes:MainLanguageTypeScript
 		a           sh:PropertyShape ;
-		# The main language has to be "TypeScript".
-		sh:path     props:has_main_language ;
+		# The main programming language has to be "TypeScript".
+		sh:path     sd:programmingLanguage ;
 		sh:minCount 1 ;
 		sh:pattern  "TypeScript" .
 
 propertyShapes:ManualSection
 		a                      sh:PropertyShape ;
 		# There has to be a README file where the name of a section starts with "Manual".
-		sh:path                ( props:has_readme props:has_section ) ;
+		sh:path                ( sd:readme props:has_section ) ;
 		sh:minCount            1 ;
 		sh:qualifiedValueShape [ sh:pattern "^Manual" ] ;
 		sh:qualifiedMinCount   1 ; .
@@ -223,9 +226,10 @@ propertyShapes:ManualSection
 propertyShapes:MitLicense
 		a           sh:PropertyShape ;
 		# There has to be a license and it has to be "MIT License".
-		sh:path     props:has_license ;
-		sh:pattern  "MIT License" ;
-		sh:minCount 1 .
+		sh:path     (sd:license sd:name);
+		sh:minCount 1 ;
+		sh:qualifiedValueShape [ sh:pattern "MIT License" ] ;
+		sh:qualifiedMinCount   1 .
 
 propertyShapes:NonDefaultBranch
 		a          sh:PropertyShape ;
@@ -279,7 +283,7 @@ propertyShapes:PublicRepository
 propertyShapes:PurposeSection
 		a                      sh:PropertyShape ;
 		# There has to be a README file where the name of a section starts with "Purpose".
-		sh:path                ( props:has_readme props:has_section ) ;
+		sh:path                ( sd:readme props:has_section ) ;
 		sh:minCount            1 ;
 		sh:qualifiedValueShape [ sh:pattern "^Purpose" ] ;
 		sh:qualifiedMinCount   1 .
@@ -287,20 +291,20 @@ propertyShapes:PurposeSection
 propertyShapes:ReadMeFileExistent
 		a           sh:PropertyShape ;
 		# There has to be at least one README file.
-		sh:path     props:has_readme ;
+		sh:path     sd:readme ;
 		sh:minCount 1 .
 
 propertyShapes:ReadMeFileWithDoi
 		a           sh:PropertyShape ;
 		# The README file contains a DOI link.
-		sh:path     ( props:has_readme props:contains_doi ) ;
+		sh:path     ( sd:readme props:contains_doi ) ;
 		sh:pattern  "true" ;
 		sh:minCount 1 .
 
 propertyShapes:RequirementsSection
 		a                      sh:PropertyShape ;
 		# There has to be a README file where the name of a section starts with "Requirements".
-		sh:path                ( props:has_readme props:has_section ) ;
+		sh:path                ( sd:readme props:has_section ) ;
 		sh:minCount            1 ;
 		sh:qualifiedValueShape [ sh:pattern "^Requirements" ] ;
 		sh:qualifiedMinCount   1 .
@@ -315,8 +319,9 @@ propertyShapes:RequirementsTxtFileExistent
 
 propertyShapes:SemanticVersioningTags
 		a           sh:PropertyShape ;
-		# There has to be at least one tag name. All of them have to match the semantic versioning pattern.
-		sh:path     ( props:has_release props:has_tag_name ) ;
+		# There has to be at least one release with a tag name (internally mapped via the "hasVersion" and "hasVersionId"
+		#	properties). All tags names have to match the semantic versioning pattern.
+		sh:path     ( sd:hasVersion sd:hasVersionId ) ;
 		sh:minCount 1 ;
 		# Adapted from https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
 		# Put into the right format with the help of ChatGPT.
@@ -325,7 +330,7 @@ propertyShapes:SemanticVersioningTags
 propertyShapes:SettingUpSection
 		a                      sh:PropertyShape ;
 		# There has to be a README file where the name of a section starts with "Setting up" (case insensitive).
-		sh:path                ( props:has_readme props:has_section ) ;
+		sh:path                ( sd:readme props:has_section ) ;
 		sh:minCount            1 ;
 		sh:qualifiedValueShape [ sh:pattern "^(?i)setting up" ] ;
 		sh:qualifiedMinCount   1 .
@@ -333,7 +338,7 @@ propertyShapes:SettingUpSection
 propertyShapes:SetupSection
 		a                      sh:PropertyShape ;
 		# There has to be a README file where the name of a section starts with "Setup" or "Set up" (case insensitive).
-		sh:path                ( props:has_readme props:has_section ) ;
+		sh:path                ( sd:readme props:has_section ) ;
 		sh:minCount            1 ;
 		sh:qualifiedValueShape [ sh:pattern "(?i)set\\s?up" ] ;
 		sh:qualifiedMinCount   1 .
@@ -341,7 +346,7 @@ propertyShapes:SetupSection
 propertyShapes:UsageSection
 		a                      sh:PropertyShape ;
 		# There has to be a README file where the name of a section starts with "Usage".
-		sh:path                ( props:has_readme props:has_section ) ;
+		sh:path                ( sd:readme props:has_section ) ;
 		sh:minCount            1 ;
 		sh:qualifiedValueShape [ sh:pattern "^Usage" ] ;
 		sh:qualifiedMinCount   1 .
@@ -349,7 +354,7 @@ propertyShapes:UsageSection
 propertyShapes:UserManualSection
 		a                      sh:PropertyShape ;
 		# There has to be a README file where the name of a section starts with "User manual" (case insensitive).
-		sh:path                ( props:has_readme props:has_section ) ;
+		sh:path                ( sd:readme props:has_section ) ;
 		sh:minCount            1 ;
 		sh:qualifiedValueShape [ sh:pattern "^(?i)user manual" ] ;
 		sh:qualifiedMinCount   1 .

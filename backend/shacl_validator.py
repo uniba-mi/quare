@@ -16,6 +16,8 @@ from rdflib import Graph, Literal, Namespace, URIRef
 from rdflib.namespace import RDF
 
 types = Namespace("https://example.org/repo/project-types/")
+# Software Description Ontology (SD)
+sd = Namespace("https://w3id.org/okn/o/sd#")
 props = Namespace("https://example.org/repo/props/")
 
 
@@ -145,22 +147,22 @@ def include_topics(graph: Graph, repo_entity: URIRef, repo: Repository) -> None:
     topic_list = repo.get_topics()
     if topic_list:
         for topic in topic_list:
-            graph.add((repo_entity, props["has_topic"], Literal(topic)))
+            graph.add((repo_entity, sd["keywords"], Literal(topic)))
 
 
 def include_description(graph: Graph, repo_entity: URIRef, repo: Repository) -> None:
     if repo.description:
-        graph.add((repo_entity, props["has_description"], Literal(repo.description)))
+        graph.add((repo_entity, sd["description"], Literal(repo.description)))
 
 
 def include_homepage(graph: Graph, repo_entity: URIRef, repo: Repository) -> None:
     if repo.homepage:
-        graph.add((repo_entity, props["has_homepage"], Literal(repo.homepage)))
+        graph.add((repo_entity, sd["website"], Literal(repo.homepage)))
 
 
 def include_main_language(graph: Graph, repo_entity: URIRef, repo: Repository) -> None:
     if repo.language:
-        graph.add((repo_entity, props["has_main_language"], Literal(repo.language)))
+        graph.add((repo_entity, sd["programmingLanguage"], Literal(repo.language)))
 
 
 def include_releases(graph: Graph, repo_entity: URIRef, repo: Repository,
@@ -171,8 +173,8 @@ def include_releases(graph: Graph, repo_entity: URIRef, repo: Repository,
 
     for release in release_list:
         release_entity = URIRef(release.html_url)
-        graph.add((release_entity, props["has_tag_name"], Literal(release.tag_name)))
-        graph.add((repo_entity, props["has_release"], release_entity))
+        graph.add((release_entity, sd["hasVersionId"], Literal(release.tag_name)))
+        graph.add((repo_entity, sd["hasVersion"], release_entity))
 
     if not check_version_increment:
         return
@@ -227,7 +229,7 @@ def include_branches(graph: Graph, repo_entity: URIRef, repo: Repository,
 
     for branch in branch_list:
         branch_entity = URIRef(f"{repo.html_url}/tree/{branch.name}")
-        graph.add((branch_entity, props["has_name"], Literal(branch.name)))
+        graph.add((branch_entity, sd["name"], Literal(branch.name)))
         graph.add((repo_entity, props["has_branch"], branch_entity))
 
         if branch.name == default_branch_name:
@@ -267,7 +269,9 @@ def include_license(graph: Graph, repo_entity: URIRef, repo: Repository) -> None
     try:
         license_data = repo.get_license()
         if license_data:
-            graph.add((repo_entity, props["has_license"], Literal(license_data.license.name)))
+            license_entity = URIRef(license_data.html_url)
+            graph.add((license_entity, sd["name"], Literal(license_data.license.name)))
+            graph.add((repo_entity, sd["license"], license_entity))
     except UnknownObjectException as e:
         logging.exception(f"No license could be retrieved due to: {e}")
 
@@ -284,7 +288,7 @@ def include_readme(graph: Graph, repo_entity: URIRef, repo: Repository, include_
         return
 
     readme_entity = URIRef(readme.html_url)
-    graph.add((repo_entity, props["has_readme"], readme_entity))
+    graph.add((repo_entity, sd["readme"], readme_entity))
 
     if not (include_sections or include_check_for_doi):
         return
