@@ -1,0 +1,21 @@
+@prefix sh:             <http://www.w3.org/ns/shacl#> .
+@prefix rdfs:           <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix types:          <https://example.org/repo/project-types/> .
+@prefix nodeShapes:     <https://example.org/repo/node-shapes/> .
+@prefix propertyShapes: <https://example.org/repo/property-shapes/> .
+
+types:TestDescriptionOrReadme
+		a       rdfs:Class, sh:NodeShape ;
+		sh:node nodeShapes:DescriptionOrReadme .
+
+types:TestPersistentId
+		a       rdfs:Class, sh:NodeShape ;
+		sh:node nodeShapes:PersistentId .
+
+types:TestPublicRepository
+		a           rdfs:Class, sh:NodeShape ;
+		sh:property propertyShapes:PublicRepository .
+
+types:TestSemanticVersioning
+		a       rdfs:Class, sh:NodeShape ;
+		sh:node nodeShapes:SemanticVersioning .

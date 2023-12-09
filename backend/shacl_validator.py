@@ -8,6 +8,7 @@ import fire
 import markdown
 from bs4 import BeautifulSoup
 from github import Github, UnknownObjectException, GithubException
+from github.PaginatedList import PaginatedList
 from github.Repository import Repository
 from packaging import version
 from packaging.version import Version
@@ -176,37 +177,47 @@ def include_releases(graph: Graph, repo_entity: URIRef, repo: Repository,
         graph.add((release_entity, sd["hasVersionId"], Literal(release.tag_name)))
         graph.add((repo_entity, sd["hasVersion"], release_entity))
 
-    if not check_version_increment:
+    if not (check_version_increment and release_list.totalCount > 0):
         return
 
-    sorted_version_list = []
-    try:
-        # adapted from https://stackoverflow.com/a/11887885
-        version_list = [version.parse(release.tag_name.removeprefix("v")) for release in release_list]
-        sorted_version_list = sorted(version_list)
-    except ValueError:
-        graph.add((repo_entity, props["versions_have_valid_increment"], Literal("false")))
-
-    if sorted_version_list:
-        versions_have_valid_increment = True
-        for pair in pairwise(sorted_version_list):
-            if not pair_has_valid_version_increment(pair):
-                versions_have_valid_increment = False
-                break
-
-        graph.add((repo_entity, props["versions_have_valid_increment"], Literal(versions_have_valid_increment)))
+    if versions_have_valid_increment(release_list):
+        graph.add((repo_entity, props["versions_have_valid_increment"], Literal(True)))
+    else:
+        graph.add((repo_entity, props["versions_have_valid_increment"], Literal(False)))
 
 
 def include_releases_with_increment_check(graph: Graph, repo_entity: URIRef, repo: Repository) -> None:
     return include_releases(graph, repo_entity, repo, check_version_increment=True)
 
 
-def pair_has_valid_version_increment(pair: tuple[Version, Version]) -> bool:
+def versions_have_valid_increment(release_list:  PaginatedList | list[dict]) -> bool:
+    try:
+        # adapted from https://stackoverflow.com/a/11887885
+        if isinstance(release_list, PaginatedList):
+            version_list = [version.parse(release.tag_name.removeprefix("v")) for release in release_list]
+        elif isinstance(release_list, list) and release_list and isinstance(release_list[0], dict):
+            version_list = [version.parse(release["tag_name"].removeprefix("v")) for release in release_list]
+        else:
+            raise ValueError("release_list is not of type PaginatedList or list[dict].")
+        sorted_version_list = sorted(version_list)
+    except ValueError:
+        return False
+
+    return_value = True
+    for pair in pairwise(sorted_version_list):
+        if not version_pair_has_valid_version_increment(pair):
+            return_value = False
+            break
+
+    return return_value
+
+
+def version_pair_has_valid_version_increment(pair: tuple[Version, Version]) -> bool:
     # If the first number (major) is increased, the second (minor) and third (micro) must be set to zero.
     if (pair[0].major < pair[1].major) & (pair[1].minor == 0) & (pair[1].micro == 0):
         return True
 
-    # If minor in increased, micro must be set to zero.
+    # If minor is increased, micro must be set to zero.
     if (pair[0].major == pair[1].major) & (pair[0].minor < pair[1].minor) & (pair[1].micro == 0):
         return True
 
@@ -348,19 +359,24 @@ def run_validation(data_graph, shapes_graph):
 
 def test_repo_against_specs(github_access_token: str = "", repo_name: str = "",
                             expected_type: str = "") -> tuple[bool, int, str]:
-    number_of_violations = 0
+
     logging.info(f"Validating repo {repo_name} using the SHACL approach..")
 
     shapes_graph = create_project_type_representation()
     requirements_list = get_requirements_list_for_repository_representation(shapes_graph, expected_type)
     data_graph = create_repository_representation(requirements_list, github_access_token, repo_name, expected_type)
     return_code, _, result_text = run_validation(data_graph, shapes_graph)
-
-    if not return_code:
-        line_with_number_of_violations = result_text.splitlines()[2]
-        number_of_violations = re.search(r"Results\s+\((\d+)\)", line_with_number_of_violations).group(1)
+    number_of_violations = get_number_of_violations(return_code, result_text)
 
     return return_code, number_of_violations, result_text
+
+
+def get_number_of_violations(return_code: bool, result_text: str) -> int:
+    if return_code:
+        return 0
+    line_with_number_of_violations = result_text.splitlines()[2]
+    number_of_violations = re.search(r"Results\s+\((\d+)\)", line_with_number_of_violations).group(1)
+    return int(number_of_violations)
 
 
 if __name__ == "__main__":
