@@ -19,13 +19,13 @@ propertyShapes:AtLeastOneTopic
 propertyShapes:AtLeastTwoBranches
 		a           sh:PropertyShape ;
 		# There have to be at least two branches.
-		sh:path     props:has_branch ;
+		sh:path     props:hasBranch ;
 		sh:minCount 2 .
 
 propertyShapes:BuildGradleFileExistent
 		a                      sh:PropertyShape ;
 		# The file build.gradle has to exist in the root directory.
-		sh:path                props:has_file_in_root_directory ;
+		sh:path                props:hasFileInRootDirectory ;
 		sh:minCount            1 ;
 		sh:qualifiedValueShape [ sh:pattern "build.gradle" ] ;
 		sh:qualifiedMinCount   1 .
@@ -33,7 +33,7 @@ propertyShapes:BuildGradleFileExistent
 propertyShapes:CitationCffFileExistent
 		a                      sh:PropertyShape ;
 		# The file CITATION.cff has to exist in the root directory.
-		sh:path                props:has_file_in_root_directory ;
+		sh:path                props:hasFileInRootDirectory ;
 		sh:minCount            1 ;
 		sh:qualifiedValueShape [ sh:pattern "^CITATION.cff$" ] ;
 		sh:qualifiedMinCount   1 .
@@ -42,7 +42,7 @@ propertyShapes:CitationCffFileExistent
 propertyShapes:CitationOrBibFileInDefaultBranch
 		a           sh:PropertyShape ;
 		# In the root directory of the default branch, there has to be a file CITATION.cff or one with the ending .bib.
-		sh:path     props:has_branch ;
+		sh:path     props:hasBranch ;
 		sh:minCount 1 ;
 		sh:or       ( [ sh:property propertyShapes:NonDefaultBranch ]
 		              [ sh:property propertyShapes:CitationCffFileExistent ]
@@ -51,7 +51,7 @@ propertyShapes:CitationOrBibFileInDefaultBranch
 propertyShapes:CitationSection
 		a                      sh:PropertyShape ;
 		# There has to be a README file where the name of a section starts with "Citation".
-		sh:path                ( sd:readme props:has_section ) ;
+		sh:path                ( sd:readme props:hasSection ) ;
 		sh:minCount            1 ;
 		sh:qualifiedValueShape [ sh:pattern "^Citation" ] ;
 		sh:qualifiedMinCount   1 .
@@ -59,13 +59,13 @@ propertyShapes:CitationSection
 propertyShapes:DefaultBranch
 		a          sh:PropertyShape ;
 		# The considered branch has to be the default one.
-		sh:path    props:is_default_branch ;
+		sh:path    props:isDefaultBranch ;
 		sh:pattern "true" .
 
 propertyShapes:DependenciesSection
 		a                      sh:PropertyShape ;
 		# There has to be a README file where the name of a section starts with "Dependencies".
-		sh:path                ( sd:readme props:has_section ) ;
+		sh:path                ( sd:readme props:hasSection ) ;
 		sh:minCount            1 ;
 		sh:qualifiedValueShape [ sh:pattern "^Dependencies" ] ;
 		sh:qualifiedMinCount   1 .
@@ -89,7 +89,7 @@ propertyShapes:DoiAsHomepage
 propertyShapes:EnvironmentYmlFileExistent
 		a                      sh:PropertyShape ;
 		# The file environment.yml has to exist in the root directory.
-		sh:path                props:has_file_in_root_directory ;
+		sh:path                props:hasFileInRootDirectory ;
 		sh:minCount            1 ;
 		sh:qualifiedValueShape [ sh:pattern "environment.yml" ] ;
 		sh:qualifiedMinCount   1 .
@@ -97,7 +97,7 @@ propertyShapes:EnvironmentYmlFileExistent
 propertyShapes:EnvironmentYamlFileExistent
 		a                      sh:PropertyShape ;
 		# The file environment.yaml has to exist in the root directory.
-		sh:path                props:has_file_in_root_directory ;
+		sh:path                props:hasFileInRootDirectory ;
 		sh:minCount            1 ;
 		sh:qualifiedValueShape [ sh:pattern "environment.yaml" ] ;
 		sh:qualifiedMinCount   1 .
@@ -105,7 +105,7 @@ propertyShapes:EnvironmentYamlFileExistent
 propertyShapes:ExactlyOneJavaRequirementsFileInDefaultBranch
 		a           sh:PropertyShape ;
 		# In the root directory of the default branch, there has to be either a file "build.gradle" or "pom.xml".
-		sh:path     props:has_branch ;
+		sh:path     props:hasBranch ;
 		sh:minCount 1 ;
 		sh:or       ( [ sh:property propertyShapes:NonDefaultBranch ]
 		              [ sh:xone ( [ sh:property propertyShapes:PomXmlFileExistent ]
@@ -114,7 +114,7 @@ propertyShapes:ExactlyOneJavaRequirementsFileInDefaultBranch
 propertyShapes:ExactlyOneBibFile
 		a                      sh:PropertyShape ;
 		# There has to be exactly one .bib file in the root directory.
-		sh:path                props:has_file_in_root_directory ;
+		sh:path                props:hasFileInRootDirectory ;
 		sh:minCount            1 ;
 		sh:qualifiedValueShape [ sh:pattern "\\.bib$" ] ;
 		sh:qualifiedMinCount   1 ;
@@ -123,7 +123,7 @@ propertyShapes:ExactlyOneBibFile
 propertyShapes:ExactlyOneBranch
 		a           sh:PropertyShape ;
 		# There has to be exactly one branch.
-		sh:path     props:has_branch ;
+		sh:path     props:hasBranch ;
 		sh:minCount 1 ;
 		sh:maxCount 1 .
 
@@ -138,7 +138,7 @@ propertyShapes:ExactlyOnePythonRequirementsFileInDefaultBranch
 		a           sh:PropertyShape ;
 		# In the root directory of the default branch, there has to be either a file "requirements.txt" or
 		# "environment.yaml" or "environment.yml".
-		sh:path     props:has_branch ;
+		sh:path     props:hasBranch ;
 		sh:minCount 1 ;
 		sh:or       ( [ sh:property propertyShapes:NonDefaultBranch ]
 		              [ sh:xone ( [ sh:property propertyShapes:RequirementsTxtFileExistent ]
@@ -156,7 +156,7 @@ propertyShapes:GnuGplV3License
 propertyShapes:HowToInstallSection
 		a                      sh:PropertyShape ;
 		# There has to be a README file where the name of a section starts with "How to install" (case insensitive).
-		sh:path                ( sd:readme props:has_section ) ;
+		sh:path                ( sd:readme props:hasSection ) ;
 		sh:minCount            1 ;
 		sh:qualifiedValueShape [ sh:pattern "^(?i)how to install" ] ;
 		sh:qualifiedMinCount   1 .
@@ -164,7 +164,7 @@ propertyShapes:HowToInstallSection
 propertyShapes:HowToUseSection
 		a                      sh:PropertyShape ;
 		# There has to be a README file where the name of a section starts with "How to use" (case insensitive).
-		sh:path                ( sd:readme props:has_section ) ;
+		sh:path                ( sd:readme props:hasSection ) ;
 		sh:minCount            1 ;
 		sh:qualifiedValueShape [ sh:pattern "^(?i)how to use" ] ;
 		sh:qualifiedMinCount   1 .
@@ -172,7 +172,7 @@ propertyShapes:HowToUseSection
 propertyShapes:InstallationSection
 		a                      sh:PropertyShape ;
 		# There has to be a README file where the name of a section starts with "Installation".
-		sh:path                ( sd:readme props:has_section ) ;
+		sh:path                ( sd:readme props:hasSection ) ;
 		sh:minCount            1 ;
 		sh:qualifiedValueShape [ sh:pattern "^Installation" ] ;
 		sh:qualifiedMinCount   1 .
@@ -180,7 +180,7 @@ propertyShapes:InstallationSection
 propertyShapes:MainBranchExistent
 		a                      sh:PropertyShape ;
 		# There has to be exactly one branch named "main".
-		sh:path                ( props:has_branch sd:name ) ;
+		sh:path                ( props:hasBranch sd:name ) ;
 		sh:minCount            1 ;
 		sh:qualifiedValueShape [ sh:pattern "main" ] ;
 		sh:qualifiedMinCount   1 ;
@@ -218,7 +218,7 @@ propertyShapes:MainLanguageTypeScript
 propertyShapes:ManualSection
 		a                      sh:PropertyShape ;
 		# There has to be a README file where the name of a section starts with "Manual".
-		sh:path                ( sd:readme props:has_section ) ;
+		sh:path                ( sd:readme props:hasSection ) ;
 		sh:minCount            1 ;
 		sh:qualifiedValueShape [ sh:pattern "^Manual" ] ;
 		sh:qualifiedMinCount   1 ; .
@@ -234,20 +234,20 @@ propertyShapes:MitLicense
 propertyShapes:NonDefaultBranch
 		a          sh:PropertyShape ;
 		# The considered branch must not be the default one.
-		sh:path    props:is_default_branch ;
+		sh:path    props:isDefaultBranch ;
 		sh:pattern "false" .
 
 propertyShapes:NoOpenIssues
 		a           sh:PropertyShape ;
 		# There must not be any open issues.
-		sh:path     ( props:has_issue props:has_state ) ;
+		sh:path     ( props:hasIssue props:hasState ) ;
 		sh:pattern  "open" ;
 		sh:maxCount 0 ; .
 
 propertyShapes:PackageJsonFileExistent
 		a                      sh:PropertyShape ;
 		# The file package.json has to exist in the root directory.
-		sh:path                props:has_file_in_root_directory ;
+		sh:path                props:hasFileInRootDirectory ;
 		sh:minCount            1 ;
 		sh:qualifiedValueShape [ sh:pattern "package.json" ] ;
 		sh:qualifiedMinCount   1 .
@@ -255,7 +255,7 @@ propertyShapes:PackageJsonFileExistent
 propertyShapes:PackageJsonFileInDefaultBranch
 		a           sh:PropertyShape ;
 		# In the root directory of the default branch, there has to be the file package.json.
-		sh:path     props:has_branch ;
+		sh:path     props:hasBranch ;
 		sh:minCount 1 ;
 		sh:or       ( [ sh:property propertyShapes:NonDefaultBranch ]
 		              [ sh:property propertyShapes:PackageJsonFileExistent ] ) .
@@ -263,7 +263,7 @@ propertyShapes:PackageJsonFileInDefaultBranch
 propertyShapes:PomXmlFileExistent
 		a                      sh:PropertyShape ;
 		# The file pom.xml has to exist in the root directory.
-		sh:path                props:has_file_in_root_directory ;
+		sh:path                props:hasFileInRootDirectory ;
 		sh:minCount            1 ;
 		sh:qualifiedValueShape [ sh:pattern "pom.xml" ] ;
 		sh:qualifiedMinCount   1 .
@@ -271,19 +271,19 @@ propertyShapes:PomXmlFileExistent
 propertyShapes:PrivateRepository
 		a          sh:PropertyShape ;
 		# The repository has to be private.
-		sh:path    props:is_private ;
+		sh:path    props:isPrivate ;
 		sh:pattern "true" .
 
 propertyShapes:PublicRepository
 		a          sh:PropertyShape ;
 		# The repository has to be public.
-		sh:path    props:is_private ;
+		sh:path    props:isPrivate ;
 		sh:pattern "false" .
 
 propertyShapes:PurposeSection
 		a                      sh:PropertyShape ;
 		# There has to be a README file where the name of a section starts with "Purpose".
-		sh:path                ( sd:readme props:has_section ) ;
+		sh:path                ( sd:readme props:hasSection ) ;
 		sh:minCount            1 ;
 		sh:qualifiedValueShape [ sh:pattern "^Purpose" ] ;
 		sh:qualifiedMinCount   1 .
@@ -297,14 +297,14 @@ propertyShapes:ReadMeFileExistent
 propertyShapes:ReadMeFileWithDoi
 		a           sh:PropertyShape ;
 		# The README file contains a DOI link.
-		sh:path     ( sd:readme props:contains_doi ) ;
+		sh:path     ( sd:readme props:containsDoi ) ;
 		sh:pattern  "true" ;
 		sh:minCount 1 .
 
 propertyShapes:RequirementsSection
 		a                      sh:PropertyShape ;
 		# There has to be a README file where the name of a section starts with "Requirements".
-		sh:path                ( sd:readme props:has_section ) ;
+		sh:path                ( sd:readme props:hasSection ) ;
 		sh:minCount            1 ;
 		sh:qualifiedValueShape [ sh:pattern "^Requirements" ] ;
 		sh:qualifiedMinCount   1 .
@@ -312,7 +312,7 @@ propertyShapes:RequirementsSection
 propertyShapes:RequirementsTxtFileExistent
 		a                      sh:PropertyShape ;
 		# The file requirements.txt has to exist in the root directory.
-		sh:path                props:has_file_in_root_directory ;
+		sh:path                props:hasFileInRootDirectory ;
 		sh:minCount            1 ;
 		sh:qualifiedValueShape [ sh:pattern "requirements.txt" ] ;
 		sh:qualifiedMinCount   1 .
@@ -330,7 +330,7 @@ propertyShapes:SemanticVersioningTags
 propertyShapes:SettingUpSection
 		a                      sh:PropertyShape ;
 		# There has to be a README file where the name of a section starts with "Setting up" (case insensitive).
-		sh:path                ( sd:readme props:has_section ) ;
+		sh:path                ( sd:readme props:hasSection ) ;
 		sh:minCount            1 ;
 		sh:qualifiedValueShape [ sh:pattern "^(?i)setting up" ] ;
 		sh:qualifiedMinCount   1 .
@@ -338,7 +338,7 @@ propertyShapes:SettingUpSection
 propertyShapes:SetupSection
 		a                      sh:PropertyShape ;
 		# There has to be a README file where the name of a section starts with "Setup" or "Set up" (case insensitive).
-		sh:path                ( sd:readme props:has_section ) ;
+		sh:path                ( sd:readme props:hasSection ) ;
 		sh:minCount            1 ;
 		sh:qualifiedValueShape [ sh:pattern "(?i)set\\s?up" ] ;
 		sh:qualifiedMinCount   1 .
@@ -346,7 +346,7 @@ propertyShapes:SetupSection
 propertyShapes:UsageSection
 		a                      sh:PropertyShape ;
 		# There has to be a README file where the name of a section starts with "Usage".
-		sh:path                ( sd:readme props:has_section ) ;
+		sh:path                ( sd:readme props:hasSection ) ;
 		sh:minCount            1 ;
 		sh:qualifiedValueShape [ sh:pattern "^Usage" ] ;
 		sh:qualifiedMinCount   1 .
@@ -354,7 +354,7 @@ propertyShapes:UsageSection
 propertyShapes:UserManualSection
 		a                      sh:PropertyShape ;
 		# There has to be a README file where the name of a section starts with "User manual" (case insensitive).
-		sh:path                ( sd:readme props:has_section ) ;
+		sh:path                ( sd:readme props:hasSection ) ;
 		sh:minCount            1 ;
 		sh:qualifiedValueShape [ sh:pattern "^(?i)user manual" ] ;
 		sh:qualifiedMinCount   1 .
@@ -362,6 +362,6 @@ propertyShapes:UserManualSection
 propertyShapes:ValidVersionIncrement
 		a           sh:PropertyShape ;
 		# The increment/change between consecutive version numbers has to be valid.
-		sh:path     props:versions_have_valid_increment ;
+		sh:path     props:versionsHaveValidIncrement ;
 		sh:pattern  "true" ;
 		sh:minCount 1 .

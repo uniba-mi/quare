@@ -29,9 +29,9 @@ def add_releases_to_graph(graph: Graph, release_list: list[dict]) -> Graph:
         graph.add((release_entity, sd["hasVersionId"], Literal(release["tag_name"])))
         graph.add((repo_entity, sd["hasVersion"], release_entity))
     if versions_have_valid_increment(release_list):
-        graph.add((repo_entity, props["versions_have_valid_increment"], Literal(True)))
+        graph.add((repo_entity, props["versionsHaveValidIncrement"], Literal(True)))
     else:
-        graph.add((repo_entity, props["versions_have_valid_increment"], Literal(False)))
+        graph.add((repo_entity, props["versionsHaveValidIncrement"], Literal(False)))
     return graph
 
 
@@ -109,7 +109,7 @@ def test_persistent_id_negative(shapes_graph: Graph, repository_with_non_doi_hom
 def public_repository() -> Graph:
     graph = Graph()
     graph.add((repo_entity, RDF.type, types['TestPublicRepository']))
-    graph.add((repo_entity, props["is_private"], Literal(False)))
+    graph.add((repo_entity, props["isPrivate"], Literal(False)))
     return graph
 
 
@@ -122,7 +122,7 @@ def test_public_repository_positive(shapes_graph: Graph, public_repository: Grap
 def private_repository() -> Graph:
     graph = Graph()
     graph.add((repo_entity, RDF.type, types['TestPublicRepository']))
-    graph.add((repo_entity, props["is_private"], Literal(True)))
+    graph.add((repo_entity, props["isPrivate"], Literal(True)))
     return graph
 
 

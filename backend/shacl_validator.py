@@ -141,7 +141,7 @@ def add_required_properties_to_graph(graph: Graph, repo_entity: URIRef, repo: Re
 
 
 def include_visibility(graph: Graph, repo_entity: URIRef, repo: Repository) -> None:
-    graph.add((repo_entity, props["is_private"], Literal(repo.private)))
+    graph.add((repo_entity, props["isPrivate"], Literal(repo.private)))
 
 
 def include_topics(graph: Graph, repo_entity: URIRef, repo: Repository) -> None:
@@ -181,9 +181,9 @@ def include_releases(graph: Graph, repo_entity: URIRef, repo: Repository,
         return
 
     if versions_have_valid_increment(release_list):
-        graph.add((repo_entity, props["versions_have_valid_increment"], Literal(True)))
+        graph.add((repo_entity, props["versionsHaveValidIncrement"], Literal(True)))
     else:
-        graph.add((repo_entity, props["versions_have_valid_increment"], Literal(False)))
+        graph.add((repo_entity, props["versionsHaveValidIncrement"], Literal(False)))
 
 
 def include_releases_with_increment_check(graph: Graph, repo_entity: URIRef, repo: Repository) -> None:
@@ -241,12 +241,12 @@ def include_branches(graph: Graph, repo_entity: URIRef, repo: Repository,
     for branch in branch_list:
         branch_entity = URIRef(f"{repo.html_url}/tree/{branch.name}")
         graph.add((branch_entity, sd["name"], Literal(branch.name)))
-        graph.add((repo_entity, props["has_branch"], branch_entity))
+        graph.add((repo_entity, props["hasBranch"], branch_entity))
 
         if branch.name == default_branch_name:
-            graph.add((branch_entity, props["is_default_branch"], Literal(True)))
+            graph.add((branch_entity, props["isDefaultBranch"], Literal(True)))
         else:
-            graph.add((branch_entity, props["is_default_branch"], Literal(False)))
+            graph.add((branch_entity, props["isDefaultBranch"], Literal(False)))
 
     if not include_root_dir_files_of_default_branch:
         return
@@ -260,7 +260,7 @@ def include_branches(graph: Graph, repo_entity: URIRef, repo: Repository,
     default_branch_entity = URIRef(f"{repo.html_url}/tree/{default_branch_name}")
     for item in git_tree.tree:
         if item.type == "blob":
-            graph.add((default_branch_entity, props["has_file_in_root_directory"], Literal(item.path)))
+            graph.add((default_branch_entity, props["hasFileInRootDirectory"], Literal(item.path)))
 
 
 def include_branches_with_root_dir_files_of_default_branch(graph: Graph, repo_entity: URIRef, repo: Repository) -> None:
@@ -272,8 +272,8 @@ def include_issues(graph: Graph, repo_entity: URIRef, repo: Repository) -> None:
     if issue_list:
         for issue in issue_list:
             issue_entity = URIRef(issue.html_url)
-            graph.add((issue_entity, props["has_state"], Literal(issue.state)))
-            graph.add((repo_entity, props["has_issue"], issue_entity))
+            graph.add((issue_entity, props["hasState"], Literal(issue.state)))
+            graph.add((repo_entity, props["hasIssue"], issue_entity))
 
 
 def include_license(graph: Graph, repo_entity: URIRef, repo: Repository) -> None:
@@ -317,16 +317,16 @@ def include_readme(graph: Graph, repo_entity: URIRef, repo: Repository, include_
         headings = [item.text for item in headings_elems]
 
         for heading in headings:
-            graph.add((readme_entity, props["has_section"], Literal(heading)))
+            graph.add((readme_entity, props["hasSection"], Literal(heading)))
 
     if include_check_for_doi:
         # Check whether there is at least one DOI in the README file (as text or link href).
         # Regex adapted from https://www.crossref.org/blog/dois-and-matching-regular-expressions/
         doi_pattern = re.compile(r"https://doi\.org/10\.\d{4,}/[-._;()/:A-Z0-9]+")
         if soup.find_all(string=doi_pattern) or soup.find_all(href=doi_pattern):
-            graph.add((readme_entity, props["contains_doi"], Literal("true")))
+            graph.add((readme_entity, props["containsDoi"], Literal("true")))
         else:
-            graph.add((readme_entity, props["contains_doi"], Literal("false")))
+            graph.add((readme_entity, props["containsDoi"], Literal("false")))
 
 
 def include_readme_with_sections(graph: Graph, repo_entity: URIRef, repo: Repository) -> None:
