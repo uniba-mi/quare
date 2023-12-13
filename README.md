@@ -27,7 +27,7 @@ Thanks to Docker, only [Docker](https://www.docker.com/) and [Docker Compose](ht
 
 ## Usage 
 
-After cloning or downloading this repository, simply run `docker compose up` in a command line from the root folder of the repository to start the tool. The frontend can then be accessed it via [http://localhost:3000](http://localhost:3000). (If necessary, the backend can be accessed via [http://localhost:5000](http://localhost:5000).)
+After cloning or downloading this repository, simply run `docker compose up` in a command line from the root folder of the repository to start the tool. The frontend can then be accessed via [http://localhost:3000](http://localhost:3000). (If necessary, the backend can be accessed via [http://localhost:5000](http://localhost:5000).)
 
 The frontend currently provides two pages, namely the [Validation page](#the-validation-page) and the [Specification page](#the-specification-page) which can be selected using the navigation bar.
 
@@ -63,6 +63,11 @@ flowchart LR
     issue([<b>Issue</b>]):::iri
     license([<b>License</b>]):::iri
     readme([<b>Readme file</b>]):::iri
+    installationInstructions[String]:::literal
+    usageNotes[String]:::literal
+    purpose[String]:::literal
+    softwareRequirements[String]:::literal
+    citation[String]:::literal
 
 %% Literals that can be reached from the other IRIs
     tagName[String]:::literal
@@ -71,32 +76,35 @@ flowchart LR
     fileInRootDirectory[String]:::literal
     issueState[String]:::literal
     licenseName[String]:::literal
-    readmeSection[String]:::literal
     doiInReadme[Boolean]:::literal
 
 %% LINK SECTION
 %% Outgoing links of the repository node
-    repo -- "props:is_private (1)" --> visibility
+    repo -- "props:isPrivate (1)" --> visibility
     repo -- "sd:keywords (*)" --> topic
     repo -- "sd:description (1)" --> description
     repo -- "sd:website (1)" --> homepage
     repo -- "sd:programmingLanguage (1)" --> mainLanguage
     repo -- "sd:hasVersion (*)" --> release
-    repo -- "props:versions_have_valid_increment (1)" --> validVersionIncrement
-    repo -- "props:has_branch (*)" --> branch
-    repo -- "props:has_issue (*)" --> issue
+    repo -- "props:versionsHaveValidIncrement (1)" --> validVersionIncrement
+    repo -- "props:hasBranch (*)" --> branch
+    repo -- "props:hasIssue (*)" --> issue
     repo -- "sd:license (1)" --> license
     repo -- "sd:readme (1)" --> readme
+    repo -- "sd:hasInstallationInstructions (1)" --> installationInstructions
+    repo -- "sd:hasUsageNotes (1)" --> usageNotes
+    repo -- "sd:hasPurpose (1)" --> purpose
+    repo -- "sd:softwareRequirements (1)" --> softwareRequirements
+    repo -- "sd:citation (1)" --> citation
 
 %% Outgoing links of the other IRIs
     release -- "sd:hasVersionId (1)" --> tagName
     branch -- "sd:name (1)" --> branchName
-    branch -- "props:is_default_branch (1)" --> isDefaultBranch
-    branch -- "props:has_file_in_root_directory (*)" --> fileInRootDirectory
-    issue -- "props:has_state (1)" --> issueState
+    branch -- "props:isDefaultBranch (1)" --> isDefaultBranch
+    branch -- "props:hasFileInRootDirectory (*)" --> fileInRootDirectory
+    issue -- "props:hasState (1)" --> issueState
     license -- "sd:name (1)" --> licenseName
-    readme -- "props:has_section (*)" --> readmeSection
-    readme -- "props:contains_doi (1)" --> doiInReadme
+    readme -- "props:containsDoi (1)" --> doiInReadme
 
 %% STYLING
     classDef literal fill:#FFEA85, stroke:#000

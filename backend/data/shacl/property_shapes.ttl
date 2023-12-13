@@ -13,7 +13,7 @@ propertyShapes:AtLeastOneRelease
 propertyShapes:AtLeastOneTopic
 		a           sh:PropertyShape ;
 		# There has to be at least one topic (internally mapped via the "keywords" property).
-		sh:path     sd:keywords;
+		sh:path     sd:keywords ;
 		sh:minCount 1 .
 
 propertyShapes:AtLeastTwoBranches
@@ -48,27 +48,17 @@ propertyShapes:CitationOrBibFileInDefaultBranch
 		              [ sh:property propertyShapes:CitationCffFileExistent ]
 		              [ sh:property propertyShapes:ExactlyOneBibFile ] ) .
 
-propertyShapes:CitationSection
-		a                      sh:PropertyShape ;
-		# There has to be a README file where the name of a section starts with "Citation".
-		sh:path                ( sd:readme props:hasSection ) ;
-		sh:minCount            1 ;
-		sh:qualifiedValueShape [ sh:pattern "^Citation" ] ;
-		sh:qualifiedMinCount   1 .
+propertyShapes:CitationInformationInReadme
+		a           sh:PropertyShape ;
+		# The README file has to contain information on how to cite the software.
+		sh:path     sd:citation ;
+		sh:minCount 1 .
 
 propertyShapes:DefaultBranch
 		a          sh:PropertyShape ;
 		# The considered branch has to be the default one.
 		sh:path    props:isDefaultBranch ;
 		sh:pattern "true" .
-
-propertyShapes:DependenciesSection
-		a                      sh:PropertyShape ;
-		# There has to be a README file where the name of a section starts with "Dependencies".
-		sh:path                ( sd:readme props:hasSection ) ;
-		sh:minCount            1 ;
-		sh:qualifiedValueShape [ sh:pattern "^Dependencies" ] ;
-		sh:qualifiedMinCount   1 .
 
 propertyShapes:DescriptionFilled
 		a           sh:PropertyShape ;
@@ -146,36 +136,18 @@ propertyShapes:ExactlyOnePythonRequirementsFileInDefaultBranch
 		                          [ sh:property propertyShapes:EnvironmentYamlFileExistent ] ) ] ) .
 
 propertyShapes:GnuGplV3License
-		a           sh:PropertyShape ;
+		a                      sh:PropertyShape ;
 		# There has to be a license and it has to be "GNU General Public License v3.0".
-		sh:path     (sd:license sd:name);
-		sh:minCount 1 ;
+		sh:path                ( sd:license sd:name ) ;
+		sh:minCount            1 ;
 		sh:qualifiedValueShape [ sh:pattern "GNU General Public License v3.0" ] ;
 		sh:qualifiedMinCount   1 .
 
-propertyShapes:HowToInstallSection
-		a                      sh:PropertyShape ;
-		# There has to be a README file where the name of a section starts with "How to install" (case insensitive).
-		sh:path                ( sd:readme props:hasSection ) ;
-		sh:minCount            1 ;
-		sh:qualifiedValueShape [ sh:pattern "^(?i)how to install" ] ;
-		sh:qualifiedMinCount   1 .
-
-propertyShapes:HowToUseSection
-		a                      sh:PropertyShape ;
-		# There has to be a README file where the name of a section starts with "How to use" (case insensitive).
-		sh:path                ( sd:readme props:hasSection ) ;
-		sh:minCount            1 ;
-		sh:qualifiedValueShape [ sh:pattern "^(?i)how to use" ] ;
-		sh:qualifiedMinCount   1 .
-
-propertyShapes:InstallationSection
-		a                      sh:PropertyShape ;
-		# There has to be a README file where the name of a section starts with "Installation".
-		sh:path                ( sd:readme props:hasSection ) ;
-		sh:minCount            1 ;
-		sh:qualifiedValueShape [ sh:pattern "^Installation" ] ;
-		sh:qualifiedMinCount   1 .
+propertyShapes:InstallationInstructionsInReadme
+		a           sh:PropertyShape ;
+		# The README file has to contain information on how to install the software.
+		sh:path     sd:hasInstallationInstructions ;
+		sh:minCount 1 .
 
 propertyShapes:MainBranchExistent
 		a                      sh:PropertyShape ;
@@ -215,19 +187,11 @@ propertyShapes:MainLanguageTypeScript
 		sh:minCount 1 ;
 		sh:pattern  "TypeScript" .
 
-propertyShapes:ManualSection
-		a                      sh:PropertyShape ;
-		# There has to be a README file where the name of a section starts with "Manual".
-		sh:path                ( sd:readme props:hasSection ) ;
-		sh:minCount            1 ;
-		sh:qualifiedValueShape [ sh:pattern "^Manual" ] ;
-		sh:qualifiedMinCount   1 ; .
-
 propertyShapes:MitLicense
-		a           sh:PropertyShape ;
+		a                      sh:PropertyShape ;
 		# There has to be a license and it has to be "MIT License".
-		sh:path     (sd:license sd:name);
-		sh:minCount 1 ;
+		sh:path                ( sd:license sd:name ) ;
+		sh:minCount            1 ;
 		sh:qualifiedValueShape [ sh:pattern "MIT License" ] ;
 		sh:qualifiedMinCount   1 .
 
@@ -280,13 +244,11 @@ propertyShapes:PublicRepository
 		sh:path    props:isPrivate ;
 		sh:pattern "false" .
 
-propertyShapes:PurposeSection
-		a                      sh:PropertyShape ;
-		# There has to be a README file where the name of a section starts with "Purpose".
-		sh:path                ( sd:readme props:hasSection ) ;
-		sh:minCount            1 ;
-		sh:qualifiedValueShape [ sh:pattern "^Purpose" ] ;
-		sh:qualifiedMinCount   1 .
+propertyShapes:PurposeInReadme
+		a           sh:PropertyShape ;
+		# The README file has to contain information about the purpose of the software.
+		sh:path     sd:hasPurpose ;
+		sh:minCount 1 .
 
 propertyShapes:ReadMeFileExistent
 		a           sh:PropertyShape ;
@@ -294,20 +256,12 @@ propertyShapes:ReadMeFileExistent
 		sh:path     sd:readme ;
 		sh:minCount 1 .
 
-propertyShapes:ReadMeFileWithDoi
+propertyShapes:ReadmeFileWithDoi
 		a           sh:PropertyShape ;
 		# The README file contains a DOI link.
 		sh:path     ( sd:readme props:containsDoi ) ;
 		sh:pattern  "true" ;
 		sh:minCount 1 .
-
-propertyShapes:RequirementsSection
-		a                      sh:PropertyShape ;
-		# There has to be a README file where the name of a section starts with "Requirements".
-		sh:path                ( sd:readme props:hasSection ) ;
-		sh:minCount            1 ;
-		sh:qualifiedValueShape [ sh:pattern "^Requirements" ] ;
-		sh:qualifiedMinCount   1 .
 
 propertyShapes:RequirementsTxtFileExistent
 		a                      sh:PropertyShape ;
@@ -327,37 +281,17 @@ propertyShapes:SemanticVersioningTags
 		# Put into the right format with the help of ChatGPT.
 		sh:pattern  "^v?(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$" .
 
-propertyShapes:SettingUpSection
-		a                      sh:PropertyShape ;
-		# There has to be a README file where the name of a section starts with "Setting up" (case insensitive).
-		sh:path                ( sd:readme props:hasSection ) ;
-		sh:minCount            1 ;
-		sh:qualifiedValueShape [ sh:pattern "^(?i)setting up" ] ;
-		sh:qualifiedMinCount   1 .
+propertyShapes:SoftwareRequirementsInReadme
+		a           sh:PropertyShape ;
+		# The README file has to contain information about the requirements of the software.
+		sh:path     sd:softwareRequirements ;
+		sh:minCount 1 .
 
-propertyShapes:SetupSection
-		a                      sh:PropertyShape ;
-		# There has to be a README file where the name of a section starts with "Setup" or "Set up" (case insensitive).
-		sh:path                ( sd:readme props:hasSection ) ;
-		sh:minCount            1 ;
-		sh:qualifiedValueShape [ sh:pattern "(?i)set\\s?up" ] ;
-		sh:qualifiedMinCount   1 .
-
-propertyShapes:UsageSection
-		a                      sh:PropertyShape ;
-		# There has to be a README file where the name of a section starts with "Usage".
-		sh:path                ( sd:readme props:hasSection ) ;
-		sh:minCount            1 ;
-		sh:qualifiedValueShape [ sh:pattern "^Usage" ] ;
-		sh:qualifiedMinCount   1 .
-
-propertyShapes:UserManualSection
-		a                      sh:PropertyShape ;
-		# There has to be a README file where the name of a section starts with "User manual" (case insensitive).
-		sh:path                ( sd:readme props:hasSection ) ;
-		sh:minCount            1 ;
-		sh:qualifiedValueShape [ sh:pattern "^(?i)user manual" ] ;
-		sh:qualifiedMinCount   1 .
+propertyShapes:UsageNotesInReadme
+		a           sh:PropertyShape ;
+		# The README file has to contain information on how to use the software.
+		sh:path     sd:hasUsageNotes ;
+		sh:minCount 1 .
 
 propertyShapes:ValidVersionIncrement
 		a           sh:PropertyShape ;

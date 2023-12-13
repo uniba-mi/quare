@@ -6,7 +6,7 @@ from itertools import pairwise
 
 import fire
 import markdown
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag
 from github import Github, UnknownObjectException, GithubException
 from github.PaginatedList import PaginatedList
 from github.Repository import Repository
@@ -190,7 +190,7 @@ def include_releases_with_increment_check(graph: Graph, repo_entity: URIRef, rep
     return include_releases(graph, repo_entity, repo, check_version_increment=True)
 
 
-def versions_have_valid_increment(release_list:  PaginatedList | list[dict]) -> bool:
+def versions_have_valid_increment(release_list: PaginatedList | list[dict]) -> bool:
     try:
         # adapted from https://stackoverflow.com/a/11887885
         if isinstance(release_list, PaginatedList):
@@ -307,17 +307,8 @@ def include_readme(graph: Graph, repo_entity: URIRef, repo: Repository, include_
     md = markdown.Markdown()
     html = md.convert(readme.decoded_content.decode())
     soup = BeautifulSoup(html, "html.parser")
-
     if include_sections:
-        heading_tags = ["h" + str(ctr) for ctr in range(1, 7)]
-        headings_elems = [soup.find_all(tag)
-                          for tag in heading_tags if soup.find_all(tag)]
-        headings_elems = [
-            item for sublist in headings_elems for item in sublist]
-        headings = [item.text for item in headings_elems]
-
-        for heading in headings:
-            graph.add((readme_entity, props["hasSection"], Literal(heading)))
+        process_readme_sections(graph, repo_entity, soup)
 
     if include_check_for_doi:
         # Check whether there is at least one DOI in the README file (as text or link href).
@@ -327,6 +318,55 @@ def include_readme(graph: Graph, repo_entity: URIRef, repo: Repository, include_
             graph.add((readme_entity, props["containsDoi"], Literal("true")))
         else:
             graph.add((readme_entity, props["containsDoi"], Literal("false")))
+
+
+def process_readme_sections(graph: Graph, repo_entity: URIRef, soup: BeautifulSoup) -> None:
+    installation_instructions_keywords = ("installation", "how to install", "setup", "set up", "setting up")
+    usage_notes_keywords = ("usage", "how to use", "manual", "user manual")
+    sw_requirements_keywords = ("dependencies", "requirements")
+
+    heading_tags = ["h" + str(ctr) for ctr in range(1, 7)]
+    headings_elems = [soup.find_all(tag)
+                      for tag in heading_tags if soup.find_all(tag)]
+    headings_elems = [item for sublist in headings_elems for item in sublist]
+
+    for heading in headings_elems:
+        lower_cased_heading = heading.text.lower()
+
+        if lower_cased_heading.startswith(installation_instructions_keywords):
+            content = get_content_from_readme_section(heading, heading_tags)
+            graph.add((repo_entity, sd["hasInstallationInstructions"], Literal(content)))
+            continue
+
+        if lower_cased_heading.startswith(usage_notes_keywords):
+            content = get_content_from_readme_section(heading, heading_tags)
+            graph.add((repo_entity, sd["hasUsageNotes"], Literal(content)))
+            continue
+
+        if lower_cased_heading.startswith("purpose"):
+            content = get_content_from_readme_section(heading, heading_tags)
+            graph.add((repo_entity, sd["hasPurpose"], Literal(content)))
+            continue
+
+        if lower_cased_heading.startswith(sw_requirements_keywords):
+            content = get_content_from_readme_section(heading, heading_tags)
+            graph.add((repo_entity, sd["softwareRequirements"], Literal(content)))
+            continue
+
+        if lower_cased_heading.startswith("citation"):
+            content = get_content_from_readme_section(heading, heading_tags)
+            graph.add((repo_entity, sd["citation"], Literal(content)))
+
+
+def get_content_from_readme_section(heading_elem: Tag, heading_tags: list[str]) -> str:
+    content = ""
+    for sibling in heading_elem.next_siblings:
+        if isinstance(sibling, Tag) and sibling.name in heading_tags:
+            break
+        stripped_text = sibling.text.strip()
+        if stripped_text:
+            content += stripped_text + " "
+    return content.rstrip()
 
 
 def include_readme_with_sections(graph: Graph, repo_entity: URIRef, repo: Repository) -> None:
@@ -359,7 +399,6 @@ def run_validation(data_graph, shapes_graph):
 
 def test_repo_against_specs(github_access_token: str = "", repo_name: str = "",
                             expected_type: str = "") -> tuple[bool, int, str]:
-
     logging.info(f"Validating repo {repo_name} using the SHACL approach..")
 
     shapes_graph = create_project_type_representation()

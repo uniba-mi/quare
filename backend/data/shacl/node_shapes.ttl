@@ -10,14 +10,7 @@ nodeShapes:DescriptionOrReadme
 nodeShapes:ExplicitCitation
 		a     sh:NodeShape ;
 		sh:or ( [ sh:property propertyShapes:CitationOrBibFileInDefaultBranch ]
-		        [ sh:property propertyShapes:CitationSection ] ) .
-
-nodeShapes:InstallationInstructions
-		a     sh:NodeShape ;
-		sh:or ( [ sh:property propertyShapes:InstallationSection ]
-		        [ sh:property propertyShapes:HowToInstallSection ]
-		        [ sh:property propertyShapes:SetupSection ]
-		        [ sh:property propertyShapes:SettingUpSection ] ) .
+		        [ sh:property propertyShapes:CitationInformationInReadme ] ) .
 
 nodeShapes:LanguageSpecificRequirementsFile
 		a     sh:NodeShape ;
@@ -44,7 +37,7 @@ nodeShapes:PersistentId
 		a     sh:NodeShape ;
 		sh:or ( [ sh:property propertyShapes:AtLeastOneRelease ]
 		        [ sh:property propertyShapes:DoiAsHomepage ]
-		        [ sh:property propertyShapes:ReadMeFileWithDoi ] ) .
+		        [ sh:property propertyShapes:ReadmeFileWithDoi ] ) .
 
 nodeShapes:SemanticVersioning
 		a      sh:NodeShape ;
@@ -53,13 +46,5 @@ nodeShapes:SemanticVersioning
 
 nodeShapes:SoftwareRequirements
 		a     sh:NodeShape ;
-		sh:or ( [ sh:property propertyShapes:DependenciesSection ]
-		        [ sh:property propertyShapes:RequirementsSection ]
+		sh:or ( [ sh:property propertyShapes:SoftwareRequirementsInReadme ]
 		        [ sh:node nodeShapes:LanguageSpecificRequirementsFile ] ) .
-
-nodeShapes:UsageDocumentation
-		a     sh:NodeShape ;
-		sh:or ( [ sh:property propertyShapes:UsageSection ]
-		        [ sh:property propertyShapes:HowToUseSection ]
-		        [ sh:property propertyShapes:ManualSection ]
-		        [ sh:property propertyShapes:UserManualSection ] ) .

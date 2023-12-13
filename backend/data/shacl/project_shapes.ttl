@@ -15,8 +15,8 @@ types:FinishedResearchProject
 		sh:property propertyShapes:AtLeastOneRelease ;
 		sh:property propertyShapes:GnuGplV3License ;
 		sh:property propertyShapes:ReadMeFileExistent ;
-		sh:property propertyShapes:InstallationSection ;
-		sh:property propertyShapes:UsageSection ;
+		sh:property propertyShapes:InstallationInstructionsInReadme ;
+		sh:property propertyShapes:UsageNotesInReadme ;
 		sh:description
 		            "The following repository properties are required to validate this project type: Visibility, Topics, Description, Branches, Issues, Releases, License, ReadmeIncludingSections." .
 
@@ -36,7 +36,7 @@ types:TeachingTool
 		sh:property propertyShapes:AtLeastOneRelease ;
 		sh:property propertyShapes:MitLicense ;
 		sh:property propertyShapes:ReadMeFileExistent ;
-		sh:property propertyShapes:UsageSection ;
+		sh:property propertyShapes:UsageNotesInReadme ;
 		sh:description
 		            "The following repository properties are required to validate this project type: Visibility, Topics, Description, Branches, Releases, License, ReadmeIncludingSections." .
 
@@ -45,7 +45,7 @@ types:InternalDocumentation
 		sh:property propertyShapes:PrivateRepository ;
 		sh:property propertyShapes:DescriptionFilled ;
 		sh:property propertyShapes:ReadMeFileExistent ;
-		sh:property propertyShapes:PurposeSection ;
+		sh:property propertyShapes:PurposeInReadme ;
 		sh:description
 		            "The following repository properties are required to validate this project type: Visibility, Description, ReadmeIncludingSections." .
 
@@ -65,7 +65,7 @@ types:FAIRSoftware
 		sh:node     nodeShapes:SemanticVersioning ;
 
 		# Best practice 5: "Usage documentation (including I/O) is available"
-		sh:node     nodeShapes:UsageDocumentation ;
+		sh:property propertyShapes:UsageNotesInReadme ;
 
 		# Best practice 6: "A license is declared"
 		sh:property propertyShapes:ExactlyOneLicense ;
@@ -77,7 +77,7 @@ types:FAIRSoftware
 		sh:property propertyShapes:AtLeastOneTopic ;
 
 		# Best practice 9: "Installation instructions are available"
-		sh:node     nodeShapes:InstallationInstructions ;
+		sh:property propertyShapes:InstallationInstructionsInReadme ;
 
 		# Best practice 10: "Software requirements are available"
 		sh:node     nodeShapes:SoftwareRequirements ;
