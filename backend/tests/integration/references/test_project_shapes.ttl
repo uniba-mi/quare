@@ -19,3 +19,27 @@ types:TestPublicRepository
 types:TestSemanticVersioning
 		a       rdfs:Class, sh:NodeShape ;
 		sh:node nodeShapes:SemanticVersioning .
+
+types:TestUsageNotesInReadme
+		a           rdfs:Class, sh:NodeShape ;
+		sh:property propertyShapes:UsageNotesInReadme .
+
+types:TestExactlyOneLicense
+		a           rdfs:Class, sh:NodeShape ;
+		sh:property propertyShapes:ExactlyOneLicense .
+
+types:TestExplicitCitation
+		a       rdfs:Class, sh:NodeShape ;
+		sh:node nodeShapes:ExplicitCitation .
+
+types:TestAtLeastOneTopic
+		a           rdfs:Class, sh:NodeShape ;
+		sh:property propertyShapes:AtLeastOneTopic .
+
+types:TestInstallationInstructionsInReadme
+		a           rdfs:Class, sh:NodeShape ;
+		sh:property propertyShapes:InstallationInstructionsInReadme .
+
+types:TestSoftwareRequirements
+		a       rdfs:Class, sh:NodeShape ;
+		sh:node nodeShapes:SoftwareRequirements .

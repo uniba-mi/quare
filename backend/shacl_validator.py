@@ -214,15 +214,15 @@ def versions_have_valid_increment(release_list: PaginatedList | list[dict]) -> b
 
 def version_pair_has_valid_version_increment(pair: tuple[Version, Version]) -> bool:
     # If the first number (major) is increased, the second (minor) and third (micro) must be set to zero.
-    if (pair[0].major < pair[1].major) & (pair[1].minor == 0) & (pair[1].micro == 0):
+    if (pair[0].major + 1 == pair[1].major) & (pair[1].minor == 0) & (pair[1].micro == 0):
         return True
 
     # If minor is increased, micro must be set to zero.
-    if (pair[0].major == pair[1].major) & (pair[0].minor < pair[1].minor) & (pair[1].micro == 0):
+    if (pair[0].major == pair[1].major) & (pair[0].minor + 1 == pair[1].minor) & (pair[1].micro == 0):
         return True
 
     # If micro is increased, major and minor must be unchanged.
-    if (pair[0].major == pair[1].major) & (pair[0].minor == pair[1].minor) & (pair[0].micro < pair[1].micro):
+    if (pair[0].major == pair[1].major) & (pair[0].minor == pair[1].minor) & (pair[0].micro + 1 == pair[1].micro):
         return True
 
     # If major, minor and macro are the same in both versions, the versions have to differ in the suffix.
