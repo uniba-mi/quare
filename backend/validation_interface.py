@@ -34,7 +34,7 @@ def run_validator(github_access_token: str = "", repo_name: str = "", repo_type:
 
     elif method == "shacl":
 
-        return_code, number_of_violations, report = shacl_validator.test_repo_against_specs(
+        return_code, number_of_violations, report = shacl_validator.validate_repo_against_specs(
             github_access_token, repo_name, repo_type)
 
         logger.info(return_code)

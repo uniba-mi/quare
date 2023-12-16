@@ -120,6 +120,7 @@ def add_required_properties_to_graph(graph: Graph, repo_entity: URIRef, repo: Re
         "Issues": include_issues,
         "License": include_license,
         "MainLanguage": include_main_language,
+        "Readme": include_readme,
         "ReadmeIncludingSections": include_readme_with_sections,
         "ReadmeIncludingCheckForDoi": include_readme_with_check_for_doi,
         "ReadmeIncludingSectionsAndCheckForDoi": include_readme_with_sections_and_check_for_doi,
@@ -192,13 +193,7 @@ def include_releases_with_increment_check(graph: Graph, repo_entity: URIRef, rep
 
 def versions_have_valid_increment(release_list: PaginatedList | list[dict]) -> bool:
     try:
-        # adapted from https://stackoverflow.com/a/11887885
-        if isinstance(release_list, PaginatedList):
-            version_list = [version.parse(release.tag_name.removeprefix("v")) for release in release_list]
-        elif isinstance(release_list, list) and release_list and isinstance(release_list[0], dict):
-            version_list = [version.parse(release["tag_name"].removeprefix("v")) for release in release_list]
-        else:
-            raise ValueError("release_list is not of type PaginatedList or list[dict].")
+        version_list = [version.parse(release.tag_name.removeprefix("v")) for release in release_list]
         sorted_version_list = sorted(version_list)
     except ValueError:
         return False
@@ -397,8 +392,8 @@ def run_validation(data_graph, shapes_graph):
     return result
 
 
-def test_repo_against_specs(github_access_token: str = "", repo_name: str = "",
-                            expected_type: str = "") -> tuple[bool, int, str]:
+def validate_repo_against_specs(github_access_token: str = "", repo_name: str = "",
+                                expected_type: str = "") -> tuple[bool, int, str]:
     logging.info(f"Validating repo {repo_name} using the SHACL approach..")
 
     shapes_graph = create_project_type_representation()
@@ -419,4 +414,4 @@ def get_number_of_violations(return_code: bool, result_text: str) -> int:
 
 
 if __name__ == "__main__":
-    fire.Fire(test_repo_against_specs)
+    fire.Fire(validate_repo_against_specs)

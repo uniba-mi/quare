@@ -6,40 +6,57 @@
 
 types:TestDescriptionOrReadme
 		a       rdfs:Class, sh:NodeShape ;
-		sh:node nodeShapes:DescriptionOrReadme .
+		sh:node nodeShapes:DescriptionOrReadme ;
+		sh:description
+		        "The following repository properties are required to validate this project type: Description, Readme." .
 
 types:TestPersistentId
 		a       rdfs:Class, sh:NodeShape ;
-		sh:node nodeShapes:PersistentId .
+		sh:node nodeShapes:PersistentId ;
+		sh:description
+		        "The following repository properties are required to validate this project type: ReadmeIncludingCheckForDoi, Releases, Homepage." .
 
 types:TestPublicRepository
-		a           rdfs:Class, sh:NodeShape ;
-		sh:property propertyShapes:PublicRepository .
+		a              rdfs:Class, sh:NodeShape ;
+		sh:property    propertyShapes:PublicRepository ;
+		sh:description "The following repository properties are required to validate this project type: Visibility." .
 
 types:TestSemanticVersioning
 		a       rdfs:Class, sh:NodeShape ;
-		sh:node nodeShapes:SemanticVersioning .
+		sh:node nodeShapes:SemanticVersioning ;
+		sh:description
+		        "The following repository properties are required to validate this project type: ReleasesIncludingIncrementCheck." .
 
 types:TestUsageNotesInReadme
 		a           rdfs:Class, sh:NodeShape ;
-		sh:property propertyShapes:UsageNotesInReadme .
+		sh:property propertyShapes:UsageNotesInReadme ;
+		sh:description
+		            "The following repository properties are required to validate this project type: ReadmeIncludingSections." .
 
 types:TestExactlyOneLicense
-		a           rdfs:Class, sh:NodeShape ;
-		sh:property propertyShapes:ExactlyOneLicense .
+		a              rdfs:Class, sh:NodeShape ;
+		sh:property    propertyShapes:ExactlyOneLicense ;
+		sh:description "The following repository properties are required to validate this project type: License." .
 
 types:TestExplicitCitation
 		a       rdfs:Class, sh:NodeShape ;
-		sh:node nodeShapes:ExplicitCitation .
+		sh:node nodeShapes:ExplicitCitation ;
+		sh:description
+		        "The following repository properties are required to validate this project type: ReadmeIncludingSections, BranchesIncludingRootDirFilesOfDefaultBranch." .
 
 types:TestAtLeastOneTopic
-		a           rdfs:Class, sh:NodeShape ;
-		sh:property propertyShapes:AtLeastOneTopic .
+		a              rdfs:Class, sh:NodeShape ;
+		sh:property    propertyShapes:AtLeastOneTopic ;
+		sh:description "The following repository properties are required to validate this project type: Topics." .
 
 types:TestInstallationInstructionsInReadme
 		a           rdfs:Class, sh:NodeShape ;
-		sh:property propertyShapes:InstallationInstructionsInReadme .
+		sh:property propertyShapes:InstallationInstructionsInReadme ;
+		sh:description
+		            "The following repository properties are required to validate this project type: ReadmeIncludingSections." .
 
 types:TestSoftwareRequirements
 		a       rdfs:Class, sh:NodeShape ;
-		sh:node nodeShapes:SoftwareRequirements .
+		sh:node nodeShapes:SoftwareRequirements ;
+		sh:description
+		        "The following repository properties are required to validate this project type: ReadmeIncludingSections, BranchesIncludingRootDirFilesOfDefaultBranch, MainLanguage." .
