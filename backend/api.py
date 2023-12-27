@@ -31,11 +31,10 @@ def validate() -> Response:
     github_access_token = request_data["accessToken"]
     repo_name = request_data["repoName"]
     repo_type = request_data["repoType"]
-    method = request_data["method"]
 
-    return_code, number_of_violations, report = validation_interface.run_validator(
-        github_access_token, repo_name, repo_type, method)
-    verbalized = verbalization_interface.run_verbalizer(report, repo_name, repo_type, method)
+    return_code, number_of_violations, report = validation_interface.run_validator(github_access_token, repo_name,
+                                                                                   repo_type)
+    verbalized = verbalization_interface.run_verbalizer(report, repo_name, repo_type)
 
     results = {"repoName": repo_name, "returnCode": return_code, "numberOfViolations": number_of_violations,
                "report": report, "verbalized": verbalized}

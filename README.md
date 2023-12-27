@@ -12,6 +12,8 @@
     •
     <a href="#usage">Usage</a>
     •
+    <a href="#repository-representation-ontology">Repository Representation Ontology</a>
+    •
     <a href="#developer-information">Developer Information</a>
     •
     <a href="#license">License</a>
@@ -35,13 +37,13 @@ The frontend currently provides two pages, namely the [Validation page](#the-val
 
 Here you can enter the names of the repositories you want to validate against the available project types. If you plan to validate private repositories or want to make multiple requests in short succession, make sure to also enter a GitHub access token, which can be generated in the settings of your GitHub profile (reading rights suffice here).
 
-When you have filled out the form, you can issue the validation of the specified repositories. For the validation, you can choose between the SHACL and the OWL approach using the provided switch. We recommend the SHACL approach due to the comprehensive explanations it provides in case the validation fails. If the validation succeeds a green symbol is presented, otherwise a red symbol is shown. You can view the explanations (one raw and a verbalized one) by pressing the button next to the red symbols.
+When you have filled out the form, you can issue the validation of the specified repositories. If the validation succeeds a green symbol is presented, otherwise a red symbol is shown. You can view the explanations (one raw and a verbalized one) by pressing the button next to the red symbols.
 
 ### The Specification Page
 
-Here you can view the available project types and the quality constraints that are assigned to them. In the future, it is planned that the project types and criteria can be edited directly here. Currently, you have to edit the SHACL shapes graph or the ontology manually. If you want to change the criteria or add other project types, we strongly recommend editing the shapes graph and thereby using the SHACL approach because this is far easier than editing the ontology.  
+Here you can view the available project types and the quality constraints that are assigned to them. In the future, it is planned that the project types and criteria can be edited directly here. Currently, you have to edit the SHACL shapes graph manually.
 
-## Ontology used for the representation of repositories
+## Repository Representation Ontology
 A representation of the given repository is created for validation. Its individual components depend on the corresponding project type. The following visualization shows all possible nodes and edges of this ontology. IRIs (Internationalized Resource Identifiers) are depicted in blue, literals in yellow. 
 
 ```mermaid
@@ -137,7 +139,7 @@ Note that the frontend depends on the backend. The backend should therefore be s
 
 To reproduce the performance benchmarks shown in the paper, perform the following steps: 
 
-- Create a file called `github_access_token` in the [backend](./backend/) folder. Then enter your GitHub access token and that file and save. 
+- Create a file called `git_access_token` in the [backend](./backend/) folder. Then enter your GitHub access token in that file and save. 
 - Run `docker compose run --service-ports --entrypoint bash backend` to get a bash that is attached to the frontend container.
 - Run `./benchmark.py` to start the backend in development mode. 
 

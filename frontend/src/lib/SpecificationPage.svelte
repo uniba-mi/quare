@@ -1,5 +1,5 @@
 <script>
-  import { mode, projectTypeSpecifications } from "../stores.js";
+  import { projectTypeSpecifications } from "../stores.js";
 </script>
 
 <div class="container-fluid">
@@ -19,7 +19,7 @@
 
   <div class="accordion" id="accordionExample">
     <p>Project Type Specifications:</p>
-    {#each Object.keys($projectTypeSpecifications[$mode]) as typeName, i}
+    {#each Object.keys($projectTypeSpecifications) as typeName, i}
       <div class="accordion-item">
         <h2 class="accordion-header" id="heading-{i}">
           <button
@@ -42,7 +42,7 @@
           <div class="accordion-body">
             This project type has the following quality criteria:
             <ul>
-              {#each $projectTypeSpecifications[$mode][typeName] as constraint, _}
+              {#each $projectTypeSpecifications[typeName] as constraint}
                 <li>{constraint}</li>
               {/each}
             </ul>

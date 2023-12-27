@@ -22,7 +22,7 @@ sd = Namespace("https://w3id.org/okn/o/sd#")
 props = Namespace("https://example.org/repo/props/")
 
 
-def get_project_type_specifications():
+def get_project_type_specifications() -> dict[str, list[str]]:
     with open("data/shacl/project_shapes.ttl") as raw_shapes_graph:
 
         raw_shapes_graph = list(raw_shapes_graph)
@@ -41,7 +41,7 @@ def get_project_type_specifications():
     return process_project_types_for_display(raw_shapes_graph, type_spec_indices)
 
 
-def process_project_types_for_display(raw_shapes_graph, type_spec_indices):
+def process_project_types_for_display(raw_shapes_graph, type_spec_indices) -> dict[str, list[str]]:
     project_type_specifications = {}
     for project_type, first_index, last_index in type_spec_indices:
         spec_block = "".join(raw_shapes_graph[first_index:last_index])
