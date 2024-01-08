@@ -65,7 +65,7 @@ def process_results():
         for k, v in stats.stats.items():
             _, _, function = k
 
-            if function == "test_repo_against_specs":
+            if function == "validate_repo_against_specs":
                 if "FinishedResearchProject" in result_file:
                     all_finished.append(v[3])
                 else:
