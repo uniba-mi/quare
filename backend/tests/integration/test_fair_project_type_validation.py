@@ -270,26 +270,27 @@ def test_explicit_citation_negative(two_branches_repo_with_license_file: MagicMo
 
 
 # ##########
-# Test cases for "propertyShapes:AtLeastOneTopic"
+# Test cases for "nodeShapes:DescriptionOrAtLeastOneTopic"
 @pytest.fixture
 def repo_with_three_topics(basic_github_repo: MagicMock) -> None:
     basic_github_repo.return_value.get_topics.return_value = ["Topic 1", "Topic 2", "Topic 3"]
 
 
-def test_at_least_one_topic_positive(repo_with_three_topics: MagicMock) -> None:
+def test_description_or_at_least_one_topic_positive(repo_with_three_topics: MagicMock) -> None:
     _, number_of_violations, _ = validate_repo_against_specs(repo_name="test-repo",
-                                                             expected_type="TestAtLeastOneTopic")
+                                                             expected_type="TestDescriptionOrAtLeastOneTopic")
     assert number_of_violations == 0
 
 
 @pytest.fixture
-def repo_without_topics(basic_github_repo: MagicMock) -> None:
+def repo_without_description_or_topics(basic_github_repo: MagicMock) -> None:
+    basic_github_repo.return_value.description = None
     basic_github_repo.return_value.get_topics.return_value = None
 
 
-def test_at_least_one_topic_negative(repo_without_topics: MagicMock) -> None:
+def test_description_or_at_least_one_topic_negative(repo_without_description_or_topics: MagicMock) -> None:
     _, number_of_violations, _ = validate_repo_against_specs(repo_name="test-repo",
-                                                             expected_type="TestAtLeastOneTopic")
+                                                             expected_type="TestDescriptionOrAtLeastOneTopic")
     assert number_of_violations == 1
 
 
@@ -299,8 +300,8 @@ def test_at_least_one_topic_negative(repo_without_topics: MagicMock) -> None:
 def repo_with_readme_sections_introduction_installation_citation(basic_github_repo: MagicMock) -> None:
     basic_github_repo.return_value.get_readme.return_value.html_url = readme_url
     basic_github_repo.return_value.get_readme.return_value.decoded_content = \
-        (b'# Introduction\nPlaceholder introduction section.\n\n# Installation\nPlaceholder installation section.\n\n'
-         b'# Citation\nPlaceholder citation section.\n')
+        (b'# Introduction\nPlaceholder introduction section.\n\n# Information about the installation\nPlaceholder '
+         b'installation section.\n\n # Citation\nPlaceholder citation section.\n')
 
 
 def test_installation_instructions_in_readme_positive(

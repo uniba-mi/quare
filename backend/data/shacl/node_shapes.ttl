@@ -7,6 +7,11 @@ nodeShapes:DescriptionOrReadme
 		sh:or ( [ sh:property propertyShapes:ReadMeFileExistent ]
 		        [ sh:property propertyShapes:DescriptionFilled ] ) .
 
+nodeShapes:DescriptionOrAtLeastOneTopic
+		a sh:NodeShape ;
+		sh:or ( [ sh:property propertyShapes:DescriptionFilled ]
+		        [ sh:property propertyShapes:AtLeastOneTopic ] ) .
+
 nodeShapes:ExplicitCitation
 		a     sh:NodeShape ;
 		sh:or ( [ sh:property propertyShapes:CitationOrBibFileInDefaultBranch ]
@@ -35,7 +40,7 @@ nodeShapes:LanguageSpecificRequirementsFile
 
 nodeShapes:PersistentId
 		a     sh:NodeShape ;
-		sh:or ( [ sh:property propertyShapes:AtLeastOneRelease ]
+		sh:or ( [ sh:property propertyShapes:SemanticVersioningTags ]
 		        [ sh:property propertyShapes:DoiAsHomepage ]
 		        [ sh:property propertyShapes:ReadmeFileWithDoi ] ) .
 

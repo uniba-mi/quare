@@ -316,9 +316,10 @@ def include_readme(graph: Graph, repo_entity: URIRef, repo: Repository, include_
 
 
 def process_readme_sections(graph: Graph, repo_entity: URIRef, soup: BeautifulSoup) -> None:
-    installation_instructions_keywords = ("installation", "how to install", "setup", "set up", "setting up")
-    usage_notes_keywords = ("usage", "how to use", "manual", "user manual")
-    sw_requirements_keywords = ("dependencies", "requirements")
+    installation_instructions_keywords = ("install", "setup", "set up", "setting up")
+    usage_notes_keywords = ("usage", "using", "how to use", "user manual")
+    sw_requirements_keywords = ("dependencies", "requirements", "prerequisite")
+    citation_keywords = ("citation", "cite", "citing")
 
     heading_tags = ["h" + str(ctr) for ctr in range(1, 7)]
     headings_elems = [soup.find_all(tag)
@@ -328,27 +329,27 @@ def process_readme_sections(graph: Graph, repo_entity: URIRef, soup: BeautifulSo
     for heading in headings_elems:
         lower_cased_heading = heading.text.lower()
 
-        if lower_cased_heading.startswith(installation_instructions_keywords):
+        if any(keyword in lower_cased_heading for keyword in installation_instructions_keywords):
             content = get_content_from_readme_section(heading, heading_tags)
             graph.add((repo_entity, sd["hasInstallationInstructions"], Literal(content)))
             continue
 
-        if lower_cased_heading.startswith(usage_notes_keywords):
+        if any(keyword in lower_cased_heading for keyword in usage_notes_keywords):
             content = get_content_from_readme_section(heading, heading_tags)
             graph.add((repo_entity, sd["hasUsageNotes"], Literal(content)))
             continue
 
-        if lower_cased_heading.startswith("purpose"):
+        if "purpose" in lower_cased_heading:
             content = get_content_from_readme_section(heading, heading_tags)
             graph.add((repo_entity, sd["hasPurpose"], Literal(content)))
             continue
 
-        if lower_cased_heading.startswith(sw_requirements_keywords):
+        if any(keyword in lower_cased_heading for keyword in sw_requirements_keywords):
             content = get_content_from_readme_section(heading, heading_tags)
             graph.add((repo_entity, sd["softwareRequirements"], Literal(content)))
             continue
 
-        if lower_cased_heading.startswith("citation"):
+        if any(keyword in lower_cased_heading for keyword in citation_keywords):
             content = get_content_from_readme_section(heading, heading_tags)
             graph.add((repo_entity, sd["citation"], Literal(content)))
 

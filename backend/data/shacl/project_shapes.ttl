@@ -74,7 +74,7 @@ types:FAIRSoftware
 		sh:node     nodeShapes:ExplicitCitation ;
 
 		# Best practice 8: "Software metadata (programming language, keywords, etc.) is available"
-		sh:property propertyShapes:AtLeastOneTopic ;
+		sh:node nodeShapes:DescriptionOrAtLeastOneTopic ;
 
 		# Best practice 9: "Installation instructions are available"
 		sh:property propertyShapes:InstallationInstructionsInReadme ;

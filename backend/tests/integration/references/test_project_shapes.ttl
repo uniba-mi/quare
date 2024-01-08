@@ -44,10 +44,11 @@ types:TestExplicitCitation
 		sh:description
 		        "The following repository properties are required to validate this project type: ReadmeIncludingSections, BranchesIncludingRootDirFilesOfDefaultBranch." .
 
-types:TestAtLeastOneTopic
-		a              rdfs:Class, sh:NodeShape ;
-		sh:property    propertyShapes:AtLeastOneTopic ;
-		sh:description "The following repository properties are required to validate this project type: Topics." .
+types:TestDescriptionOrAtLeastOneTopic
+		a       rdfs:Class, sh:NodeShape ;
+		sh:node nodeShapes:DescriptionOrAtLeastOneTopic ;
+		sh:description
+		        "The following repository properties are required to validate this project type: Description, Topics." .
 
 types:TestInstallationInstructionsInReadme
 		a           rdfs:Class, sh:NodeShape ;
