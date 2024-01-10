@@ -317,7 +317,7 @@ def include_readme(graph: Graph, repo_entity: URIRef, repo: Repository, include_
 
 def process_readme_sections(graph: Graph, repo_entity: URIRef, soup: BeautifulSoup) -> None:
     installation_instructions_keywords = ("install", "setup", "set up", "setting up")
-    usage_notes_keywords = ("usage", "using", "how to use", "user manual")
+    usage_notes_keywords = ("usage", "how to use", "user manual")
     sw_requirements_keywords = ("dependencies", "requirements", "prerequisite")
     citation_keywords = ("citation", "cite", "citing")
 
