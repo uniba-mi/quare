@@ -1,5 +1,5 @@
 <script>
-  import { mode, selectedPage } from "../stores.js";
+  import { selectedPage } from "../stores.js";
 
   const changePage = (event) => {
     document.querySelector(".nav-link.active").classList.remove("active");
@@ -30,16 +30,6 @@
               </li>
             </ul>
           </div>
-          <form class="d-flex" role="search">
-            <select
-              class="form-select"
-              aria-label="Default select example"
-              bind:value={$mode}
-            >
-              <option value="shacl">SHACL Mode</option>
-              <option value="owl">OWL Mode</option>
-            </select>
-          </form>
         </div>
       </nav>
     </div>

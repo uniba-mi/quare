@@ -12,6 +12,8 @@
     •
     <a href="#usage">Usage</a>
     •
+    <a href="#repository-representation-ontology">Repository Representation Ontology</a>
+    •
     <a href="#developer-information">Developer Information</a>
     •
     <a href="#license">License</a>
@@ -27,7 +29,7 @@ Thanks to Docker, only [Docker](https://www.docker.com/) and [Docker Compose](ht
 
 ## Usage 
 
-After cloning or downloading this repository, simply run `docker compose up` in a command line from the root folder of the repository to start the tool. The frontend can then be accessed it via [http://localhost:3000](http://localhost:3000). (If necessary, the backend can be accessed via [http://localhost:5000](http://localhost:5000).)
+After cloning or downloading this repository, simply run `docker compose up` in a command line from the root folder of the repository to start the tool. The frontend can then be accessed via [http://localhost:3000](http://localhost:3000). (If necessary, the backend can be accessed via [http://localhost:5000](http://localhost:5000).)
 
 The frontend currently provides two pages, namely the [Validation page](#the-validation-page) and the [Specification page](#the-specification-page) which can be selected using the navigation bar.
 
@@ -35,11 +37,88 @@ The frontend currently provides two pages, namely the [Validation page](#the-val
 
 Here you can enter the names of the repositories you want to validate against the available project types. If you plan to validate private repositories or want to make multiple requests in short succession, make sure to also enter a GitHub access token, which can be generated in the settings of your GitHub profile (reading rights suffice here).
 
-When you have filled out the form, you can issue the validation of the specified repositories. For the validation, you can choose between the SHACL and the OWL approach using the provided switch. We recommend the SHACL approach due to the comprehensive explanations it provides in case the validation fails. If the validation succeeds a green symbol is presented, otherwise a red symbol is shown. You can view the explanations (one raw and a verbalized one) by pressing the button next to the red symbols.
+When you have filled out the form, you can issue the validation of the specified repositories. If the validation succeeds a green symbol is presented, otherwise a red symbol is shown. You can view the explanations (one raw and a verbalized one) by pressing the button next to the red symbols.
 
 ### The Specification Page
 
-Here you can view the available project types and the quality constraints that are assigned to them. In the future, it is planned that the project types and criteria can be edited directly here. Currently, you have to edit the SHACL shapes graph or the ontology manually. If you want to change the criteria or add other project types, we strongly recommend editing the shapes graph and thereby using the SHACL approach because this is far easier than editing the ontology.  
+Here you can view the available project types and the quality constraints that are assigned to them. In the future, it is planned that the project types and criteria can be edited directly here. Currently, you have to edit the SHACL shapes graph manually.
+
+## Repository Representation Ontology
+A representation of the given repository is created for validation. Its individual components depend on the corresponding project type. The following visualization shows all possible nodes and edges of this ontology. IRIs (Internationalized Resource Identifiers) are depicted in blue, literals in yellow. 
+
+```mermaid
+---
+title: Ontology for GitHub repositories - maximum cardinality in round brackets
+---
+flowchart LR
+%% NODE SECTION
+%% IRIs and Literals that are directly linked to the repository node
+    repo([<b>Repository</b>]):::iri
+    visibility[Boolean]:::literal
+    topic[String]:::literal
+    description[String]:::literal
+    homepage[String]:::literal
+    mainLanguage[String]:::literal
+    release([<b>Release</b>]):::iri
+    validVersionIncrement[Boolean]:::literal
+    branch([<b>Branch</b>]):::iri
+    issue([<b>Issue</b>]):::iri
+    license([<b>License</b>]):::iri
+    readme([<b>Readme file</b>]):::iri
+    installationInstructions[String]:::literal
+    usageNotes[String]:::literal
+    purpose[String]:::literal
+    softwareRequirements[String]:::literal
+    citation[String]:::literal
+
+%% Literals that can be reached from the other IRIs
+    tagName[String]:::literal
+    branchName[String]:::literal
+    isDefaultBranch[Boolean]:::literal
+    fileInRootDirectory[String]:::literal
+    issueState[String]:::literal
+    licenseName[String]:::literal
+    doiInReadme[Boolean]:::literal
+
+%% LINK SECTION
+%% Outgoing links of the repository node
+    repo -- "props:isPrivate (1)" --> visibility
+    repo -- "sd:keywords (*)" --> topic
+    repo -- "sd:description (1)" --> description
+    repo -- "sd:website (1)" --> homepage
+    repo -- "sd:programmingLanguage (1)" --> mainLanguage
+    repo -- "sd:hasVersion (*)" --> release
+    repo -- "props:versionsHaveValidIncrement (1)" --> validVersionIncrement
+    repo -- "props:hasBranch (*)" --> branch
+    repo -- "props:hasIssue (*)" --> issue
+    repo -- "sd:license (1)" --> license
+    repo -- "sd:readme (1)" --> readme
+    repo -- "sd:hasInstallationInstructions (1)" --> installationInstructions
+    repo -- "sd:hasUsageNotes (1)" --> usageNotes
+    repo -- "sd:hasPurpose (1)" --> purpose
+    repo -- "sd:softwareRequirements (1)" --> softwareRequirements
+    repo -- "sd:citation (1)" --> citation
+
+%% Outgoing links of the other IRIs
+    release -- "sd:hasVersionId (1)" --> tagName
+    branch -- "sd:name (1)" --> branchName
+    branch -- "props:isDefaultBranch (1)" --> isDefaultBranch
+    branch -- "props:hasFileInRootDirectory (*)" --> fileInRootDirectory
+    issue -- "props:hasState (1)" --> issueState
+    license -- "sd:name (1)" --> licenseName
+    readme -- "props:containsDoi (1)" --> doiInReadme
+
+%% STYLING
+    classDef literal fill:#FFEA85, stroke:#000
+    classDef iri fill:#00407A, color:white, stroke:#000
+```
+The IRIs mentioned have the following URL structure:
+* Repository: `https://github.com/<user_or_organization_name>/<repository_name>`
+* Release: `<repository_URL>/releases/tag/<tag_name>`
+* Branch: `<repository_URL>/tree/<branch_name>`
+* Issue: `<repository_URL>/issues/<issue_id>`
+* License: `<repository_URL>/blob/<path_to_license_file>`
+* Readme file: `<repository_URL>/blob/<path_to_readme_file>`
 
 ## Developer Information
 
@@ -47,7 +126,7 @@ Instead of running frontend and backend using `docker compose up`, you can run b
 ### Running the Backend
 
 - Run `docker compose run --service-ports --entrypoint bash backend` to get a bash that is attached to the backend container.
-- Run `./backend_api.py` to start the backend. 
+- Run `./api.py` to start the backend. 
 
 ### Running the Frontend
 
@@ -60,7 +139,7 @@ Note that the frontend depends on the backend. The backend should therefore be s
 
 To reproduce the performance benchmarks shown in the paper, perform the following steps: 
 
-- Create a file called `github_access_token` in the [backend](./backend/) folder. Then enter your GitHub access token and that file and save. 
+- Create a file called `git_access_token` in the [backend](./backend/) folder. Then enter your GitHub access token in that file and save. 
 - Run `docker compose run --service-ports --entrypoint bash backend` to get a bash that is attached to the frontend container.
 - Run `./benchmark.py` to start the backend in development mode. 
 

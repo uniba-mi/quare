@@ -1,0 +1,55 @@
+@prefix sh:             <http://www.w3.org/ns/shacl#> .
+@prefix nodeShapes:     <https://example.org/repo/node-shapes/> .
+@prefix propertyShapes: <https://example.org/repo/property-shapes/> .
+
+nodeShapes:DescriptionOrReadme
+		a     sh:NodeShape ;
+		sh:or ( [ sh:property propertyShapes:ReadMeFileExistent ]
+		        [ sh:property propertyShapes:DescriptionFilled ] ) .
+
+nodeShapes:DescriptionOrAtLeastOneTopic
+		a sh:NodeShape ;
+		sh:or ( [ sh:property propertyShapes:DescriptionFilled ]
+		        [ sh:property propertyShapes:AtLeastOneTopic ] ) .
+
+nodeShapes:ExplicitCitation
+		a     sh:NodeShape ;
+		sh:or ( [ sh:property propertyShapes:CitationOrBibFileInDefaultBranch ]
+		        [ sh:property propertyShapes:CitationInformationInReadme ] ) .
+
+nodeShapes:LanguageSpecificRequirementsFile
+		a     sh:NodeShape ;
+		sh:or (
+		      # In Java repositories, there has to be either a file "build.gradle" or "pom.xml" in the root directory of
+		      # the default branch.
+		      [ sh:property propertyShapes:MainLanguageJava ;
+		        sh:property propertyShapes:ExactlyOneJavaRequirementsFileInDefaultBranch ]
+
+		      # In JavaScript repositories, there has to be a file "package.json" in the root directory of the default branch.
+		      [ sh:property propertyShapes:MainLanguageJavaScript ;
+		        sh:property propertyShapes:PackageJsonFileInDefaultBranch ]
+
+		      # In Python repositories, there has to be either a file "requirements.txt" or "environment.yaml" or
+		      # "environment.yml" in the root directory of the default branch.
+		      [ sh:property propertyShapes:MainLanguagePython ;
+		        sh:property propertyShapes:ExactlyOnePythonRequirementsFileInDefaultBranch ]
+
+		      # In TypeScript repositories, there has to be a file "package.json" in the root directory of the default branch.
+		      [ sh:property propertyShapes:MainLanguageTypeScript ;
+		        sh:property propertyShapes:PackageJsonFileInDefaultBranch ] ) .
+
+nodeShapes:PersistentId
+		a     sh:NodeShape ;
+		sh:or ( [ sh:property propertyShapes:SemanticVersioningTags ]
+		        [ sh:property propertyShapes:DoiAsHomepage ]
+		        [ sh:property propertyShapes:ReadmeFileWithDoi ] ) .
+
+nodeShapes:SemanticVersioning
+		a      sh:NodeShape ;
+		sh:and ( [ sh:property propertyShapes:SemanticVersioningTags ]
+		         [ sh:property propertyShapes:ValidVersionIncrement ] ) .
+
+nodeShapes:SoftwareRequirements
+		a     sh:NodeShape ;
+		sh:or ( [ sh:property propertyShapes:SoftwareRequirementsInReadme ]
+		        [ sh:node nodeShapes:LanguageSpecificRequirementsFile ] ) .

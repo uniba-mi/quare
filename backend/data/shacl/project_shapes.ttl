@@ -1,0 +1,85 @@
+@prefix sh:             <http://www.w3.org/ns/shacl#> .
+@prefix rdfs:           <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix types:          <https://example.org/repo/project-types/> .
+@prefix nodeShapes:     <https://example.org/repo/node-shapes/> .
+@prefix propertyShapes: <https://example.org/repo/property-shapes/> .
+
+types:FinishedResearchProject
+		a           rdfs:Class, sh:NodeShape ;
+		sh:property propertyShapes:PublicRepository ;
+		sh:property propertyShapes:AtLeastOneTopic ;
+		sh:property propertyShapes:DescriptionFilled ;
+		sh:property propertyShapes:ExactlyOneBranch ;
+		sh:property propertyShapes:MainBranchExistent ;
+		sh:property propertyShapes:NoOpenIssues ;
+		sh:property propertyShapes:AtLeastOneRelease ;
+		sh:property propertyShapes:GnuGplV3License ;
+		sh:property propertyShapes:ReadMeFileExistent ;
+		sh:property propertyShapes:InstallationInstructionsInReadme ;
+		sh:property propertyShapes:UsageNotesInReadme ;
+		sh:description
+		            "The following repository properties are required to validate this project type: Visibility, Topics, Description, Branches, Issues, Releases, License, ReadmeIncludingSections." .
+
+types:OngoingResearchProject
+		a           rdfs:Class, sh:NodeShape ;
+		sh:property propertyShapes:PrivateRepository ;
+		sh:property propertyShapes:AtLeastTwoBranches ;
+		sh:description
+		            "The following repository properties are required to validate this project type: Visibility, Branches." .
+
+types:TeachingTool
+		a           rdfs:Class, sh:NodeShape ;
+		sh:property propertyShapes:PublicRepository ;
+		sh:property propertyShapes:AtLeastOneTopic ;
+		sh:property propertyShapes:DescriptionFilled ;
+		sh:property propertyShapes:AtLeastTwoBranches ;
+		sh:property propertyShapes:AtLeastOneRelease ;
+		sh:property propertyShapes:MitLicense ;
+		sh:property propertyShapes:ReadMeFileExistent ;
+		sh:property propertyShapes:UsageNotesInReadme ;
+		sh:description
+		            "The following repository properties are required to validate this project type: Visibility, Topics, Description, Branches, Releases, License, ReadmeIncludingSections." .
+
+types:InternalDocumentation
+		a           rdfs:Class, sh:NodeShape ;
+		sh:property propertyShapes:PrivateRepository ;
+		sh:property propertyShapes:DescriptionFilled ;
+		sh:property propertyShapes:ReadMeFileExistent ;
+		sh:property propertyShapes:PurposeInReadme ;
+		sh:description
+		            "The following repository properties are required to validate this project type: Visibility, Description, ReadmeIncludingSections." .
+
+types:FAIRSoftware
+		a           rdfs:Class, sh:NodeShape ;
+
+		# Best practice 1: "A description (long or short) is available"
+		sh:node     nodeShapes:DescriptionOrReadme ;
+
+		# Best practice 2: "A persistent identifier (e.g., DOI) is available"
+		sh:node     nodeShapes:PersistentId ;
+
+		# Best practice 3: "A download URL is available"
+		sh:property propertyShapes:PublicRepository ;
+
+		# Best practice 4: "A semantic versioning scheme is followed"
+		sh:node     nodeShapes:SemanticVersioning ;
+
+		# Best practice 5: "Usage documentation (including I/O) is available"
+		sh:property propertyShapes:UsageNotesInReadme ;
+
+		# Best practice 6: "A license is declared"
+		sh:property propertyShapes:ExactlyOneLicense ;
+
+		# Best practice 7: "An explicit citation is provided"
+		sh:node     nodeShapes:ExplicitCitation ;
+
+		# Best practice 8: "Software metadata (programming language, keywords, etc.) is available"
+		sh:node nodeShapes:DescriptionOrAtLeastOneTopic ;
+
+		# Best practice 9: "Installation instructions are available"
+		sh:property propertyShapes:InstallationInstructionsInReadme ;
+
+		# Best practice 10: "Software requirements are available"
+		sh:node     nodeShapes:SoftwareRequirements ;
+		sh:description
+		            "The following repository properties are required to validate this project type: Description, ReadmeIncludingSectionsAndCheckForDoi, ReleasesIncludingIncrementCheck, Homepage, Visibility, License, BranchesIncludingRootDirFilesOfDefaultBranch, Topics, MainLanguage." .

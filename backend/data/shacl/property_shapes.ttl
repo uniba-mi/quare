@@ -1,0 +1,301 @@
+@prefix sh:             <http://www.w3.org/ns/shacl#> .
+# Software Description Ontology (SD)
+@prefix sd:             <https://w3id.org/okn/o/sd#> .
+@prefix propertyShapes: <https://example.org/repo/property-shapes/> .
+@prefix props:          <https://example.org/repo/props/> .
+
+propertyShapes:AtLeastOneRelease
+		a           sh:PropertyShape ;
+		# There has to be at least one release (internally mapped via the "hasVersion" property).
+		sh:path     sd:hasVersion ;
+		sh:minCount 1 .
+
+propertyShapes:AtLeastOneTopic
+		a           sh:PropertyShape ;
+		# There has to be at least one topic (internally mapped via the "keywords" property).
+		sh:path     sd:keywords ;
+		sh:minCount 1 .
+
+propertyShapes:AtLeastTwoBranches
+		a           sh:PropertyShape ;
+		# There have to be at least two branches.
+		sh:path     props:hasBranch ;
+		sh:minCount 2 .
+
+propertyShapes:BuildGradleFileExistent
+		a                      sh:PropertyShape ;
+		# The file build.gradle has to exist in the root directory.
+		sh:path                props:hasFileInRootDirectory ;
+		sh:minCount            1 ;
+		sh:qualifiedValueShape [ sh:pattern "build.gradle" ] ;
+		sh:qualifiedMinCount   1 .
+
+propertyShapes:CitationCffFileExistent
+		a                      sh:PropertyShape ;
+		# The file CITATION.cff has to exist in the root directory.
+		sh:path                props:hasFileInRootDirectory ;
+		sh:minCount            1 ;
+		sh:qualifiedValueShape [ sh:pattern "^CITATION.cff$" ] ;
+		sh:qualifiedMinCount   1 .
+
+
+propertyShapes:CitationOrBibFileInDefaultBranch
+		a           sh:PropertyShape ;
+		# In the root directory of the default branch, there has to be a file CITATION.cff or one with the ending .bib.
+		sh:path     props:hasBranch ;
+		sh:minCount 1 ;
+		sh:or       ( [ sh:property propertyShapes:NonDefaultBranch ]
+		              [ sh:property propertyShapes:CitationCffFileExistent ]
+		              [ sh:property propertyShapes:ExactlyOneBibFile ] ) .
+
+propertyShapes:CitationInformationInReadme
+		a           sh:PropertyShape ;
+		# The README file has to contain information on how to cite the software.
+		sh:path     sd:citation ;
+		sh:minCount 1 .
+
+propertyShapes:DefaultBranch
+		a          sh:PropertyShape ;
+		# The considered branch has to be the default one.
+		sh:path    props:isDefaultBranch ;
+		sh:pattern "true" .
+
+propertyShapes:DescriptionFilled
+		a           sh:PropertyShape ;
+		# There has to be exactly one description.
+		sh:path     sd:description ;
+		sh:minCount 1 ;
+		sh:maxCount 1 .
+
+propertyShapes:DoiAsHomepage
+		a           sh:PropertyShape ;
+		# The homepage link (internally mapped via the "website" property) has to exist and has to be a DOI.
+		sh:path     sd:website ;
+		# https://www.crossref.org/blog/dois-and-matching-regular-expressions/
+		# Put into the right format with the help of ChatGPT.
+		sh:pattern  "^https://doi\\.org/10\\.[0-9]{4,}/[-._;()/:A-Z0-9]+$" ;
+		sh:minCount 1 .
+
+propertyShapes:EnvironmentYmlFileExistent
+		a                      sh:PropertyShape ;
+		# The file environment.yml has to exist in the root directory.
+		sh:path                props:hasFileInRootDirectory ;
+		sh:minCount            1 ;
+		sh:qualifiedValueShape [ sh:pattern "environment.yml" ] ;
+		sh:qualifiedMinCount   1 .
+
+propertyShapes:EnvironmentYamlFileExistent
+		a                      sh:PropertyShape ;
+		# The file environment.yaml has to exist in the root directory.
+		sh:path                props:hasFileInRootDirectory ;
+		sh:minCount            1 ;
+		sh:qualifiedValueShape [ sh:pattern "environment.yaml" ] ;
+		sh:qualifiedMinCount   1 .
+
+propertyShapes:ExactlyOneJavaRequirementsFileInDefaultBranch
+		a           sh:PropertyShape ;
+		# In the root directory of the default branch, there has to be either a file "build.gradle" or "pom.xml".
+		sh:path     props:hasBranch ;
+		sh:minCount 1 ;
+		sh:or       ( [ sh:property propertyShapes:NonDefaultBranch ]
+		              [ sh:xone ( [ sh:property propertyShapes:PomXmlFileExistent ]
+		                          [ sh:property propertyShapes:BuildGradleFileExistent ] ) ] ) .
+
+propertyShapes:ExactlyOneBibFile
+		a                      sh:PropertyShape ;
+		# There has to be exactly one .bib file in the root directory.
+		sh:path                props:hasFileInRootDirectory ;
+		sh:minCount            1 ;
+		sh:qualifiedValueShape [ sh:pattern "\\.bib$" ] ;
+		sh:qualifiedMinCount   1 ;
+		sh:qualifiedMaxCount   1 .
+
+propertyShapes:ExactlyOneBranch
+		a           sh:PropertyShape ;
+		# There has to be exactly one branch.
+		sh:path     props:hasBranch ;
+		sh:minCount 1 ;
+		sh:maxCount 1 .
+
+propertyShapes:ExactlyOneLicense
+		a           sh:PropertyShape ;
+		# There has to be exactly one license.
+		sh:path     sd:license ;
+		sh:minCount 1 ;
+		sh:maxCount 1 .
+
+propertyShapes:ExactlyOnePythonRequirementsFileInDefaultBranch
+		a           sh:PropertyShape ;
+		# In the root directory of the default branch, there has to be either a file "requirements.txt" or
+		# "environment.yaml" or "environment.yml".
+		sh:path     props:hasBranch ;
+		sh:minCount 1 ;
+		sh:or       ( [ sh:property propertyShapes:NonDefaultBranch ]
+		              [ sh:xone ( [ sh:property propertyShapes:RequirementsTxtFileExistent ]
+		                          [ sh:property propertyShapes:EnvironmentYmlFileExistent ]
+		                          [ sh:property propertyShapes:EnvironmentYamlFileExistent ] ) ] ) .
+
+propertyShapes:GnuGplV3License
+		a                      sh:PropertyShape ;
+		# There has to be a license and it has to be "GNU General Public License v3.0".
+		sh:path                ( sd:license sd:name ) ;
+		sh:minCount            1 ;
+		sh:qualifiedValueShape [ sh:pattern "GNU General Public License v3.0" ] ;
+		sh:qualifiedMinCount   1 .
+
+propertyShapes:InstallationInstructionsInReadme
+		a           sh:PropertyShape ;
+		# The README file has to contain information on how to install the software.
+		sh:path     sd:hasInstallationInstructions ;
+		sh:minCount 1 .
+
+propertyShapes:MainBranchExistent
+		a                      sh:PropertyShape ;
+		# There has to be exactly one branch named "main".
+		sh:path                ( props:hasBranch sd:name ) ;
+		sh:minCount            1 ;
+		sh:qualifiedValueShape [ sh:pattern "main" ] ;
+		sh:qualifiedMinCount   1 ;
+		sh:qualifiedMaxCount   1 .
+
+
+propertyShapes:MainLanguageJava
+		a           sh:PropertyShape ;
+		# The main programming language has to be "Java".
+		sh:path     sd:programmingLanguage ;
+		sh:minCount 1 ;
+		sh:pattern  "Java$" .
+
+propertyShapes:MainLanguageJavaScript
+		a           sh:PropertyShape ;
+		# The main programming language has to be "JavaScript".
+		sh:path     sd:programmingLanguage ;
+		sh:minCount 1 ;
+		sh:pattern  "JavaScript" .
+
+propertyShapes:MainLanguagePython
+		a           sh:PropertyShape ;
+		# The main programming language has to be "Python".
+		sh:path     sd:programmingLanguage ;
+		sh:minCount 1 ;
+		sh:pattern  "Python" .
+
+propertyShapes:MainLanguageTypeScript
+		a           sh:PropertyShape ;
+		# The main programming language has to be "TypeScript".
+		sh:path     sd:programmingLanguage ;
+		sh:minCount 1 ;
+		sh:pattern  "TypeScript" .
+
+propertyShapes:MitLicense
+		a                      sh:PropertyShape ;
+		# There has to be a license and it has to be "MIT License".
+		sh:path                ( sd:license sd:name ) ;
+		sh:minCount            1 ;
+		sh:qualifiedValueShape [ sh:pattern "MIT License" ] ;
+		sh:qualifiedMinCount   1 .
+
+propertyShapes:NonDefaultBranch
+		a          sh:PropertyShape ;
+		# The considered branch must not be the default one.
+		sh:path    props:isDefaultBranch ;
+		sh:pattern "false" .
+
+propertyShapes:NoOpenIssues
+		a           sh:PropertyShape ;
+		# There must not be any open issues.
+		sh:path     ( props:hasIssue props:hasState ) ;
+		sh:pattern  "open" ;
+		sh:maxCount 0 ; .
+
+propertyShapes:PackageJsonFileExistent
+		a                      sh:PropertyShape ;
+		# The file package.json has to exist in the root directory.
+		sh:path                props:hasFileInRootDirectory ;
+		sh:minCount            1 ;
+		sh:qualifiedValueShape [ sh:pattern "package.json" ] ;
+		sh:qualifiedMinCount   1 .
+
+propertyShapes:PackageJsonFileInDefaultBranch
+		a           sh:PropertyShape ;
+		# In the root directory of the default branch, there has to be the file package.json.
+		sh:path     props:hasBranch ;
+		sh:minCount 1 ;
+		sh:or       ( [ sh:property propertyShapes:NonDefaultBranch ]
+		              [ sh:property propertyShapes:PackageJsonFileExistent ] ) .
+
+propertyShapes:PomXmlFileExistent
+		a                      sh:PropertyShape ;
+		# The file pom.xml has to exist in the root directory.
+		sh:path                props:hasFileInRootDirectory ;
+		sh:minCount            1 ;
+		sh:qualifiedValueShape [ sh:pattern "pom.xml" ] ;
+		sh:qualifiedMinCount   1 .
+
+propertyShapes:PrivateRepository
+		a          sh:PropertyShape ;
+		# The repository has to be private.
+		sh:path    props:isPrivate ;
+		sh:pattern "true" .
+
+propertyShapes:PublicRepository
+		a          sh:PropertyShape ;
+		# The repository has to be public.
+		sh:path    props:isPrivate ;
+		sh:pattern "false" .
+
+propertyShapes:PurposeInReadme
+		a           sh:PropertyShape ;
+		# The README file has to contain information about the purpose of the software.
+		sh:path     sd:hasPurpose ;
+		sh:minCount 1 .
+
+propertyShapes:ReadMeFileExistent
+		a           sh:PropertyShape ;
+		# There has to be at least one README file.
+		sh:path     sd:readme ;
+		sh:minCount 1 .
+
+propertyShapes:ReadmeFileWithDoi
+		a           sh:PropertyShape ;
+		# The README file contains a DOI link.
+		sh:path     ( sd:readme props:containsDoi ) ;
+		sh:pattern  "true" ;
+		sh:minCount 1 .
+
+propertyShapes:RequirementsTxtFileExistent
+		a                      sh:PropertyShape ;
+		# The file requirements.txt has to exist in the root directory.
+		sh:path                props:hasFileInRootDirectory ;
+		sh:minCount            1 ;
+		sh:qualifiedValueShape [ sh:pattern "requirements.txt" ] ;
+		sh:qualifiedMinCount   1 .
+
+propertyShapes:SemanticVersioningTags
+		a           sh:PropertyShape ;
+		# There has to be at least one release with a tag name (internally mapped via the "hasVersion" and "hasVersionId"
+		#	properties). All tags names have to match the semantic versioning pattern.
+		sh:path     ( sd:hasVersion sd:hasVersionId ) ;
+		sh:minCount 1 ;
+		# Adapted from https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
+		# Put into the right format with the help of ChatGPT.
+		sh:pattern  "^v?(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$" .
+
+propertyShapes:SoftwareRequirementsInReadme
+		a           sh:PropertyShape ;
+		# The README file has to contain information about the requirements of the software.
+		sh:path     sd:softwareRequirements ;
+		sh:minCount 1 .
+
+propertyShapes:UsageNotesInReadme
+		a           sh:PropertyShape ;
+		# The README file has to contain information on how to use the software.
+		sh:path     sd:hasUsageNotes ;
+		sh:minCount 1 .
+
+propertyShapes:ValidVersionIncrement
+		a           sh:PropertyShape ;
+		# The increment/change between consecutive version numbers has to be valid.
+		sh:path     props:versionsHaveValidIncrement ;
+		sh:pattern  "true" ;
+		sh:minCount 1 .
