@@ -4,7 +4,6 @@
   import SpecificationPage from "./lib/SpecificationPage.svelte";
 
   import {
-    mode,
     projectTypeSpecifications,
     validationSettings,
     validationData,
@@ -25,11 +24,6 @@
     .catch((reason) => console.error(reason));
 
   // load data from localStorage
-  if (localStorage.getItem("mode")) {
-    const rawRepoTypeMapping = localStorage.getItem("mode");
-    $mode = JSON.parse(rawRepoTypeMapping);
-  }
-
   if (localStorage.getItem("validationData")) {
     const rawRepoTypeMapping = localStorage.getItem("validationData");
     $validationData = JSON.parse(rawRepoTypeMapping);
@@ -51,9 +45,9 @@
 </header>
 
 <main>
-  {#if $selectedPage == "Validation"}
+  {#if $selectedPage === "Validation"}
     <ValidationPage />
-  {:else if $selectedPage == "Specification"}
+  {:else if $selectedPage === "Specification"}
     <SpecificationPage />
   {/if}
 </main>

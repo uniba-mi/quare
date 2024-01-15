@@ -6,7 +6,6 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install --yes pytho
 RUN apt-get update && apt-get install --yes python3-pip
 
 RUN pip install -U rdflib
-RUN pip install -U owlready2
 RUN pip install -U PyGithub
 RUN pip install -U markdown
 RUN pip install -U bs4
