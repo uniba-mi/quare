@@ -332,22 +332,18 @@ def process_readme_sections(graph: Graph, repo_entity: URIRef, soup: BeautifulSo
         if any(keyword in lower_cased_heading for keyword in installation_instructions_keywords):
             content = get_content_from_readme_section(heading, heading_tags)
             graph.add((repo_entity, sd["hasInstallationInstructions"], Literal(content)))
-            continue
 
         if any(keyword in lower_cased_heading for keyword in usage_notes_keywords):
             content = get_content_from_readme_section(heading, heading_tags)
             graph.add((repo_entity, sd["hasUsageNotes"], Literal(content)))
-            continue
 
         if "purpose" in lower_cased_heading:
             content = get_content_from_readme_section(heading, heading_tags)
             graph.add((repo_entity, sd["hasPurpose"], Literal(content)))
-            continue
 
         if any(keyword in lower_cased_heading for keyword in sw_requirements_keywords):
             content = get_content_from_readme_section(heading, heading_tags)
             graph.add((repo_entity, sd["softwareRequirements"], Literal(content)))
-            continue
 
         if any(keyword in lower_cased_heading for keyword in citation_keywords):
             content = get_content_from_readme_section(heading, heading_tags)
