@@ -3,19 +3,24 @@
 @prefix propertyShapes: <https://example.org/repo/property-shapes/> .
 
 nodeShapes:DescriptionOrReadme
-		a     sh:NodeShape ;
-		sh:or ( [ sh:property propertyShapes:ReadMeFileExistent ]
-		        [ sh:property propertyShapes:DescriptionFilled ] ) .
+		a          sh:NodeShape ;
+		sh:or      ( [ sh:property propertyShapes:ReadmeFileExistent ]
+		             [ sh:property propertyShapes:DescriptionFilled ] ) ;
+		sh:message "The repository has no description and no README file. Make sure at least one of the two is present." .
 
 nodeShapes:DescriptionOrAtLeastOneTopic
-		a sh:NodeShape ;
+		a     sh:NodeShape ;
 		sh:or ( [ sh:property propertyShapes:DescriptionFilled ]
-		        [ sh:property propertyShapes:AtLeastOneTopic ] ) .
+		        [ sh:property propertyShapes:AtLeastOneTopic ] ) ;
+		sh:message
+		      "Not sufficient software metadata was found. Make sure the description is filled or there is at least one topic." .
 
 nodeShapes:ExplicitCitation
 		a     sh:NodeShape ;
 		sh:or ( [ sh:property propertyShapes:CitationOrBibFileInDefaultBranch ]
-		        [ sh:property propertyShapes:CitationInformationInReadme ] ) .
+		        [ sh:property propertyShapes:CitationInformationInReadme ] ) ;
+		sh:message
+		      "No citation information was found. Make sure it is included in the README file or there is a file CITATION.cff or a .bib file in the root directory of the default branch." .
 
 nodeShapes:LanguageSpecificRequirementsFile
 		a     sh:NodeShape ;
@@ -36,20 +41,28 @@ nodeShapes:LanguageSpecificRequirementsFile
 
 		      # In TypeScript repositories, there has to be a file "package.json" in the root directory of the default branch.
 		      [ sh:property propertyShapes:MainLanguageTypeScript ;
-		        sh:property propertyShapes:PackageJsonFileInDefaultBranch ] ) .
+		        sh:property propertyShapes:PackageJsonFileInDefaultBranch ] ) ;
+		sh:message
+		      "No common language-specific requirements file was found. For expected files, see the specification page." .
 
 nodeShapes:PersistentId
 		a     sh:NodeShape ;
 		sh:or ( [ sh:property propertyShapes:SemanticVersioningTags ]
 		        [ sh:property propertyShapes:DoiAsHomepage ]
-		        [ sh:property propertyShapes:ReadmeFileWithDoi ] ) .
+		        [ sh:property propertyShapes:ReadmeFileWithDoi ] ) ;
+		sh:message
+		      "No persistent id was found. Make sure there is at least one release and all tags follow the Semantic Versioning pattern or the homepage is a DOI or the README file contains a DOI." .
 
 nodeShapes:SemanticVersioning
 		a      sh:NodeShape ;
 		sh:and ( [ sh:property propertyShapes:SemanticVersioningTags ]
-		         [ sh:property propertyShapes:ValidVersionIncrement ] ) .
+		         [ sh:property propertyShapes:ValidVersionIncrement ] ) ;
+		sh:message
+		       "There are no releases or Semantic Versioning is violated. Make sure there is at least one release, all tags follow the pattern and the increment between version numbers is valid." .
 
 nodeShapes:SoftwareRequirements
 		a     sh:NodeShape ;
 		sh:or ( [ sh:property propertyShapes:SoftwareRequirementsInReadme ]
-		        [ sh:node nodeShapes:LanguageSpecificRequirementsFile ] ) .
+		        [ sh:node nodeShapes:LanguageSpecificRequirementsFile ] ) ;
+		sh:message
+		      "No information on the requirements of the software was found. Make sure it is included in the README file or a language-specific requirements file is used." .
