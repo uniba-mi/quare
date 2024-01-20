@@ -20,7 +20,7 @@ nodeShapes:ExplicitCitation
 		sh:or ( [ sh:property propertyShapes:CitationOrBibFileInDefaultBranch ]
 		        [ sh:property propertyShapes:CitationInformationInReadme ] ) ;
 		sh:message
-		      "No citation information was found. Make sure it is included in the README file or there is a file CITATION.cff or a .bib file in the root directory of the default branch." .
+		      "No citation information was found. Make sure they are included in the README file or there is a file CITATION.cff or a .bib file in the root directory of the default branch." .
 
 nodeShapes:LanguageSpecificRequirementsFile
 		a     sh:NodeShape ;
@@ -65,4 +65,4 @@ nodeShapes:SoftwareRequirements
 		sh:or ( [ sh:property propertyShapes:SoftwareRequirementsInReadme ]
 		        [ sh:node nodeShapes:LanguageSpecificRequirementsFile ] ) ;
 		sh:message
-		      "No information on the requirements of the software was found. Make sure it is included in the README file or a language-specific requirements file is used." .
+		      "No information on the requirements of the software was found. Make sure they are included in the README file or a language-specific requirements file is used." .
