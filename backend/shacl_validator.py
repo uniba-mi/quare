@@ -263,7 +263,7 @@ def include_branches_with_root_dir_files_of_default_branch(graph: Graph, repo_en
 
 
 def include_issues(graph: Graph, repo_entity: URIRef, repo: Repository) -> None:
-    issue_list = repo.get_issues()
+    issue_list = repo.get_issues(state="open")
     if issue_list:
         for issue in issue_list:
             issue_entity = URIRef(issue.html_url)

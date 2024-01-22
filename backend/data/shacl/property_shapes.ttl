@@ -198,6 +198,7 @@ propertyShapes:MainLanguagePython
 		# The main programming language has to be "Python".
 		sh:path     sd:programmingLanguage ;
 		sh:minCount 1 ;
+		sh:pattern  "Python" ;
 		sh:message  "No main programming language was found or it is not Python. Make sure Python is the main programming language of the repository." .
 
 propertyShapes:MainLanguageTypeScript
@@ -224,12 +225,12 @@ propertyShapes:NonDefaultBranch
 		sh:pattern "false" .
 
 propertyShapes:NoOpenIssues
-		a           sh:PropertyShape ;
-		# There must not be any open issues.
-		sh:path     ( props:hasIssue props:hasState ) ;
-		sh:pattern  "open" ;
-		sh:maxCount 0 ;
-		sh:message  "The repository has open issues or pull requests. Make sure all issues and pull requests are closed." .
+		a                      sh:PropertyShape ;
+		# There must not be any open issues (note that pull requests are considered issues here).
+		sh:path                ( props:hasIssue props:hasState ) ;
+		sh:qualifiedValueShape [ sh:pattern "open" ] ;
+		sh:qualifiedMaxCount   0 ;
+		sh:message             "The repository has open issues or pull requests. Make sure all issues and pull requests are closed." .
 
 propertyShapes:PackageJsonFileExistent
 		a                      sh:PropertyShape ;
@@ -334,4 +335,4 @@ propertyShapes:ValidVersionIncrement
 		sh:path     props:versionsHaveValidIncrement ;
 		sh:pattern  "true" ;
 		sh:minCount 1 ;
-		sh:message "The increment between two consecutive version numbers is invalid at least once. See the specification page for the concrete requirements." .
+		sh:message  "The increment between two consecutive version numbers is invalid at least once. See the specification page for the concrete requirements." .
