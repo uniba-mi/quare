@@ -96,6 +96,8 @@
     const handleResultButtonPress = (event) => {
         const index = event.srcElement.id.split("-")[2];
         revealValidationResult(
+            $validationData[index]["repoName"],
+            $validationData[index]["repoType"],
             $validationData[index]["report"],
             $validationData[index]["verbalized"]
         );
@@ -111,9 +113,7 @@
             <!-- GitHub access token can be specified only once -->
             <div class="row mb-3">
                 <div class="col">
-                    <label for="validation-access-token" class="form-label"
-                    >GitHub Access Token</label
-                    >
+                    <label for="validation-access-token" class="form-label">GitHub Access Token</label>
                     <input
                             class="form-control"
                             id="validation-access-token"
@@ -130,9 +130,7 @@
             {#each {length: Object.keys($validationData).length} as _, i}
                 <div class="row mb-3 vertically-centered-row">
                     <div class="col">
-                        <label for="validation-repository-{i}" class="form-label"
-                        >Repository Name</label
-                        >
+                        <label for="validation-repository-{i}" class="form-label">Repository Name</label>
                         <input
                                 class="form-control"
                                 id="validation-repository-{i}"
@@ -142,9 +140,7 @@
                         />
                     </div>
                     <div class="col">
-                        <label for="validation-type-{i}" class="form-label"
-                        >Project Type</label
-                        >
+                        <label for="validation-type-{i}" class="form-label">Project Type</label>
                         <select
                                 class="form-select"
                                 id="validation-type-{i}"
@@ -163,18 +159,13 @@
                                 {#if $validationData[i]["status"] === "success"}
                                     {#if $validationData[i]["numberOfFulfilledCriteria"] !== undefined}
                                         <button class="btn btn-success disabled button-with-progressbar">
-                      <span
-                              role="progressbar"
-                              aria-valuenow={$validationData[i][
-                          "numberOfFulfilledCriteria"
-                        ]}
-                              aria-valuemin={0}
-                              aria-valuemax={$validationData[i]["numberOfCriteria"]}
-                              style="--actual-value: {$validationData[i]
-                          .numberOfFulfilledCriteria}; --max-value: {$validationData[
-                          i
-                        ].numberOfCriteria}"
-                      ></span>
+                                            <span role="progressbar"
+                                                  aria-valuenow={$validationData[i]["numberOfFulfilledCriteria"]}
+                                                  aria-valuemin={0}
+                                                  aria-valuemax={$validationData[i]["numberOfCriteria"]}
+                                                  style="--actual-value: {$validationData[i].numberOfFulfilledCriteria};
+                                                  --max-value: {$validationData[i].numberOfCriteria}"
+                                            ></span>
                                         </button>
                                     {:else}
                                         <button class="btn btn-success disabled">
@@ -184,46 +175,33 @@
                                 {:else if $validationData[i]["status"] === "failure"}
                                     {#if $validationData[i]["numberOfFulfilledCriteria"] !== undefined}
                                         <button class="btn btn-danger disabled button-with-progressbar">
-                      <span
-                              role="progressbar"
-                              aria-valuenow={$validationData[i][
-                          "numberOfFulfilledCriteria"
-                        ]}
-                              aria-valuemin={0}
-                              aria-valuemax={$validationData[i]["numberOfCriteria"]}
-                              style="--actual-value: {$validationData[i]
-                          .numberOfFulfilledCriteria}; --max-value: {$validationData[
-                          i
-                        ].numberOfCriteria}"
-                      ></span>
+                                            <span role="progressbar"
+                                                  aria-valuenow={$validationData[i]["numberOfFulfilledCriteria"]}
+                                                  aria-valuemin={0}
+                                                  aria-valuemax={$validationData[i]["numberOfCriteria"]}
+                                                  style="--actual-value: {$validationData[i].numberOfFulfilledCriteria};
+                                                  --max-value: {$validationData[i].numberOfCriteria}"
+                                            ></span>
                                         </button>
-                                        <button
-                                                on:click|preventDefault={handleResultButtonPress}
-                                                class="btn btn-outline-danger"
-                                                id="result-button-{i}"
-                                        >
-                                            View
+                                        <button on:click|preventDefault={handleResultButtonPress}
+                                                class="btn btn-outline-danger" id="result-button-{i}"> View
                                         </button>
                                     {:else}
                                         <button class="btn btn-danger disabled">
                                             <AlertCircleIcon size="35"/>
                                         </button>
-                                        <button
-                                                on:click|preventDefault={handleResultButtonPress}
+                                        <button on:click|preventDefault={handleResultButtonPress}
                                                 class="btn btn-outline-danger"
                                                 id="result-button-{i}"
-                                        >
-                                            View
+                                        > View
                                         </button>
                                     {/if}
                                 {:else if $validationData[i]["status"] === "loading"}
                                     <button class="btn btn-secondary disabled">
-                    <span
-                            class="spinner-border spinner-border"
-                            style="width: 1.65rem; height: 1.65rem;"
-                            role="status"
-                            aria-hidden="true"
-                    />
+                                        <span class="spinner-border spinner-border"
+                                              style="width: 1.65rem; height: 1.65rem;" role="status"
+                                              aria-hidden="true"
+                                        ></span>
                                     </button>
                                 {:else if $validationData[i]["status"] === "unknown"}
                                     <button class="btn btn-secondary disabled">
@@ -268,21 +246,10 @@
 
     <!-- toast for status messages -->
     <div class="toast-container position-fixed bottom-0 end-0 p-3">
-        <div
-                id="liveToast"
-                class="toast text-bg-success"
-                role="alert"
-                aria-live="assertive"
-                aria-atomic="true"
-        >
+        <div id="liveToast" class="toast text-bg-success" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="toast-header">
                 <strong class="me-auto">Success</strong>
-                <button
-                        type="button"
-                        class="btn-close"
-                        data-bs-dismiss="toast"
-                        aria-label="Close"
-                />
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"/>
             </div>
             <div class="toast-body">Entries have been saved!</div>
         </div>

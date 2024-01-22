@@ -1,5 +1,5 @@
-def verbalize(message: str, repo_name: str, repo_type: str) -> str:
-    verbalized_explanation = f"{repo_name} does not comply with the quality criteria of {repo_type}:\n"
+def verbalize(message: str) -> list[str]:
+    verbalized_explanation = []
 
     splitlines = message.splitlines()
 
@@ -7,7 +7,7 @@ def verbalize(message: str, repo_name: str, repo_type: str) -> str:
         # For NodeConstraintComponent, there is a more specific violation in the details, so skip the general one.
         if ("Constraint Violation" in line) & ("NodeConstraintComponent" not in line):
             violation_message = extract_violation_message(splitlines[index:])
-            verbalized_explanation += f"- {violation_message}\n"
+            verbalized_explanation.append(violation_message)
     return verbalized_explanation
 
 

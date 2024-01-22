@@ -34,7 +34,7 @@ def validate() -> Response:
 
     return_code, number_of_violations, report = validation_interface.run_validator(github_access_token, repo_name,
                                                                                    repo_type)
-    verbalized = verbalization_interface.run_verbalizer(report, repo_name, repo_type)
+    verbalized = verbalization_interface.run_verbalizer(report)
 
     results = {"repoName": repo_name, "returnCode": return_code, "numberOfViolations": number_of_violations,
                "report": report, "verbalized": verbalized}
