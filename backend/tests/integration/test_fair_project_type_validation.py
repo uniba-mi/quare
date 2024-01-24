@@ -2,16 +2,14 @@ import pytest
 from pytest_mock import MockerFixture
 from unittest.mock import MagicMock
 
-from backend.shacl_validator import create_project_type_representation, validate_repo_against_specs
+from backend.shacl_validator import validate_repo_against_specs, shapes_graph
 
 readme_url = "https://testing.example.org/test-repo/blob/main/README.md"
 
 
 @pytest.fixture
 def basic_github_repo(mocker: MockerFixture) -> MagicMock:
-    modified_shapes_graph = create_project_type_representation().parse(
-        "./tests/integration/references/test_project_shapes.ttl")
-    mocker.patch("backend.shacl_validator.create_project_type_representation", return_value=modified_shapes_graph)
+    shapes_graph.parse("./tests/integration/references/test_project_shapes.ttl")
     github_repo_mock = mocker.patch("github.MainClass.Github.get_repo")
     github_repo_mock.return_value.html_url = "https://testing.example.org/test-repo"
     return github_repo_mock
