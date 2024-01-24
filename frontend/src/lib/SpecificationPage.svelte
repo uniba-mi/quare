@@ -52,3 +52,11 @@
     {/each}
   </div>
 </div>
+
+<style>
+
+  li {
+    margin-top: 0.3em;
+  }
+
+</style>

@@ -3,24 +3,27 @@
 @prefix propertyShapes: <https://example.org/repo/property-shapes/> .
 
 nodeShapes:DescriptionOrReadme
-		a          sh:NodeShape ;
-		sh:or      ( [ sh:property propertyShapes:ReadmeFileExistent ]
-		             [ sh:property propertyShapes:DescriptionFilled ] ) ;
-		sh:message "The repository has no description and no README file. Make sure at least one of the two is present." .
+		a              sh:NodeShape ;
+		sh:or          ( [ sh:property propertyShapes:ReadmeFileExistent ]
+		                 [ sh:property propertyShapes:DescriptionFilled ] ) ;
+		sh:message     "The repository has no description and no README file. Make sure at least one of the two is present." ;
+		sh:description "A description or README file has to be present (at least one of the two)." .
 
 nodeShapes:DescriptionOrAtLeastOneTopic
-		a     sh:NodeShape ;
-		sh:or ( [ sh:property propertyShapes:DescriptionFilled ]
-		        [ sh:property propertyShapes:AtLeastOneTopic ] ) ;
-		sh:message
-		      "Not sufficient software metadata was found. Make sure the description is filled or there is at least one topic." .
+		a              sh:NodeShape ;
+		sh:or          ( [ sh:property propertyShapes:DescriptionFilled ]
+		                 [ sh:property propertyShapes:AtLeastOneTopic ] ) ;
+		sh:message     "The repository has no description and no topics assigned. Make sure the description is filled or there is at least one topic." ;
+		sh:description "A description or a minimum of one topic has to be present (at least one of the two)." .
 
 nodeShapes:ExplicitCitation
 		a     sh:NodeShape ;
 		sh:or ( [ sh:property propertyShapes:CitationOrBibFileInDefaultBranch ]
 		        [ sh:property propertyShapes:CitationInformationInReadme ] ) ;
 		sh:message
-		      "No citation information was found. Make sure they are included in the README file or there is a file CITATION.cff or a .bib file in the root directory of the default branch." .
+		      "No citation information was found. Make sure they are included in the README file or there is a file CITATION.cff or a .bib file in the root directory of the default branch." ;
+		sh:description
+		      "There has to be information on how to cite the software. This can be achieved using a CITATION.cff file or a .bib file in the root directory of the default branch or using a README section where the title contains \"citation\", \"cite\" or \"citing\". At least one of the mentioned options has to be fulfilled." .
 
 nodeShapes:LanguageSpecificRequirementsFile
 		a     sh:NodeShape ;
@@ -43,7 +46,9 @@ nodeShapes:LanguageSpecificRequirementsFile
 		      [ sh:property propertyShapes:MainLanguageTypeScript ;
 		        sh:property propertyShapes:PackageJsonFileInDefaultBranch ] ) ;
 		sh:message
-		      "No common language-specific requirements file was found. For expected files, see the specification page." .
+		      "No common language-specific requirements file was found. For expected files, see the specification page." ;
+		sh:description
+		      "In the root directory of the default branch, there has to be a requirements file common to the main programming language. For Java, either a file build.gradle or pom.xml has to be present. For JavaScript and TypeScript, a file package.json has to be present. For Python, either a file requirements.txt, environment.yaml or environment.yml has to be present. Other languages are currently not supported by this rule." .
 
 nodeShapes:PersistentId
 		a     sh:NodeShape ;
@@ -51,18 +56,24 @@ nodeShapes:PersistentId
 		        [ sh:property propertyShapes:DoiAsHomepage ]
 		        [ sh:property propertyShapes:ReadmeFileWithDoi ] ) ;
 		sh:message
-		      "No persistent id was found. Make sure there is at least one release and all tags follow the Semantic Versioning pattern or the homepage is a DOI or the README file contains a DOI." .
+		      "No persistent id was found. Make sure there is at least one release and all tags follow the Semantic Versioning pattern or the homepage is a DOI or the README file contains a DOI." ;
+		sh:description
+		      "A persistent id has to be present. For this, there has to be at least one release and all tags follow the Semantic Versioning pattern or the homepage attribute has to be filled with a DOI or the README file has to contain a DOI. At least one of the mentioned options has to be fulfilled." .
 
 nodeShapes:SemanticVersioning
 		a      sh:NodeShape ;
 		sh:and ( [ sh:property propertyShapes:SemanticVersioningTags ]
 		         [ sh:property propertyShapes:ValidVersionIncrement ] ) ;
 		sh:message
-		       "There are no releases or Semantic Versioning is violated. Make sure there is at least one release, all tags follow the pattern and the increment between version numbers is valid." .
+		       "There are no releases or Semantic Versioning is violated. Make sure there is at least one release, all tags follow the pattern and the increment between version numbers is valid." ;
+		sh:description
+		       "There has to be at least one release and all tags have to follow the Semantic Versioning Pattern. Additionally, the version increment has to be valid: Compared to the previous version, the next version must have an increase of 1 in the first position with the other two positions set to 0 or have an increase of 1 in the second position with the last position set to 0 or have an increase of 1 in the last position or have a (different) suffix." .
 
 nodeShapes:SoftwareRequirements
 		a     sh:NodeShape ;
 		sh:or ( [ sh:property propertyShapes:SoftwareRequirementsInReadme ]
 		        [ sh:node nodeShapes:LanguageSpecificRequirementsFile ] ) ;
 		sh:message
-		      "No information on the requirements of the software was found. Make sure they are included in the README file or a language-specific requirements file is used." .
+		      "No information on the requirements of the software was found. Make sure they are included in the README file or a language-specific requirements file is used." ;
+		sh:description
+		      "Information on the requirements of the software are required. They can be included in the README file or a language-specific file (at least one of the two). In the first approach, the README file has to contain a corresponding section. The title of this section has to contain \"dependencies\", \"requirements\" or \"prerequisite\". In the second approach, the root directory of the default branch has to contain a requirements file common to the main programming language. For Java, either a file build.gradle or pom.xml has to be present. For JavaScript and TypeScript, a file package.json has to be present. For Python, either a file requirements.txt, environment.yaml or environment.yml has to be present. For other languages, the README approach has to be used currently." .
