@@ -1,6 +1,6 @@
 <script>
     import * as bootstrap from "bootstrap";
-    import '../validation-form-style.css';
+    import './validation-form-style.css';
     import {
         projectTypeSpecifications,
         validationSettings,

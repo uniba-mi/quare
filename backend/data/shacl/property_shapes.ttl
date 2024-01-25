@@ -55,8 +55,7 @@ propertyShapes:CitationOrBibFileInDefaultBranch
 		              [ sh:property propertyShapes:ExactlyOneBibFile ] ) ;
 		sh:message  "No file with citation information was found. Make sure there is a file CITATION.cff or a file ending with .bib in the root directory of the default branch." ;
 		sh:description
-		            "There has to be a file with citation information. This can be achieved using a CITATION.cff file or a .bib file in the root directory of the default branch." .
-
+		            "There has to be a file with citation information. For this, at least one of the following files has to be present in the root directory of the default branch: \n - CITATION.cff \n - exactly one .bib file. \n \n" .
 
 propertyShapes:CitationInformationInReadme
 		a           sh:PropertyShape ;
@@ -64,7 +63,7 @@ propertyShapes:CitationInformationInReadme
 		sh:minCount 1 ;
 		sh:message  "There is no README file or it does not contain information on how to cite the software. Make sure this information is included in a README section." ;
 		sh:description
-		            "The README file has to contain a section with information on how to cite the software. The title of this section has to contain \"citation\", \"cite\" or \"citing\"." .
+		            "The README file has to contain a section with information on how to cite the software. The title of this section has to contain: \n - \"citation\" or \n - \"cite\" or \n - \"citing\". \n \n" .
 
 propertyShapes:DefaultBranch
 		a          sh:PropertyShape ;
@@ -118,7 +117,7 @@ propertyShapes:ExactlyOneJavaRequirementsFileInDefaultBranch
 		                          [ sh:property propertyShapes:BuildGradleFileExistent ] ) ] ) ;
 		sh:message  "No Java requirements file was found. Make sure either the file pom.xml or build.gradle is present in the root directory of the default branch." ;
 		sh:description
-		            "A Java requirements file has to be present. For this, there has to be either a file build.gradle or pom.xml in the root directory of the default branch." .
+		            "A Java requirements file has to be present. For this, there has to be exactly one of the following files in the root directory of the default branch:\n - build.gradle \n - pom.xml. \n \n" .
 
 propertyShapes:ExactlyOneBibFile
 		a                      sh:PropertyShape ;
@@ -156,7 +155,7 @@ propertyShapes:ExactlyOnePythonRequirementsFileInDefaultBranch
 		                          [ sh:property propertyShapes:EnvironmentYamlFileExistent ] ) ] ) ;
 		sh:message  "No Python requirements file was found. Make sure either the file requirements.txt or environment.yaml or environment.yml is present in the root directory of the default branch." ;
 		sh:description
-		            "A Python requirements file has to be present. For this, there has to be either a file requirements.txt or environment.yaml or environment.yml in the root directory of the default branch." .
+		            "A Python requirements file has to be present. For this, there has to be exactly one of the following files in the root directory of the default branch:\n - requirements.txt \n - environment.yaml \n - environment.yml. \n \n" .
 
 propertyShapes:GnuGplV3License
 		a                      sh:PropertyShape ;
@@ -173,7 +172,7 @@ propertyShapes:InstallationInstructionsInReadme
 		sh:minCount 1 ;
 		sh:message  "There is no README file or it does not contain installation instructions. Make sure this information is included in a README section." ;
 		sh:description
-		            "The README file has to contain a section with information on how to install the software. The title of this section has to contain \"install\", \"setup\", \"set up\" or \"setting up\"." .
+		            "The README file has to contain a section with information on how to install the software. The title of this section has to contain: \n - \"install\" or \n - \"setup\" or \n - \"set up\" or \n - \"setting up\". \n \n" .
 
 propertyShapes:MainBranchExistent
 		a                      sh:PropertyShape ;
@@ -331,7 +330,7 @@ propertyShapes:SoftwareRequirementsInReadme
 		sh:minCount 1 ;
 		sh:message  "There is no README file or it does not contain information about the requirements of the software. Make sure this information is included in a README section." ;
 		sh:description
-		            "The README file has to contain a section with information about the requirements of the software. The title of this section has to contain \"dependencies\", \"requirements\" or \"prerequisite\"." .
+		            "The README file has to contain a section with information about the requirements of the software. The title of this section has to contain: \n - \"dependencies\" or \n - \"requirements\" or \n - \"prerequisite\". \n \n" .
 
 propertyShapes:UsageNotesInReadme
 		a           sh:PropertyShape ;
@@ -339,7 +338,7 @@ propertyShapes:UsageNotesInReadme
 		sh:minCount 1 ;
 		sh:message  "There is no README file or it does not contain usage instructions for the software. Make sure this information is included in a README section." ;
 		sh:description
-		            "The README file has to contain a section with usage instructions for the software. The title of this section has to contain \"usage\", \"how to use\" or \"user manual\"." .
+		            "The README file has to contain a section with usage instructions for the software. The title of this section has to contain: \n - \"usage\" or \n - \"how to use\" or \n - \"user manual\". \n \n" .
 
 propertyShapes:ValidVersionIncrement
 		a           sh:PropertyShape ;
@@ -348,4 +347,4 @@ propertyShapes:ValidVersionIncrement
 		sh:minCount 1 ;
 		sh:message  "The increment between two consecutive version numbers is invalid at least once. See the specification page for the concrete requirements." ;
 		sh:description
-		            "The version increment has to be valid: Compared to the previous version, the next version must have an increase of 1 in the first position with the other two positions set to 0 or have an increase of 1 in the second position with the last position set to 0 or have an increase of 1 in the last position or have a (different) suffix." .
+		            "The version increment has to be valid. Compared to the previous version, the next version must: \n - have an increase of 1 in the first position with the other two positions set to 0 or \n - have an increase of 1 in the second position with the last position set to 0 or \n - have an increase of 1 in the last position or \n - have a (different) suffix. \n \n" .

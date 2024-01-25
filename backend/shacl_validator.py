@@ -64,7 +64,7 @@ def get_quality_criteria_for_project_type(project_type_node: Node) -> list[str]:
             description = shapes_graph.value(subject=shape, predicate=sh["description"],
                                              object=None, any=False)
             quality_criteria.append(
-                f"{description} [{shape_name}]" if description else shape_name)
+                f"{description} _[{shape_name}]_" if description else shape_name)
 
     return quality_criteria
 
