@@ -8,13 +8,15 @@
 <p align="center">
     <a href="#summary">Summary</a>
     •
-    <a href="#installation">Installation</a>
+    <a href="#installation-and-prerequisites">Installation and Prerequisites</a>
     •
     <a href="#usage">Usage</a>
     •
     <a href="#repository-representation-ontology">Repository Representation Ontology</a>
     •
     <a href="#developer-information">Developer Information</a>
+    •
+    <a href="#citation">Citation</a>
     •
     <a href="#license">License</a>
 </p>
@@ -23,9 +25,9 @@
 
 QuaRe is a single-page application that allows users to test if GitHub repositories of interest comply with certain quality criteria that they should fulfill according to the type of project in the repository. 
 
-## Installation
+## Installation and Prerequisites
 
-Thanks to Docker, only [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/install/) have to be installed for using the tool.
+Thanks to Docker, only [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/install/) are required for using the tool.
 
 ## Usage 
 
@@ -142,6 +144,33 @@ To reproduce the performance benchmarks shown in the paper, perform the followin
 - Create a file called `git_access_token` in the [backend](./backend/) folder. Then enter your GitHub access token in that file and save. 
 - Run `docker compose run --service-ports --entrypoint bash backend` to get a bash that is attached to the frontend container.
 - Run `./benchmark.py` to start the backend in development mode. 
+
+## Citation
+If you use this software, please cite it as below:
+
+```bibtex
+@inproceedings{DBLP:conf/lwa/MartinH22,
+  author       = {Leon Martin and
+                  Andreas Henrich},
+  editor       = {Pascal Reuss and
+                  Viktor Eisenstadt and
+                  Jakob Michael Sch{\"{o}}nborn and
+                  Jero Sch{\"{a}}fer},
+  title        = {Specification and Validation of Quality Criteria for Git Repositories
+                  using {RDF} and {SHACL}},
+  booktitle    = {Proceedings of the {LWDA} 2022 Workshops: FGWM, FGKD, and FGDB, Hildesheim
+                  (Germany), Oktober 5-7th, 2022},
+  series       = {{CEUR} Workshop Proceedings},
+  volume       = {3341},
+  pages        = {124--135},
+  publisher    = {CEUR-WS.org},
+  year         = {2022},
+  url          = {https://ceur-ws.org/Vol-3341/WM-LWDA\_2022\_CRC\_1149.pdf},
+  timestamp    = {Sat, 30 Sep 2023 09:52:13 +0200},
+  biburl       = {https://dblp.org/rec/conf/lwa/MartinH22.bib},
+  bibsource    = {dblp computer science bibliography, https://dblp.org}
+}
+```
 
 ## License
 
