@@ -10,22 +10,24 @@ propertyShapes:AtLeastOneRelease
 		sh:path        sd:hasVersion ;
 		sh:minCount    1 ;
 		sh:message     "The repository has no releases. Make sure there is at least one release." ;
-		sh:description "There has to be at least one release." .
+		sh:description "| Summary | There has to be at least one release. | \n |---|---| \n | Details | |" .
 
 propertyShapes:AtLeastOneTopic
-		a              sh:PropertyShape ;
+		a           sh:PropertyShape ;
 		# Topics are internally mapped via the "keywords" property.
-		sh:path        sd:keywords ;
-		sh:minCount    1 ;
-		sh:message     "No topics are assigned to the repository. Make sure there is at least one topic assigned." ;
-		sh:description "At least one topic has to be assigned to the repository." .
+		sh:path     sd:keywords ;
+		sh:minCount 1 ;
+		sh:message  "No topics are assigned to the repository. Make sure there is at least one topic assigned." ;
+		sh:description
+		            "| Summary | At least one topic has to be assigned to the repository. | \n |---|---| \n | Details | |" .
 
 propertyShapes:AtLeastTwoBranches
-		a              sh:PropertyShape ;
-		sh:path        props:hasBranch ;
-		sh:minCount    2 ;
-		sh:message     "The repository does not have enough branches. Make sure there are at least two branches." ;
-		sh:description "At least two branches have to be present in the repository." .
+		a           sh:PropertyShape ;
+		sh:path     props:hasBranch ;
+		sh:minCount 2 ;
+		sh:message  "The repository does not have enough branches. Make sure there are at least two branches." ;
+		sh:description
+		            "| Summary | At least two branches have to be present in the repository. | \n |---|---| \n | Details | |" .
 
 propertyShapes:BuildGradleFileExistent
 		a                      sh:PropertyShape ;
@@ -34,7 +36,7 @@ propertyShapes:BuildGradleFileExistent
 		sh:qualifiedValueShape [ sh:pattern "build.gradle" ] ;
 		sh:qualifiedMinCount   1 ;
 		sh:message             "The file build.gradle was not found. Make sure it is present in the root directory." ;
-		sh:description         "The file build.gradle has to be present in the root directory." .
+		sh:description         "| Summary | The file build.gradle has to be present in the root directory. | \n |---|---| \n | Details | |" .
 
 propertyShapes:CitationCffFileExistent
 		a                      sh:PropertyShape ;
@@ -43,8 +45,7 @@ propertyShapes:CitationCffFileExistent
 		sh:qualifiedValueShape [ sh:pattern "^CITATION.cff$" ] ;
 		sh:qualifiedMinCount   1 ;
 		sh:message             "The file CITATION.cff was not found. Make sure it is present in the root directory." ;
-		sh:description         "The file CITATION.cff has to be present in the root directory." .
-
+		sh:description         "| Summary | The file CITATION.cff has to be present in the root directory. | \n |---|---| \n | Details | |" .
 
 propertyShapes:CitationOrBibFileInDefaultBranch
 		a           sh:PropertyShape ;
@@ -55,7 +56,7 @@ propertyShapes:CitationOrBibFileInDefaultBranch
 		              [ sh:property propertyShapes:ExactlyOneBibFile ] ) ;
 		sh:message  "No file with citation information was found. Make sure there is a file CITATION.cff or a file ending with .bib in the root directory of the default branch." ;
 		sh:description
-		            "There has to be a file with citation information. For this, at least one of the following files has to be present in the root directory of the default branch: \n - CITATION.cff \n - exactly one .bib file. \n \n" .
+		            "| Summary | There has to be a file with citation information. | \n |---|---| \n | Details | At least one of the following files has to be present in the root directory of the default branch: <ul> <li>CITATION.cff</li> <li>exactly one .bib file.</li> </ul> |" .
 
 propertyShapes:CitationInformationInReadme
 		a           sh:PropertyShape ;
@@ -63,7 +64,7 @@ propertyShapes:CitationInformationInReadme
 		sh:minCount 1 ;
 		sh:message  "There is no README file or it does not contain information on how to cite the software. Make sure this information is included in a README section." ;
 		sh:description
-		            "The README file has to contain a section with information on how to cite the software. The title of this section has to contain: \n - \"citation\" or \n - \"cite\" or \n - \"citing\". \n \n" .
+		            "| Summary | The README file has to contain information on how to cite the software. | \n |---|---| \n | Details | There has to be a section whose title contains: <ul> <li>\"citation\" or</li> <li>\"cite\" or</li> <li>\"citing\".</li> </ul> |" .
 
 propertyShapes:DefaultBranch
 		a          sh:PropertyShape ;
@@ -77,18 +78,19 @@ propertyShapes:DescriptionFilled
 		sh:minCount    1 ;
 		sh:maxCount    1 ;
 		sh:message     "The repository has no description. Make sure the description attribute is filled." ;
-		sh:description "The description attribute has to be filled." .
+		sh:description "| Summary | The description attribute has to be filled. | \n |---|---| \n | Details | |" .
 
 propertyShapes:DoiAsHomepage
-		a              sh:PropertyShape ;
+		a           sh:PropertyShape ;
 		# The homepage link is internally mapped via the "website" property.
-		sh:path        sd:website ;
+		sh:path     sd:website ;
 		# https://www.crossref.org/blog/dois-and-matching-regular-expressions/
 		# Put into the right format with the help of ChatGPT.
-		sh:pattern     "^https://doi\\.org/10\\.[0-9]{4,}/[-._;()/:A-Z0-9]+$" ;
-		sh:minCount    1 ;
-		sh:message     "The homepage attribute is not set or its value is not a DOI. Make sure this attribute is filled with a DOI." ;
-		sh:description "The homepage attribute has to be filled and its value has to be a DOI." .
+		sh:pattern  "^https://doi\\.org/10\\.[0-9]{4,}/[-._;()/:A-Z0-9]+$" ;
+		sh:minCount 1 ;
+		sh:message  "The homepage attribute is not set or its value is not a DOI. Make sure this attribute is filled with a DOI." ;
+		sh:description
+		            "| Summary | The homepage attribute has to be filled and its value has to be a DOI. | \n |---|---| \n | Details | |" .
 
 propertyShapes:EnvironmentYmlFileExistent
 		a                      sh:PropertyShape ;
@@ -97,7 +99,7 @@ propertyShapes:EnvironmentYmlFileExistent
 		sh:qualifiedValueShape [ sh:pattern "environment.yml" ] ;
 		sh:qualifiedMinCount   1 ;
 		sh:message             "The file environment.yml was not found. Make sure it is present in the root directory." ;
-		sh:description         "The file environment.yml has to be present in the root directory." .
+		sh:description         "| Summary | The file environment.yml has to be present in the root directory. | \n |---|---| \n | Details | |" .
 
 propertyShapes:EnvironmentYamlFileExistent
 		a                      sh:PropertyShape ;
@@ -106,7 +108,7 @@ propertyShapes:EnvironmentYamlFileExistent
 		sh:qualifiedValueShape [ sh:pattern "environment.yaml" ] ;
 		sh:qualifiedMinCount   1 ;
 		sh:message             "The file environment.yaml was not found. Make sure it is present in the root directory." ;
-		sh:description         "The file environment.yaml has to be present in the root directory." .
+		sh:description         "| Summary | The file environment.yaml has to be present in the root directory. | \n |---|---| \n | Details | |" .
 
 propertyShapes:ExactlyOneJavaRequirementsFileInDefaultBranch
 		a           sh:PropertyShape ;
@@ -117,7 +119,7 @@ propertyShapes:ExactlyOneJavaRequirementsFileInDefaultBranch
 		                          [ sh:property propertyShapes:BuildGradleFileExistent ] ) ] ) ;
 		sh:message  "No Java requirements file was found. Make sure either the file pom.xml or build.gradle is present in the root directory of the default branch." ;
 		sh:description
-		            "A Java requirements file has to be present. For this, there has to be exactly one of the following files in the root directory of the default branch:\n - build.gradle \n - pom.xml. \n \n" .
+		            "| Summary | A Java requirements file has to be present. | \n |---|---| \n | Details | There has to be exactly one of the following files in the root directory of the default branch: <ul> <li>build.gradle</li> <li>pom.xml</li> </ul> |" .
 
 propertyShapes:ExactlyOneBibFile
 		a                      sh:PropertyShape ;
@@ -127,7 +129,7 @@ propertyShapes:ExactlyOneBibFile
 		sh:qualifiedMinCount   1 ;
 		sh:qualifiedMaxCount   1 ;
 		sh:message             "There is no or more than one .bib file. Make sure exactly one .bib file is present in the root directory." ;
-		sh:description         "There has to be exactly one .bib file in the root directory." .
+		sh:description         "| Summary | There has to be exactly one .bib file in the root directory. | \n |---|---| \n | Details | |" .
 
 propertyShapes:ExactlyOneBranch
 		a              sh:PropertyShape ;
@@ -135,15 +137,16 @@ propertyShapes:ExactlyOneBranch
 		sh:minCount    1 ;
 		sh:maxCount    1 ;
 		sh:message     "The repository does not have the correct number of branches. Make sure there is exactly one branch." ;
-		sh:description "Exactly one branch has to be present in the repository." .
+		sh:description "| Summary | Exactly one branch has to be present in the repository. | \n |---|---| \n | Details | |" .
 
 propertyShapes:ExactlyOneLicense
-		a              sh:PropertyShape ;
-		sh:path        sd:license ;
-		sh:minCount    1 ;
-		sh:maxCount    1 ;
-		sh:message     "No license information was found. Make sure there is a LICENSE file." ;
-		sh:description "The repository has to contain license information. For this, a LICENSE file is required." .
+		a           sh:PropertyShape ;
+		sh:path     sd:license ;
+		sh:minCount 1 ;
+		sh:maxCount 1 ;
+		sh:message  "No license information was found. Make sure there is a LICENSE file." ;
+		sh:description
+		            "| Summary | The repository has to contain license information. | \n |---|---| \n | Details | A LICENSE file is required. |" .
 
 propertyShapes:ExactlyOnePythonRequirementsFileInDefaultBranch
 		a           sh:PropertyShape ;
@@ -155,7 +158,7 @@ propertyShapes:ExactlyOnePythonRequirementsFileInDefaultBranch
 		                          [ sh:property propertyShapes:EnvironmentYamlFileExistent ] ) ] ) ;
 		sh:message  "No Python requirements file was found. Make sure either the file requirements.txt or environment.yaml or environment.yml is present in the root directory of the default branch." ;
 		sh:description
-		            "A Python requirements file has to be present. For this, there has to be exactly one of the following files in the root directory of the default branch:\n - requirements.txt \n - environment.yaml \n - environment.yml. \n \n" .
+		            "| Summary | A Python requirements file has to be present. | \n |---|---| \n | Details | There has to be exactly one of the following files in the root directory of the default branch: <ul> <li>requirements.txt</li> <li>environment.yaml</li> <li>environment.yml</li> </ul> |" .
 
 propertyShapes:GnuGplV3License
 		a                      sh:PropertyShape ;
@@ -164,7 +167,7 @@ propertyShapes:GnuGplV3License
 		sh:qualifiedValueShape [ sh:pattern "GNU General Public License v3.0" ] ;
 		sh:qualifiedMinCount   1 ;
 		sh:message             "There is no license declared or it is not \"GNU General Public License v3.0\". Make sure this license is used." ;
-		sh:description         "There has to be a license and it has to be \"GNU General Public License v3.0\"." .
+		sh:description         "| Summary | There has to be a license and it has to be \"GNU General Public License v3.0\". | \n |---|---| \n | Details | |" .
 
 propertyShapes:InstallationInstructionsInReadme
 		a           sh:PropertyShape ;
@@ -172,7 +175,7 @@ propertyShapes:InstallationInstructionsInReadme
 		sh:minCount 1 ;
 		sh:message  "There is no README file or it does not contain installation instructions. Make sure this information is included in a README section." ;
 		sh:description
-		            "The README file has to contain a section with information on how to install the software. The title of this section has to contain: \n - \"install\" or \n - \"setup\" or \n - \"set up\" or \n - \"setting up\". \n \n" .
+		            "| Summary | The README file has to contain information on how to install the software. | \n |---|---| \n | Details | There has to be a section whose title contains: <ul> <li>\"install\" or</li> <li>\"setup\" or</li> <li>\"set up\" or</li> <li>\"setting up\".</li> </ul> |" .
 
 propertyShapes:MainBranchExistent
 		a                      sh:PropertyShape ;
@@ -182,39 +185,43 @@ propertyShapes:MainBranchExistent
 		sh:qualifiedMinCount   1 ;
 		sh:qualifiedMaxCount   1 ;
 		sh:message             "There is no branch named \"main\". Make sure this branch is present." ;
-		sh:description         "There has to be a branch named \"main\"." .
+		sh:description         "| Summary | There has to be a branch named \"main\". | \n |---|---| \n | Details | |" .
 
 propertyShapes:MainLanguageJava
-		a              sh:PropertyShape ;
-		sh:path        sd:programmingLanguage ;
-		sh:minCount    1 ;
-		sh:pattern     "Java$" ;
-		sh:message     "No main programming language was found or it is not Java. Make sure Java is the main programming language of the repository." ;
-		sh:description "Java has to be the main programming language of the repository." .
+		a           sh:PropertyShape ;
+		sh:path     sd:programmingLanguage ;
+		sh:minCount 1 ;
+		sh:pattern  "Java$" ;
+		sh:message  "No main programming language was found or it is not Java. Make sure Java is the main programming language of the repository." ;
+		sh:description
+		            "| Summary | Java has to be the main programming language of the repository. | \n |---|---| \n | Details | |" .
 
 propertyShapes:MainLanguageJavaScript
-		a              sh:PropertyShape ;
-		sh:path        sd:programmingLanguage ;
-		sh:minCount    1 ;
-		sh:pattern     "JavaScript" ;
-		sh:message     "No main programming language was found or it is not JavaScript. Make sure JavaScript is the main programming language of the repository." ;
-		sh:description "JavaScript has to be the main programming language of the repository." .
+		a           sh:PropertyShape ;
+		sh:path     sd:programmingLanguage ;
+		sh:minCount 1 ;
+		sh:pattern  "JavaScript" ;
+		sh:message  "No main programming language was found or it is not JavaScript. Make sure JavaScript is the main programming language of the repository." ;
+		sh:description
+		            "| Summary | JavaScript has to be the main programming language of the repository. | \n |---|---| \n | Details | |" .
 
 propertyShapes:MainLanguagePython
-		a              sh:PropertyShape ;
-		sh:path        sd:programmingLanguage ;
-		sh:minCount    1 ;
-		sh:pattern     "Python" ;
-		sh:message     "No main programming language was found or it is not Python. Make sure Python is the main programming language of the repository." ;
-		sh:description "Python has to be the main programming language of the repository." .
+		a           sh:PropertyShape ;
+		sh:path     sd:programmingLanguage ;
+		sh:minCount 1 ;
+		sh:pattern  "Python" ;
+		sh:message  "No main programming language was found or it is not Python. Make sure Python is the main programming language of the repository." ;
+		sh:description
+		            "| Summary | Python has to be the main programming language of the repository. | \n |---|---| \n | Details | |" .
 
 propertyShapes:MainLanguageTypeScript
-		a              sh:PropertyShape ;
-		sh:path        sd:programmingLanguage ;
-		sh:minCount    1 ;
-		sh:pattern     "TypeScript" ;
-		sh:message     "No main programming language was found or it is not TypeScript. Make sure TypeScript is the main programming language of the repository." ;
-		sh:description "TypeScript has to be the main programming language of the repository." .
+		a           sh:PropertyShape ;
+		sh:path     sd:programmingLanguage ;
+		sh:minCount 1 ;
+		sh:pattern  "TypeScript" ;
+		sh:message  "No main programming language was found or it is not TypeScript. Make sure TypeScript is the main programming language of the repository." ;
+		sh:description
+		            "| Summary | TypeScript has to be the main programming language of the repository. | \n |---|---| \n | Details | |" .
 
 propertyShapes:MitLicense
 		a                      sh:PropertyShape ;
@@ -223,7 +230,7 @@ propertyShapes:MitLicense
 		sh:qualifiedValueShape [ sh:pattern "MIT License" ] ;
 		sh:qualifiedMinCount   1 ;
 		sh:message             "There is no license declared or it is not \"MIT License\". Make sure this license is used." ;
-		sh:description         "There has to be a license and it has to be \"MIT License\"." .
+		sh:description         "| Summary | There has to be a license and it has to be \"MIT License\". | \n |---|---| \n | Details | |" .
 
 propertyShapes:NonDefaultBranch
 		a          sh:PropertyShape ;
@@ -238,7 +245,7 @@ propertyShapes:NoOpenIssues
 		sh:qualifiedValueShape [ sh:pattern "open" ] ;
 		sh:qualifiedMaxCount   0 ;
 		sh:message             "The repository has open issues or pull requests. Make sure all issues and pull requests are closed." ;
-		sh:description         "The repository must not have any open issues or pull requests." .
+		sh:description         "| Summary | The repository must not have any open issues or pull requests. | \n |---|---| \n | Details | |" .
 
 propertyShapes:PackageJsonFileExistent
 		a                      sh:PropertyShape ;
@@ -247,16 +254,17 @@ propertyShapes:PackageJsonFileExistent
 		sh:qualifiedValueShape [ sh:pattern "package.json" ] ;
 		sh:qualifiedMinCount   1 ;
 		sh:message             "The file package.json was not found. Make sure it is present in the root directory." ;
-		sh:description         "The file package.json has to be present in the root directory." .
+		sh:description         "| Summary | The file package.json has to be present in the root directory. | \n |---|---| \n | Details | |" .
 
 propertyShapes:PackageJsonFileInDefaultBranch
-		a              sh:PropertyShape ;
-		sh:path        props:hasBranch ;
-		sh:minCount    1 ;
-		sh:or          ( [ sh:property propertyShapes:NonDefaultBranch ]
-		                 [ sh:property propertyShapes:PackageJsonFileExistent ] ) ;
-		sh:message     "The file package.json was not found. Make sure it is present in the root directory of the default branch." ;
-		sh:description "The file package.json has to be present in the root directory of the default branch." .
+		a           sh:PropertyShape ;
+		sh:path     props:hasBranch ;
+		sh:minCount 1 ;
+		sh:or       ( [ sh:property propertyShapes:NonDefaultBranch ]
+		              [ sh:property propertyShapes:PackageJsonFileExistent ] ) ;
+		sh:message  "The file package.json was not found. Make sure it is present in the root directory of the default branch." ;
+		sh:description
+		            "| Summary | The file package.json has to be present in the root directory of the default branch. | \n |---|---| \n | Details | |" .
 
 propertyShapes:PomXmlFileExistent
 		a                      sh:PropertyShape ;
@@ -265,21 +273,21 @@ propertyShapes:PomXmlFileExistent
 		sh:qualifiedValueShape [ sh:pattern "pom.xml" ] ;
 		sh:qualifiedMinCount   1 ;
 		sh:message             "The file pom.xml was not found. Make sure it is present in the root directory." ;
-		sh:description         "The file pom.xml has to be present in the root directory." .
+		sh:description         "| Summary | The file pom.xml has to be present in the root directory. | \n |---|---| \n | Details | |" .
 
 propertyShapes:PrivateRepository
 		a              sh:PropertyShape ;
 		sh:path        props:isPrivate ;
 		sh:pattern     "true" ;
 		sh:message     "The repository is public. Make sure it is private." ;
-		sh:description "The repository has to be private." .
+		sh:description "| Summary | The repository has to be private. | \n |---|---| \n | Details | |" .
 
 propertyShapes:PublicRepository
 		a              sh:PropertyShape ;
 		sh:path        props:isPrivate ;
 		sh:pattern     "false" ;
 		sh:message     "The repository is private. Make sure it is public." ;
-		sh:description "The repository has to be public." .
+		sh:description "| Summary | The repository has to be public. | \n |---|---| \n | Details | |" .
 
 propertyShapes:PurposeInReadme
 		a           sh:PropertyShape ;
@@ -287,22 +295,24 @@ propertyShapes:PurposeInReadme
 		sh:minCount 1 ;
 		sh:message  "There is no README file or it does not contain information about the purpose of the software. Make sure this information is included in a README section." ;
 		sh:description
-		            "The README file has to contain a section with information about the purpose of the software. The title of this section has to contain \"purpose\"." .
+		            "| Summary | The README file has to contain information about the purpose of the software. | \n |---|---| \n | Details | There has to be a section whose title contains \"purpose\". |" .
 
 propertyShapes:ReadmeFileExistent
-		a              sh:PropertyShape ;
-		sh:path        sd:readme ;
-		sh:minCount    1 ;
-		sh:message     "No README file was found. Make sure at least one is present in the repository." ;
-		sh:description "At least one README file has to be present in the repository." .
+		a           sh:PropertyShape ;
+		sh:path     sd:readme ;
+		sh:minCount 1 ;
+		sh:message  "No README file was found. Make sure at least one is present in the repository." ;
+		sh:description
+		            "| Summary | At least one README file has to be present in the repository. | \n |---|---| \n | Details | |" .
 
 propertyShapes:ReadmeFileWithDoi
-		a              sh:PropertyShape ;
-		sh:path        ( sd:readme props:containsDoi ) ;
-		sh:pattern     "true" ;
-		sh:minCount    1 ;
-		sh:message     "There is no README file or it does not contain a DOI. Make sure the README contains a DOI." ;
-		sh:description "A README file has to be present and it has to contain a DOI." .
+		a           sh:PropertyShape ;
+		sh:path     ( sd:readme props:containsDoi ) ;
+		sh:pattern  "true" ;
+		sh:minCount 1 ;
+		sh:message  "There is no README file or it does not contain a DOI. Make sure the README contains a DOI." ;
+		sh:description
+		            "| Summary | A README file has to be present and it has to contain a DOI. | \n |---|---| \n | Details | |" .
 
 propertyShapes:RequirementsTxtFileExistent
 		a                      sh:PropertyShape ;
@@ -311,18 +321,19 @@ propertyShapes:RequirementsTxtFileExistent
 		sh:qualifiedValueShape [ sh:pattern "requirements.txt" ] ;
 		sh:qualifiedMinCount   1 ;
 		sh:message             "The file requirements.txt was not found. Make sure it is present in the root directory." ;
-		sh:description         "The file requirements.txt has to be present in the root directory." .
+		sh:description         "| Summary | The file requirements.txt has to be present in the root directory. | \n |---|---| \n | Details | |" .
 
 propertyShapes:SemanticVersioningTags
-		a              sh:PropertyShape ;
+		a           sh:PropertyShape ;
 		# The releases and corresponding tag names are internally mapped via the "hasVersion" and "hasVersionId" properties.
-		sh:path        ( sd:hasVersion sd:hasVersionId ) ;
-		sh:minCount    1 ;
+		sh:path     ( sd:hasVersion sd:hasVersionId ) ;
+		sh:minCount 1 ;
 		# Adapted from https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
 		# Put into the right format with the help of ChatGPT.
-		sh:pattern     "^v?(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$" ;
-		sh:message     "There are no releases or not all tags follow the Semantic Versioning Pattern. Make sure there is at least one release and all tags follow the pattern." ;
-		sh:description "There has to be at least one release and all tags have to follow the Semantic Versioning Pattern." .
+		sh:pattern  "^v?(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$" ;
+		sh:message  "There are no releases or not all tags follow the Semantic Versioning Pattern. Make sure there is at least one release and all tags follow the pattern." ;
+		sh:description
+		            "| Summary | Semantic Versioning tags have to be used. | \n |---|---| \n | Details | There has to be at least one release and all tags have to follow the [Semantic Versioning pattern](https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string). |" .
 
 propertyShapes:SoftwareRequirementsInReadme
 		a           sh:PropertyShape ;
@@ -330,7 +341,7 @@ propertyShapes:SoftwareRequirementsInReadme
 		sh:minCount 1 ;
 		sh:message  "There is no README file or it does not contain information about the requirements of the software. Make sure this information is included in a README section." ;
 		sh:description
-		            "The README file has to contain a section with information about the requirements of the software. The title of this section has to contain: \n - \"dependencies\" or \n - \"requirements\" or \n - \"prerequisite\". \n \n" .
+		            "| Summary | The README file has to contain information about the requirements of the software. | \n |---|---| \n | Details | There has to be a section whose title contains: <ul> <li>\"dependencies\" or</li> <li>\"requirements\" or</li> <li>\"prerequisite\".</li> </ul>. |" .
 
 propertyShapes:UsageNotesInReadme
 		a           sh:PropertyShape ;
@@ -338,7 +349,7 @@ propertyShapes:UsageNotesInReadme
 		sh:minCount 1 ;
 		sh:message  "There is no README file or it does not contain usage instructions for the software. Make sure this information is included in a README section." ;
 		sh:description
-		            "The README file has to contain a section with usage instructions for the software. The title of this section has to contain: \n - \"usage\" or \n - \"how to use\" or \n - \"user manual\". \n \n" .
+		            "| Summary | The README file has to contain information about the requirements of the software. | \n |---|---| \n | Details | There has to be a section whose title contains: <ul> <li>\"usage\" or</li> <li>\"how to use\" or</li> <li>\"user manual\".</li> </ul> |" .
 
 propertyShapes:ValidVersionIncrement
 		a           sh:PropertyShape ;
@@ -347,4 +358,4 @@ propertyShapes:ValidVersionIncrement
 		sh:minCount 1 ;
 		sh:message  "The increment between two consecutive version numbers is invalid at least once. See the specification page for the concrete requirements." ;
 		sh:description
-		            "The version increment has to be valid. Compared to the previous version, the next version must: \n - have an increase of 1 in the first position with the other two positions set to 0 or \n - have an increase of 1 in the second position with the last position set to 0 or \n - have an increase of 1 in the last position or \n - have a (different) suffix. \n \n" .
+		            "| Summary | The version increment has to be valid. | \n |---|---| \n | Details | Compared to the previous version, the next version must: <ul> <li>have an increase of 1 in the first position with the other two positions set to 0 or</li> <li>have an increase of 1 in the second position with the last position set to 0 or</li> <li>have an increase of 1 in the last position or</li> <li>have a (different) suffix.</li> </ul> |" .

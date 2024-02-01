@@ -63,8 +63,14 @@ def get_quality_criteria_for_project_type(project_type_node: Node) -> list[str]:
             shape_name = shape.__str__().removeprefix(base_namespace_path)
             description = shapes_graph.value(subject=shape, predicate=sh["description"],
                                              object=None, any=False)
-            quality_criteria.append(
-                f"{description} _[{shape_name}]_" if description else shape_name)
+
+            if not description:
+                quality_criteria.append(shape_name)
+            elif description.__str__().startswith("|"):
+                # If the description is a Markdown table, add a row with the shape name.
+                quality_criteria.append(f"{description} \n | Shape name | {shape_name} |")
+            else:
+                quality_criteria.append(f"{description} _[{shape_name}]_")
 
     return quality_criteria
 

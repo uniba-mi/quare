@@ -1,13 +1,7 @@
 <script>
     import {projectTypeSpecifications} from "../stores.js";
+    import './specification-page-style.css';
     import {marked} from "marked";
-
-    const markdownToHtmlRenderer = new marked.Renderer
-    // Do not use <p>-Tags in the HTML output of the given Markdown content.
-    // https://stackoverflow.com/a/29559116
-    markdownToHtmlRenderer.paragraph = function (text) {
-        return text + '\n';
-    };
 </script>
 
 <div class="container-fluid">
@@ -49,9 +43,9 @@
                 >
                     <div class="accordion-body">
                         This project type has the following quality criteria:
-                        <ul>
+                        <ul class="quality-criteria-list">
                             {#each $projectTypeSpecifications[typeName] as constraint}
-                                <li>{@html marked(constraint, {renderer:markdownToHtmlRenderer})}</li>
+                                <li>{@html marked(constraint, {gfm: true})}</li>
                             {/each}
                         </ul>
                     </div>
@@ -60,13 +54,3 @@
         {/each}
     </div>
 </div>
-
-<style>
-    .accordion-body > *:first-child {
-        margin-top: 0.5em
-    }
-
-    div > ul > li {
-        margin-bottom: 0.5em
-    }
-</style>
