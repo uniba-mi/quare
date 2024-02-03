@@ -95,11 +95,11 @@ flowchart LR
     repo -- "props:hasIssue (*)" --> issue
     repo -- "sd:license (1)" --> license
     repo -- "sd:readme (1)" --> readme
-    repo -- "sd:hasInstallationInstructions (1)" --> installationInstructions
-    repo -- "sd:hasUsageNotes (1)" --> usageNotes
-    repo -- "sd:hasPurpose (1)" --> purpose
-    repo -- "sd:softwareRequirements (1)" --> softwareRequirements
-    repo -- "sd:citation (1)" --> citation
+    repo -- "sd:hasInstallationInstructions (*)" --> installationInstructions
+    repo -- "sd:hasUsageNotes (*)" --> usageNotes
+    repo -- "sd:hasPurpose (*)" --> purpose
+    repo -- "sd:softwareRequirements (*)" --> softwareRequirements
+    repo -- "sd:citation (*)" --> citation
 
 %% Outgoing links of the other IRIs
     release -- "sd:hasVersionId (1)" --> tagName
