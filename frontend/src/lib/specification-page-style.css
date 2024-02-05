@@ -1,0 +1,25 @@
+.quality-criteria-list table,
+.quality-criteria-list th,
+.quality-criteria-list td {
+    border: 1px solid;
+    border-collapse: collapse;
+    padding: 0.2em 0.4em;
+}
+
+.quality-criteria-list table {
+    width: 55%;
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+.quality-criteria-list th {
+    font-weight: 600;
+}
+
+.quality-criteria-list td:first-child {
+    width: 15%
+}
+
+.quality-criteria-list tbody > tr:last-child {
+    background: #F6F8FD;
+}

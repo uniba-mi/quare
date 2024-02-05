@@ -1,4 +1,4 @@
-FROM node:17
+FROM node:20.11.0
 
 VOLUME [ "/src" ]
 WORKDIR /src

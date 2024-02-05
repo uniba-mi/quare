@@ -14,77 +14,72 @@ from packaging import version
 from packaging.version import Version
 from pyshacl import validate
 from rdflib import Graph, Literal, Namespace, URIRef
-from rdflib.namespace import RDF
+from rdflib.namespace import RDF, RDFS
+from rdflib.term import Node
 
-types = Namespace("https://example.org/repo/project-types/")
+sh = Namespace("http://www.w3.org/ns/shacl#")
 # Software Description Ontology (SD)
 sd = Namespace("https://w3id.org/okn/o/sd#")
-props = Namespace("https://example.org/repo/props/")
+
+base_namespace_path = "https://example.org/repo/"
+types = Namespace(f"{base_namespace_path}project-types/")
+props = Namespace(f"{base_namespace_path}props/")
+
+shapes_graph: Graph
+
+
+def create_project_type_representation() -> None:
+    global shapes_graph
+    shapes_graph = Graph()
+    # Here, "graph merging" is used (https://rdflib.readthedocs.io/en/stable/merging.html).
+    shapes_graph.parse("./data/shacl/property_shapes.ttl")
+    shapes_graph.parse("./data/shacl/node_shapes.ttl")
+    shapes_graph.parse("./data/shacl/project_shapes.ttl")
+
+
+create_project_type_representation()
 
 
 def get_project_type_specifications() -> dict[str, list[str]]:
-    with open("data/shacl/project_shapes.ttl") as raw_shapes_graph:
+    project_type_specifications: dict[str, list[str]] = {}
 
-        raw_shapes_graph = list(raw_shapes_graph)
-
-        type_spec_indices = []
-
-        for index, line in enumerate(raw_shapes_graph):
-            if line.startswith("types:"):
-                current_type = line.replace("\n", "").strip()
-                first_index = index + 2
-
-            if (" ." in line) & ("@prefix" not in line):
-                last_index = index + 1
-                type_spec_indices.append((current_type, first_index, last_index))
-
-    return process_project_types_for_display(raw_shapes_graph, type_spec_indices)
-
-
-def process_project_types_for_display(raw_shapes_graph, type_spec_indices) -> dict[str, list[str]]:
-    project_type_specifications = {}
-    for project_type, first_index, last_index in type_spec_indices:
-        spec_block = "".join(raw_shapes_graph[first_index:last_index])
-
-        spec_block = spec_block.replace("\t", "")
-        spec_block = spec_block.replace("propertyShapes:", "")
-        spec_block = spec_block.replace("nodeShapes:", "")
-        spec_block = re.sub(r"sh:description\n?\s+\".*[;.]", "", spec_block)
-
-        split_by_comments = spec_block.split("# ")
-
-        # If there are comments on this project type, split based on these.
-        if len(split_by_comments) > 1:
-            specs = [spec.replace("sh:node ", "→ ") for spec in split_by_comments]
-            specs = [spec.replace("sh:property ", "→ ") for spec in specs]
-        else:
-            specs = re.split(r"sh:property\s+|sh:node\s+", spec_block)
-
-        specs = [spec.strip().removesuffix(";").strip() for spec in specs]
-        specs = [spec.strip().removesuffix(".").strip() for spec in specs]
-
-        project_type_specifications[project_type.removeprefix("types:")] = specs[1:]  # At index 0 of specs is "".
+    # Get all project type nodes
+    for subject in shapes_graph.subjects(predicate=RDF.type, object=RDFS.Class, unique=True):
+        if subject.__str__().startswith(types.__str__()):
+            project_type_name = subject.__str__().removeprefix(types.__str__())
+            quality_criteria = get_quality_criteria_for_project_type(subject)
+            project_type_specifications[project_type_name] = quality_criteria
 
     return project_type_specifications
 
 
-def create_project_type_representation() -> Graph:
-    # Here, "graph merging" is used (https://rdflib.readthedocs.io/en/stable/merging.html).
-    graph = Graph()
-    graph.parse("./data/shacl/property_shapes.ttl")
-    graph.parse("./data/shacl/node_shapes.ttl")
-    graph.parse("./data/shacl/project_shapes.ttl")
+def get_quality_criteria_for_project_type(project_type_node: Node) -> list[str]:
+    quality_criteria: list[str] = []
+    predicates = [sh["property"], sh["node"]]
 
-    return graph
+    # Get all corresponding property and node shapes with their name and description
+    for predicate in predicates:
+        for shape in shapes_graph.objects(subject=project_type_node, predicate=predicate, unique=True):
+            shape_name = shape.__str__().removeprefix(base_namespace_path)
+            description = shapes_graph.value(subject=shape, predicate=sh["description"],
+                                             object=None, any=False)
+
+            if not description:
+                quality_criteria.append(shape_name)
+            elif description.__str__().startswith("|"):
+                # If the description is a Markdown table, add a row with the shape name.
+                quality_criteria.append(f"{description} \n | Shape name | {shape_name} |")
+            else:
+                quality_criteria.append(f"{description} _[{shape_name}]_")
+
+    return quality_criteria
 
 
-def get_requirements_list_for_repository_representation(graph: Graph, expected_type: str) -> list[str]:
-    project_type_node = URIRef("https://example.org/repo/project-types/" + expected_type)
-    predicate = URIRef("http://www.w3.org/ns/shacl#description")
-
+def get_requirements_list_for_repository_representation(expected_type: str) -> list[str]:
     # https://rdflib.readthedocs.io/en/stable/intro_to_graphs.html#graph-methods-for-accessing-triples
     # Tries to get the value of "sh:description" of the project type. If there are multiple ones, an error is raised.
-    description_literal = graph.value(subject=project_type_node, predicate=predicate, object=None, any=False)
+    description_literal = shapes_graph.value(subject=types[expected_type], predicate=sh["description"], object=None,
+                                             any=False)
     if not description_literal:
         raise ValueError("Project type '" + expected_type + "' is missing the mandatory triple with sh:description.")
 
@@ -263,7 +258,7 @@ def include_branches_with_root_dir_files_of_default_branch(graph: Graph, repo_en
 
 
 def include_issues(graph: Graph, repo_entity: URIRef, repo: Repository) -> None:
-    issue_list = repo.get_issues()
+    issue_list = repo.get_issues(state="open")
     if issue_list:
         for issue in issue_list:
             issue_entity = URIRef(issue.html_url)
@@ -373,7 +368,7 @@ def include_readme_with_sections_and_check_for_doi(graph: Graph, repo_entity: UR
     return include_readme(graph, repo_entity, repo, include_sections=True, include_check_for_doi=True)
 
 
-def run_validation(data_graph, shapes_graph):
+def run_validation(data_graph):
     result = validate(data_graph,
                       shacl_graph=shapes_graph,
                       ont_graph=None,
@@ -393,10 +388,9 @@ def validate_repo_against_specs(github_access_token: str = "", repo_name: str = 
                                 expected_type: str = "") -> tuple[bool, int, str]:
     logging.info(f"Validating repo {repo_name} using the SHACL approach..")
 
-    shapes_graph = create_project_type_representation()
-    requirements_list = get_requirements_list_for_repository_representation(shapes_graph, expected_type)
+    requirements_list = get_requirements_list_for_repository_representation(expected_type)
     data_graph = create_repository_representation(requirements_list, github_access_token, repo_name, expected_type)
-    return_code, _, result_text = run_validation(data_graph, shapes_graph)
+    return_code, _, result_text = run_validation(data_graph)
     number_of_violations = get_number_of_violations(return_code, result_text)
 
     return return_code, number_of_violations, result_text
