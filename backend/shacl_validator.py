@@ -303,7 +303,7 @@ def include_readme(graph: Graph, repo_entity: URIRef, repo: Repository, include_
     if include_check_for_doi:
         # Check whether there is at least one DOI in the README file (as text or link href).
         # Regex adapted from https://www.crossref.org/blog/dois-and-matching-regular-expressions/
-        doi_pattern = re.compile(r"https://doi\.org/10\.\d{4,}/[-._;()/:A-Z0-9]+")
+        doi_pattern = re.compile(r"https://doi\.org/10\.\d{4,}/[-._;()/:A-Za-z0-9]+")
         if soup.find_all(string=doi_pattern) or soup.find_all(href=doi_pattern):
             graph.add((readme_entity, props["containsDoi"], Literal("true")))
         else:
