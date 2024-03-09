@@ -145,6 +145,11 @@ To reproduce the performance benchmarks shown in the paper, perform the followin
 - Run `docker compose run --service-ports --entrypoint bash backend` to get a bash that is attached to the frontend container.
 - Run `./benchmark.py` to start the backend in development mode. 
 
+### Quantitative Evaluation
+On February 28, 2024, a quantitative evaluation was performed with trending GitHub repositories and repositories that are
+expected to be FAIR. You find the source code in the file [quantitative_evaluation.py](./backend/quantitative_evaluation.py). 
+The resulting files are located in the folder [quantitative_evaluation](./backend/data/quantitative_evaluation/).
+
 ## Citation
 If you use this software, please cite it as below:
 
