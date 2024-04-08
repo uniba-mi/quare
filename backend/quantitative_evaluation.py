@@ -2,26 +2,30 @@
 
 import json
 import logging
+import glob
+import pstats
+from subprocess import run
+from time import sleep
 
 import numpy as np
 from github import UnknownObjectException
 from matplotlib import pyplot as plt
 
-from backend import validation_interface, verbalization_interface
+import validation_interface, verbalization_interface
 
 
 def validate_and_store_as_json_files() -> None:
-    with open("git_access_token") as file:
+    with open(".github_access_token") as file:
         github_access_token = file.readline().strip()
 
     repos_expected_to_be_fair = get_repos_expected_to_be_fair()
     results_per_criterion_fair = get_validation_result_per_criterion(repos_expected_to_be_fair, github_access_token)
-    with open("data/quantitative_evaluation/repos_expected_to_be_fair.json", "w") as file:
+    with open("data/evaluation/repos_expected_to_be_fair.json", "w") as file:
         json.dump(results_per_criterion_fair, file)
 
     trending_repos = get_trending_repo_set()
     results_per_criterion_trending = get_validation_result_per_criterion(trending_repos, github_access_token)
-    with open("data/quantitative_evaluation/trending_repos.json", "w") as file:
+    with open("data/evaluation/trending_repos.json", "w") as file:
         json.dump(results_per_criterion_trending, file)
 
 
@@ -337,10 +341,10 @@ def process_verbalized_explanation(verbalized_explanation: list[str]) -> dict[st
 
 
 def visualize_data_from_json_files() -> None:
-    with open("data/quantitative_evaluation/repos_expected_to_be_fair.json") as file_fair:
+    with open("data/evaluation/repos_expected_to_be_fair.json") as file_fair:
         results_per_criterion_fair: dict[str, dict[str, bool]] = json.load(file_fair)
 
-    with open("data/quantitative_evaluation/trending_repos.json") as file_trending:
+    with open("data/evaluation/trending_repos.json") as file_trending:
         results_per_criterion_trending: dict[str, dict[str, bool]] = json.load(file_trending)
 
     normalized_numeric_results_fair = get_results_in_percent(results_per_criterion_fair)
@@ -371,7 +375,7 @@ def visualize_data_from_json_files() -> None:
 
     fig.tight_layout()
 
-    plt.savefig("./data/quantitative_evaluation/conformity_per_best_practice.pdf")
+    plt.savefig("./data/evaluation/conformity_per_best_practice.pdf")
 
 
 def get_results_in_percent(results_per_criterion: dict[str, dict[str, bool]]) -> dict[str, float]:
@@ -385,7 +389,80 @@ def get_results_in_percent(results_per_criterion: dict[str, dict[str, bool]]) ->
 
     return {key: value / len(results_per_criterion) * 100 for key, value in numeric_results.items()}
 
+def run_benchmark():
+    trending_github_repos = get_trending_repo_set()
+
+    with open(".github_access_token") as file:
+        github_access_token = file.readline().strip()
+
+    benchmark_scenarios = [(github_access_token, repo_name, "FAIRSoftware") for repo_name in
+                           trending_github_repos]
+
+    for github_access_token, repo_name, repo_type in benchmark_scenarios:
+        file_name = f"{repo_name.split('/')[1]}-{repo_type}"
+
+        cmd = ["./shacl_validator.py", "--github_access_token", github_access_token, "--repo_name", repo_name,
+               "--expected_type", repo_type]
+
+        run(["python3", "-m", "cProfile", "-o", f"data/benchmarks/{file_name}", "-s", "cumulative"] + cmd)
+
+        sleep(3)
+
+
+def process_results():
+    all_fair = []
+
+    step_durations = [0, 0, 0]
+
+    for result_file in glob.glob("./data/benchmarks/*FAIRSoftware"):
+        stats = pstats.Stats(result_file)
+
+        for k, v in stats.stats.items():
+            _, _, function = k
+
+            if function == "validate_repo_against_specs":
+                if "FAIRSoftware" in result_file:
+                    all_fair.append(v[3])
+
+            elif function == "create_project_type_representation":
+                step_durations[0] += v[3]
+
+            elif function == "create_repository_representation":
+                step_durations[1] += v[3]
+
+            elif function == "run_validation":
+                step_durations[2] += v[3]
+
+    _, ax = plt.subplots(figsize=(6, 3))
+
+    ax.set(
+        ylabel='Seconds',
+    )
+
+    ax.boxplot([all_fair])
+
+    ax.set_xticklabels(["$T_{FAIRSoftware}$"])
+
+    plt.tight_layout(pad=0)
+    plt.savefig("./data/benchmarks/benchmark_results.pdf")
+
+    total = sum(all_fair)
+
+    step_one_percent = '{:.2f}%'.format(
+        step_durations[0] / total * 100)
+    step_two_percent = '{:.2f}%'.format(
+        step_durations[1] / total * 100)
+    step_three_percent = '{:.2f}%'.format(
+        step_durations[2] / total * 100)
+
+    logging.info(
+        f"Steps 1/2/3 account for {step_one_percent}/{step_two_percent}/{step_three_percent} of the total runtime.")
 
 if __name__ == "__main__":
+    # fairness assessment
     validate_and_store_as_json_files()
     visualize_data_from_json_files()
+
+    # runtime benchmark
+    run_benchmark()
+    process_results()

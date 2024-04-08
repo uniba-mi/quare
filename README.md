@@ -137,18 +137,18 @@ Instead of running frontend and backend using `docker compose up`, you can run b
 
 Note that the frontend depends on the backend. The backend should therefore be started first.
 
-### Benchmarks
+### Evaluation
 
-To reproduce the performance benchmarks shown in the paper, perform the following steps: 
+WARNING: Rerunning the evaluation will overwrite the results that are provided in the repository!
 
-- Create a file called `git_access_token` in the [backend](./backend/) folder. Then enter your GitHub access token in that file and save. 
-- Run `docker compose run --service-ports --entrypoint bash backend` to get a bash that is attached to the frontend container.
-- Run `./benchmark.py` to start the backend in development mode. 
+To reproduce the evaluation results discussed in the SEMANTiCS 2024 paper, perform the following steps: 
 
-### Quantitative Evaluation
-On February 28, 2024, a quantitative evaluation was performed with trending GitHub repositories and repositories that are
-expected to be FAIR. The resulting files are located in the folder [quantitative_evaluation](./backend/data/quantitative_evaluation/).
-If you want to run the quantitative evaluation, execute [quantitative_evaluation.py](./backend/quantitative_evaluation.py) in the working directory [backend](./backend/).
+- Create a file called `.github_access_token` in the [backend](./backend/) folder. Then enter your GitHub access token in that file and save. 
+- Run `docker compose run --service-ports --entrypoint evaluation` to get a bash that is attached to the frontend container.
+- Run `./evaluation.py` to rerun the evaluation. This includes an FAIRness assessment of trending GitHub repositories and repositories that are
+expected to be FAIR and a runtime benchmark on the same repositories.
+
+The resulting files are place in the [evaluation](./backend/data/evaluation/) and [benchmarks](./backend/data/benchmarks/) folders.
 
 ## Citation
 If you use this software, please cite it as below:
