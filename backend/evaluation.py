@@ -8,11 +8,12 @@ from subprocess import run
 from time import sleep
 
 import numpy as np
-from github import UnknownObjectException
+from github import UnknownObjectException, Github, Auth
 from matplotlib import pyplot as plt
 
 import validation_interface, verbalization_interface
 
+logging.basicConfig(level=logging.INFO)
 
 def validate_and_store_as_json_files() -> None:
     with open(".github_access_token") as file:
@@ -382,47 +383,55 @@ def get_results_in_percent(results_per_criterion: dict[str, dict[str, bool]]) ->
     first_inner_dict = list(results_per_criterion.values())[0]
     numeric_results: dict[str, int] = {key: 0 for key in first_inner_dict}
 
-    for repo_name, result_per_criterion in results_per_criterion.items():
+    for _, result_per_criterion in results_per_criterion.items():
         for criterion, value in result_per_criterion.items():
             if value:
                 numeric_results[criterion] += 1
 
     return {key: value / len(results_per_criterion) * 100 for key, value in numeric_results.items()}
 
-def run_benchmark():
+
+def run_runtime_benchmark():
     trending_github_repos = get_trending_repo_set()
 
     with open(".github_access_token") as file:
         github_access_token = file.readline().strip()
 
-    benchmark_scenarios = [(github_access_token, repo_name, "FAIRSoftware") for repo_name in
+    benchmark_scenarios = [(github_access_token, repo_name) for repo_name in
                            trending_github_repos]
+    
+    repo_release_count = dict()
 
-    for github_access_token, repo_name, repo_type in benchmark_scenarios:
-        file_name = f"{repo_name.split('/')[1]}-{repo_type}"
+    auth = Auth.Token(github_access_token)
+    g = Github(auth=auth)
+
+    runtime_per_repo = []
+    step_durations = [0, 0, 0]
+    x = []
+    y = []
+
+    for github_access_token, repo_name in benchmark_scenarios:
+        file_name = f"{repo_name.split('/')[1]}"
 
         cmd = ["./shacl_validator.py", "--github_access_token", github_access_token, "--repo_name", repo_name,
-               "--expected_type", repo_type]
+               "--expected_type", "FAIRSoftware"]
 
         run(["python3", "-m", "cProfile", "-o", f"data/benchmarks/{file_name}", "-s", "cumulative"] + cmd)
 
-        sleep(3)
+        release_count = g.get_repo(repo_name).get_releases().totalCount
+        x.append(release_count)
 
+        repo_release_count[file_name] = release_count
+        logging.info(f"{repo_name} has {release_count} releases.")
 
-def process_results():
-    all_fair = []
-
-    step_durations = [0, 0, 0]
-
-    for result_file in glob.glob("./data/benchmarks/*FAIRSoftware"):
-        stats = pstats.Stats(result_file)
+        stats = pstats.Stats(f"data/benchmarks/{file_name}")
 
         for k, v in stats.stats.items():
             _, _, function = k
 
             if function == "validate_repo_against_specs":
-                if "FAIRSoftware" in result_file:
-                    all_fair.append(v[3])
+                runtime_per_repo.append(v[3])
+                y.append(v[3])
 
             elif function == "create_project_type_representation":
                 step_durations[0] += v[3]
@@ -433,20 +442,11 @@ def process_results():
             elif function == "run_validation":
                 step_durations[2] += v[3]
 
-    _, ax = plt.subplots(figsize=(6, 3))
-
-    ax.set(
-        ylabel='Seconds',
-    )
-
-    ax.boxplot([all_fair])
-
-    ax.set_xticklabels(["$T_{FAIRSoftware}$"])
-
+    plt.scatter(x, y)
     plt.tight_layout(pad=0)
     plt.savefig("./data/benchmarks/benchmark_results.pdf")
 
-    total = sum(all_fair)
+    total = sum(runtime_per_repo)
 
     step_one_percent = '{:.2f}%'.format(
         step_durations[0] / total * 100)
@@ -456,13 +456,12 @@ def process_results():
         step_durations[2] / total * 100)
 
     logging.info(
-        f"Steps 1/2/3 account for {step_one_percent}/{step_two_percent}/{step_three_percent} of the total runtime.")
+        f"Shapes graph composition/repository representation generation/validation account for {step_one_percent}/{step_two_percent}/{step_three_percent} of the total runtime.")
 
 if __name__ == "__main__":
     # fairness assessment
-    validate_and_store_as_json_files()
-    visualize_data_from_json_files()
+    # validate_and_store_as_json_files()
+    # visualize_data_from_json_files()
 
     # runtime benchmark
-    run_benchmark()
-    process_results()
+    run_runtime_benchmark()
