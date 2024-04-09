@@ -2,7 +2,6 @@
 
 import json
 import logging
-import glob
 import pstats
 from subprocess import run
 from time import sleep
@@ -21,12 +20,12 @@ def validate_and_store_as_json_files() -> None:
 
     repos_expected_to_be_fair = get_repos_expected_to_be_fair()
     results_per_criterion_fair = get_validation_result_per_criterion(repos_expected_to_be_fair, github_access_token)
-    with open("data/evaluation/repos_expected_to_be_fair.json", "w") as file:
+    with open("./data/evaluation/repos_expected_to_be_fair.json", "w") as file:
         json.dump(results_per_criterion_fair, file)
 
     trending_repos = get_trending_repo_set()
     results_per_criterion_trending = get_validation_result_per_criterion(trending_repos, github_access_token)
-    with open("data/evaluation/trending_repos.json", "w") as file:
+    with open("./data/evaluation/trending_repos.json", "w") as file:
         json.dump(results_per_criterion_trending, file)
 
 
@@ -342,10 +341,10 @@ def process_verbalized_explanation(verbalized_explanation: list[str]) -> dict[st
 
 
 def visualize_data_from_json_files() -> None:
-    with open("data/evaluation/repos_expected_to_be_fair.json") as file_fair:
+    with open("./data/evaluation/repos_expected_to_be_fair.json") as file_fair:
         results_per_criterion_fair: dict[str, dict[str, bool]] = json.load(file_fair)
 
-    with open("data/evaluation/trending_repos.json") as file_trending:
+    with open("./data/evaluation/trending_repos.json") as file_trending:
         results_per_criterion_trending: dict[str, dict[str, bool]] = json.load(file_trending)
 
     normalized_numeric_results_fair = get_results_in_percent(results_per_criterion_fair)
@@ -392,38 +391,43 @@ def get_results_in_percent(results_per_criterion: dict[str, dict[str, bool]]) ->
 
 
 def run_runtime_benchmark():
-    trending_github_repos = get_trending_repo_set()
-
     with open(".github_access_token") as file:
         github_access_token = file.readline().strip()
-
-    benchmark_scenarios = [(github_access_token, repo_name) for repo_name in
-                           trending_github_repos]
     
-    repo_release_count = dict()
-
     auth = Auth.Token(github_access_token)
     g = Github(auth=auth)
+
+    repo_sizes = dict()
 
     runtime_per_repo = []
     step_durations = [0, 0, 0]
     x = []
     y = []
 
-    for github_access_token, repo_name in benchmark_scenarios:
+    for repo_name in get_trending_repo_set():
+
+        # skip repo for evaluation if relevant data cannot be fetched
+        try:
+            repo = g.get_repo(repo_name)
+            # compute repo size as the sum of releases branches and issues
+            repo_size = repo.get_branches().totalCount
+            # + repo.get_issues().totalCount
+        except:
+            continue
+
+        x.append(repo_size)
+
+        # perform fairness assessment
         file_name = f"{repo_name.split('/')[1]}"
+        repo_sizes[file_name] = repo_size
+        logging.info(f"{repo_name} has in total {repo_size} releases, branches, and issues.")
 
         cmd = ["./shacl_validator.py", "--github_access_token", github_access_token, "--repo_name", repo_name,
                "--expected_type", "FAIRSoftware"]
 
         run(["python3", "-m", "cProfile", "-o", f"data/benchmarks/{file_name}", "-s", "cumulative"] + cmd)
-
-        release_count = g.get_repo(repo_name).get_releases().totalCount
-        x.append(release_count)
-
-        repo_release_count[file_name] = release_count
-        logging.info(f"{repo_name} has {release_count} releases.")
-
+        
+        # process stats of fairness assessment
         stats = pstats.Stats(f"data/benchmarks/{file_name}")
 
         for k, v in stats.stats.items():
@@ -444,19 +448,15 @@ def run_runtime_benchmark():
 
     plt.scatter(x, y)
     plt.tight_layout(pad=0)
-    plt.savefig("./data/benchmarks/benchmark_results.pdf")
+    plt.savefig("./data/evaluation/benchmark_results.pdf")
 
+    # calculate average duration of the fairness assessment steps with respect to total runtime
     total = sum(runtime_per_repo)
 
-    step_one_percent = '{:.2f}%'.format(
-        step_durations[0] / total * 100)
-    step_two_percent = '{:.2f}%'.format(
-        step_durations[1] / total * 100)
-    step_three_percent = '{:.2f}%'.format(
-        step_durations[2] / total * 100)
+    step_durations = ["{:.2f}%".format(duration / total * 100) for duration in step_durations]
 
     logging.info(
-        f"Shapes graph composition/repository representation generation/validation account for {step_one_percent}/{step_two_percent}/{step_three_percent} of the total runtime.")
+        f"Shapes graph composition/repository representation generation/validation account for {'/'.join(step_durations)} of the total runtime.")
 
 if __name__ == "__main__":
     # fairness assessment
