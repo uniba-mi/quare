@@ -446,7 +446,13 @@ def run_runtime_benchmark():
             elif function == "run_validation":
                 step_durations[2] += v[3]
 
-    plt.scatter(x, y)
+    
+    fig = plt.figure()
+    ax = fig.add_subplot(2, 1, 1)
+    # ax.set_yscale('log')
+    ax.scatter(x, y)
+    print(x)
+    print(y)
     plt.tight_layout(pad=0)
     plt.savefig("./data/evaluation/benchmark_results.pdf")
 
