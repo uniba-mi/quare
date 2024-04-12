@@ -439,7 +439,7 @@ def visualize_results() -> None:
     ax.bar(x + width / 2, scores_trending, width, label="Trending Repositories (N=217)", color="#8ed7d7")
     ax.legend(loc="lower left", ncol=1, bbox_to_anchor=(0, 1, 1, 0))
 
-    ax.set_ylabel("Conformity in Percent")
+    ax.set_ylabel("Percentage of Conform Repositories")
 
     ax.set_yticks(np.arange(0, 101, 10))
     ax.set_yticks(np.arange(5, 100, 5), minor=True)

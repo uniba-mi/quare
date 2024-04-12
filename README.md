@@ -143,12 +143,11 @@ WARNING: Rerunning the evaluation will overwrite the results that are provided i
 
 To reproduce the evaluation results discussed in the SEMANTiCS 2024 paper, perform the following steps: 
 
-- Create a file called `.github_access_token` in the [backend](./backend/) folder. Then enter your GitHub access token in that file and save. 
-- Run `docker compose run --service-ports --entrypoint evaluation` to get a bash that is attached to the frontend container.
-- Run `./evaluation.py` to rerun the evaluation. This includes an FAIRness assessment of trending GitHub repositories and repositories that are
-expected to be FAIR and a runtime benchmark on the same repositories.
+- Create a file called `.github_access_token` in the [backend](./backend/) folder. Then, enter your GitHub access token in that file and save. 
+- Run `docker compose run evaluation` to get a bash that is attached to the backend container.
+- Run `./python3 evaluation.py` to rerun the evaluation. This includes the FAIRness assessment of GitHub repositories and the runtime benchmark on the same repositories.
 
-The resulting files are place in the [evaluation](./backend/data/evaluation/) and [benchmarks](./backend/data/benchmarks/) folders.
+The resulting files are place in the [evaluation](./backend/data/evaluation/) folder.
 
 ## Citation
 If you use this software, please cite it as below:
