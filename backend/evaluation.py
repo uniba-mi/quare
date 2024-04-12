@@ -9,6 +9,7 @@ from time import sleep
 import numpy as np
 from github import UnknownObjectException, Github, Auth
 from matplotlib import pyplot as plt
+from brokenaxes import brokenaxes
 
 import validation_interface, verbalization_interface
 
@@ -18,8 +19,8 @@ def perform_evaluation() -> None:
     with open(".github_access_token") as file:
         github_access_token = file.readline().strip()
 
-    repos_expected_to_be_fair = get_repos_expected_to_be_fair()[:20]
-    trending_repos = get_trending_repo_set()[:20]
+    repos_expected_to_be_fair = get_repos_expected_to_be_fair()
+    trending_repos = get_trending_repo_set()
 
     results_per_criterion_fair = get_validation_result_per_criterion(repos_expected_to_be_fair, github_access_token)
     with open("./data/evaluation/repos_expected_to_be_fair.json", "w") as file:
@@ -434,11 +435,11 @@ def visualize_results() -> None:
     width = 0.35
     fig, ax = plt.subplots(figsize=(6, 4))
 
-    ax.bar(x - width / 2, scores_fair, width, label='Repositories Expected to be FAIR (N=6)', color="#00407A")
-    ax.bar(x + width / 2, scores_trending, width, label='Trending Repositories (N=217)', color="#8ed7d7")
+    ax.bar(x - width / 2, scores_fair, width, label="Repositories Expected to be FAIR (N=6)", color="#00407A")
+    ax.bar(x + width / 2, scores_trending, width, label="Trending Repositories (N=217)", color="#8ed7d7")
     ax.legend(loc="lower left", ncol=1, bbox_to_anchor=(0, 1, 1, 0))
 
-    ax.set_ylabel('Conformity in Percent')
+    ax.set_ylabel("Conformity in Percent")
 
     ax.set_yticks(np.arange(0, 101, 10))
     ax.set_yticks(np.arange(5, 100, 5), minor=True)
@@ -446,37 +447,46 @@ def visualize_results() -> None:
     ax.set_xticklabels(best_practices)
 
     ax.set_axisbelow(True)
-    ax.yaxis.grid(which='major', linestyle='dashed', linewidth=0.5, color="black")
-    ax.yaxis.grid(which='minor', linestyle='dashed', linewidth=0.5)
+    ax.yaxis.grid(which="major", linestyle="dashed", linewidth=0.5, color="black")
+    ax.yaxis.grid(which="minor", linestyle="dashed", linewidth=0.5)
 
     fig.tight_layout()
 
     plt.savefig("./data/evaluation/conformity_per_best_practice.pdf")
 
     # plot runtime benchmark
-    x = []
-    y = []
-    colors = []
+    x_trending = []
+    y_trending = []
+
+    x_expected = []
+    y_expected = []
 
     with open("./data/evaluation/runtime_benchmark_results.json") as file_benchmark:
         runtime_benchmark_results: dict[str, dict[str, bool]] = json.load(file_benchmark)
 
     for size, runtime, origin in runtime_benchmark_results.values():
-        x.append(size)
-        y.append(runtime)
-        colors.append("#8ed7d7" if origin == "trending" else "#00407A")
+        if origin == "trending":
+            x_trending.append(size)
+            y_trending.append(runtime)
 
-    fig, ax = plt.subplots(figsize=(6, 4))
+        else:
+            x_expected.append(size)
+            y_expected.append(runtime)
 
-    ax.scatter(x, y, c=colors)
-    ax.set_xlabel("Number of Branches")
-    ax.set_ylabel("Runtime Duration")
-    ax.set_axisbelow(True)
+    fig = plt.figure(figsize=(6, 4))
 
-    ax.yaxis.grid(which="major", linestyle="dashed", linewidth=0.5, color="black")
-    ax.yaxis.grid(which="minor", linestyle="dashed", linewidth=0.5)
+    bax = brokenaxes(xlims=((0, 5000), (12000, 12500)), ylims=((0, 30), (50, 55)))
 
-    fig.tight_layout()
+    bax.scatter(x_trending, y_trending, c="#8ed7d7", s=15, label="Trending Repositories\n(N=217)")
+    bax.scatter(x_expected, y_expected, c="#00407A", s=15, label="Repositories Expected to\nbe FAIR (N=6)")
+
+    bax.set_xlabel("Repository Size")
+    bax.set_ylabel("Runtime Duration in Seconds")
+
+    bax.legend(loc=1, ncol=1)
+
+    bax.grid(axis='y', which='major', ls="dashed")
+    bax.grid(axis='y', which='minor', ls="dashed", linewidth=0.5)
 
     plt.savefig("./data/evaluation/benchmark_results.pdf")
 
