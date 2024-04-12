@@ -21,13 +21,13 @@ def perform_evaluation() -> None:
     repos_expected_to_be_fair = get_repos_expected_to_be_fair()[:20]
     trending_repos = get_trending_repo_set()[:20]
 
-    # results_per_criterion_fair = get_validation_result_per_criterion(repos_expected_to_be_fair, github_access_token)
-    # with open("./data/evaluation/repos_expected_to_be_fair.json", "w") as file:
-    #     json.dump(results_per_criterion_fair, file)
+    results_per_criterion_fair = get_validation_result_per_criterion(repos_expected_to_be_fair, github_access_token)
+    with open("./data/evaluation/repos_expected_to_be_fair.json", "w") as file:
+        json.dump(results_per_criterion_fair, file)
 
-    # results_per_criterion_trending = get_validation_result_per_criterion(trending_repos, github_access_token)
-    # with open("./data/evaluation/trending_repos.json", "w") as file:
-    #     json.dump(results_per_criterion_trending, file)
+    results_per_criterion_trending = get_validation_result_per_criterion(trending_repos, github_access_token)
+    with open("./data/evaluation/trending_repos.json", "w") as file:
+        json.dump(results_per_criterion_trending, file)
 
     runtime_benchmark_results = execute_runtime_benchmark(repos_expected_to_be_fair, trending_repos, github_access_token)
     with open("./data/evaluation/runtime_benchmark_results.json", "w") as file:
