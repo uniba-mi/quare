@@ -14,19 +14,24 @@ import validation_interface, verbalization_interface
 
 logging.basicConfig(level=logging.INFO)
 
-def validate_and_store_as_json_files() -> None:
+def perform_evaluation() -> None:
     with open(".github_access_token") as file:
         github_access_token = file.readline().strip()
 
-    repos_expected_to_be_fair = get_repos_expected_to_be_fair()
-    results_per_criterion_fair = get_validation_result_per_criterion(repos_expected_to_be_fair, github_access_token)
-    with open("./data/evaluation/repos_expected_to_be_fair.json", "w") as file:
-        json.dump(results_per_criterion_fair, file)
+    repos_expected_to_be_fair = get_repos_expected_to_be_fair()[:20]
+    trending_repos = get_trending_repo_set()[:20]
 
-    trending_repos = get_trending_repo_set()
-    results_per_criterion_trending = get_validation_result_per_criterion(trending_repos, github_access_token)
-    with open("./data/evaluation/trending_repos.json", "w") as file:
-        json.dump(results_per_criterion_trending, file)
+    # results_per_criterion_fair = get_validation_result_per_criterion(repos_expected_to_be_fair, github_access_token)
+    # with open("./data/evaluation/repos_expected_to_be_fair.json", "w") as file:
+    #     json.dump(results_per_criterion_fair, file)
+
+    # results_per_criterion_trending = get_validation_result_per_criterion(trending_repos, github_access_token)
+    # with open("./data/evaluation/trending_repos.json", "w") as file:
+    #     json.dump(results_per_criterion_trending, file)
+
+    runtime_benchmark_results = execute_runtime_benchmark(repos_expected_to_be_fair, trending_repos, github_access_token)
+    with open("./data/evaluation/runtime_benchmark_results.json", "w") as file:
+        json.dump(runtime_benchmark_results, file)
 
 
 def get_repos_expected_to_be_fair() -> list[str]:
@@ -35,7 +40,7 @@ def get_repos_expected_to_be_fair() -> list[str]:
             "GrainLearning/grainLearning", "online-behaviour/machine-learning"]
 
 
-def get_trending_repo_set() -> set[str]:
+def get_trending_repo_set() -> list[str]:
     # First 20 repositories on the 15th of each month from https://github.com/trending?since=monthly (via Web Archive)
     trending_github_repos = {
         "march_2023": [
@@ -297,10 +302,10 @@ def get_trending_repo_set() -> set[str]:
     for key in trending_github_repos:
         repo_list.extend(trending_github_repos[key])
 
-    return set(repo_list)
+    return list(set(repo_list))
 
 
-def get_validation_result_per_criterion(repos: set | list, github_access_token: str) -> dict[str, dict[str, bool]]:
+def get_validation_result_per_criterion(repos: list, github_access_token: str) -> dict[str, dict[str, bool]]:
     results_per_criterion: dict[str, dict[str, bool]] = {}
 
     for repo_name in repos:
@@ -340,7 +345,78 @@ def process_verbalized_explanation(verbalized_explanation: list[str]) -> dict[st
     return result_per_criterion
 
 
-def visualize_data_from_json_files() -> None:
+def execute_runtime_benchmark(repos_expected_to_be_fair: list, trending_repos: list, github_access_token: str) -> None:
+    auth = Auth.Token(github_access_token)
+    g = Github(auth=auth)
+
+    runtime_benchmark_results = dict()
+
+    runtime_per_repo = []
+    step_durations = [0, 0, 0]
+
+    for repo_name in trending_repos + repos_expected_to_be_fair:
+        # skip repo for evaluation if relevant data cannot be fetched
+        try:
+            repo = g.get_repo(repo_name)
+            # compute repo size as the sum of releases branches and issues
+            repo_size = repo.get_releases().totalCount + repo.get_branches().totalCount + repo.get_issues().totalCount
+        except:
+            continue
+
+        # perform fairness assessment with profiler
+        file_name = f"{repo_name.split('/')[1]}"
+        
+        logging.info(f"{repo_name} has in total {repo_size} releases, branches, and issues.")
+
+        cmd = ["./shacl_validator.py", "--github_access_token", github_access_token, "--repo_name", repo_name,
+               "--expected_type", "FAIRSoftware"]
+
+        run(["python3", "-m", "cProfile", "-o", f"data/benchmarks/{file_name}", "-s", "cumulative"] + cmd)
+        
+        # process stats of fairness assessment runtime
+        stats = pstats.Stats(f"data/benchmarks/{file_name}")
+
+        for k, v in stats.stats.items():
+            _, _, function = k
+
+            if function == "validate_repo_against_specs":
+                runtime = v[3]
+
+            elif function == "create_project_type_representation":
+                step_durations[0] += v[3]
+
+            elif function == "create_repository_representation":
+                step_durations[1] += v[3]
+
+            elif function == "run_validation":
+                step_durations[2] += v[3]
+
+        runtime_per_repo.append(runtime)
+        origin = "trending" if repo_name in trending_repos else "expected"
+        runtime_benchmark_results[file_name] = (repo_size, runtime, origin)
+
+    total_runtime = sum(runtime_per_repo)
+    step_durations = ["{:.2f}%".format(duration / total_runtime * 100) for duration in step_durations]
+
+    logging.info(
+        f"Shapes graph composition/repository representation generation/validation account for {'/'.join(step_durations)} of the total runtime.")
+
+    return runtime_benchmark_results
+
+def visualize_results() -> None:
+
+    def get_results_in_percent(results_per_criterion: dict[str, dict[str, bool]]) -> dict[str, float]:
+        first_inner_dict = list(results_per_criterion.values())[0]
+        numeric_results: dict[str, int] = {key: 0 for key in first_inner_dict}
+
+        for _, result_per_criterion in results_per_criterion.items():
+            for criterion, value in result_per_criterion.items():
+                if value:
+                    numeric_results[criterion] += 1
+
+        return {key: value / len(results_per_criterion) * 100 for key, value in numeric_results.items()}
+
+    # plot FAIRness assessment
     with open("./data/evaluation/repos_expected_to_be_fair.json") as file_fair:
         results_per_criterion_fair: dict[str, dict[str, bool]] = json.load(file_fair)
 
@@ -377,97 +453,34 @@ def visualize_data_from_json_files() -> None:
 
     plt.savefig("./data/evaluation/conformity_per_best_practice.pdf")
 
-
-def get_results_in_percent(results_per_criterion: dict[str, dict[str, bool]]) -> dict[str, float]:
-    first_inner_dict = list(results_per_criterion.values())[0]
-    numeric_results: dict[str, int] = {key: 0 for key in first_inner_dict}
-
-    for _, result_per_criterion in results_per_criterion.items():
-        for criterion, value in result_per_criterion.items():
-            if value:
-                numeric_results[criterion] += 1
-
-    return {key: value / len(results_per_criterion) * 100 for key, value in numeric_results.items()}
-
-
-def run_runtime_benchmark():
-    with open(".github_access_token") as file:
-        github_access_token = file.readline().strip()
-    
-    auth = Auth.Token(github_access_token)
-    g = Github(auth=auth)
-
-    repo_sizes = dict()
-
-    runtime_per_repo = []
-    step_durations = [0, 0, 0]
+    # plot runtime benchmark
     x = []
     y = []
+    colors = []
 
-    for repo_name in get_trending_repo_set():
+    with open("./data/evaluation/runtime_benchmark_results.json") as file_benchmark:
+        runtime_benchmark_results: dict[str, dict[str, bool]] = json.load(file_benchmark)
 
-        # skip repo for evaluation if relevant data cannot be fetched
-        try:
-            repo = g.get_repo(repo_name)
-            # compute repo size as the sum of releases branches and issues
-            repo_size = repo.get_branches().totalCount
-            # + repo.get_issues().totalCount
-        except:
-            continue
+    for size, runtime, origin in runtime_benchmark_results.values():
+        x.append(size)
+        y.append(runtime)
+        colors.append("#8ed7d7" if origin == "trending" else "#00407A")
 
-        x.append(repo_size)
+    fig, ax = plt.subplots(figsize=(6, 4))
 
-        # perform fairness assessment
-        file_name = f"{repo_name.split('/')[1]}"
-        repo_sizes[file_name] = repo_size
-        logging.info(f"{repo_name} has in total {repo_size} releases, branches, and issues.")
+    ax.scatter(x, y, c=colors)
+    ax.set_xlabel("Number of Branches")
+    ax.set_ylabel("Runtime Duration")
+    ax.set_axisbelow(True)
 
-        cmd = ["./shacl_validator.py", "--github_access_token", github_access_token, "--repo_name", repo_name,
-               "--expected_type", "FAIRSoftware"]
+    ax.yaxis.grid(which="major", linestyle="dashed", linewidth=0.5, color="black")
+    ax.yaxis.grid(which="minor", linestyle="dashed", linewidth=0.5)
 
-        run(["python3", "-m", "cProfile", "-o", f"data/benchmarks/{file_name}", "-s", "cumulative"] + cmd)
-        
-        # process stats of fairness assessment
-        stats = pstats.Stats(f"data/benchmarks/{file_name}")
+    fig.tight_layout()
 
-        for k, v in stats.stats.items():
-            _, _, function = k
-
-            if function == "validate_repo_against_specs":
-                runtime_per_repo.append(v[3])
-                y.append(v[3])
-
-            elif function == "create_project_type_representation":
-                step_durations[0] += v[3]
-
-            elif function == "create_repository_representation":
-                step_durations[1] += v[3]
-
-            elif function == "run_validation":
-                step_durations[2] += v[3]
-
-    
-    fig = plt.figure()
-    ax = fig.add_subplot(2, 1, 1)
-    # ax.set_yscale('log')
-    ax.scatter(x, y)
-    print(x)
-    print(y)
-    plt.tight_layout(pad=0)
     plt.savefig("./data/evaluation/benchmark_results.pdf")
 
-    # calculate average duration of the fairness assessment steps with respect to total runtime
-    total = sum(runtime_per_repo)
-
-    step_durations = ["{:.2f}%".format(duration / total * 100) for duration in step_durations]
-
-    logging.info(
-        f"Shapes graph composition/repository representation generation/validation account for {'/'.join(step_durations)} of the total runtime.")
 
 if __name__ == "__main__":
-    # fairness assessment
-    # validate_and_store_as_json_files()
-    # visualize_data_from_json_files()
-
-    # runtime benchmark
-    run_runtime_benchmark()
+    perform_evaluation()
+    visualize_results()
