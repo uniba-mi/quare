@@ -4,8 +4,8 @@ import json
 import logging
 import pstats
 from subprocess import run
-from time import sleep
 
+import pandas as pd 
 import numpy as np
 from github import UnknownObjectException, Github, Auth
 from matplotlib import pyplot as plt
@@ -488,9 +488,18 @@ def visualize_results() -> None:
     bax.grid(axis='y', which='major', ls="dashed")
     bax.grid(axis='y', which='minor', ls="dashed", linewidth=0.5)
 
-    plt.savefig("./data/evaluation/benchmark_results.pdf")
+    plt.savefig("./data/evaluation/runtime_benchmark_scatter.pdf")
 
+    data = {'size': x_expected,
+            'runtime': y_expected}
+    df_expected = pd.DataFrame(data)
+
+    data = {'size': x_trending,
+            'runtime': y_trending}
+    df_trending = pd.DataFrame(data)
+
+    print(df_expected.describe(), df_trending.describe())
 
 if __name__ == "__main__":
-    perform_evaluation()
+    # perform_evaluation()
     visualize_results()
