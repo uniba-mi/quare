@@ -137,13 +137,44 @@ Instead of running frontend and backend using `docker compose up`, you can run b
 
 Note that the frontend depends on the backend. The backend should therefore be started first.
 
-### Benchmarks
+### Evaluation
 
-To reproduce the performance benchmarks shown in the paper, perform the following steps: 
+WARNING: Rerunning the evaluation will overwrite the results that are provided in the repository!
 
-- Create a file called `git_access_token` in the [backend](./backend/) folder. Then enter your GitHub access token in that file and save. 
-- Run `docker compose run --service-ports --entrypoint bash backend` to get a bash that is attached to the frontend container.
-- Run `./benchmark.py` to start the backend in development mode. 
+To reproduce the evaluation results discussed in the SEMANTiCS 2024 paper, perform the following steps: 
+
+- Create a file called `.github_access_token` in the [backend](./backend/) folder. Then, enter your GitHub access token in that file and save. 
+- Run `docker compose run evaluation` to get a bash that is attached to the backend container.
+- Run `./python3 evaluation.py` to rerun the evaluation. This includes the FAIRness assessment of GitHub repositories and the runtime benchmark on the same repositories.
+
+The resulting files are place in the [evaluation](./backend/data/evaluation/) folder.
+
+## Citation
+If you use this software, please cite it as below:
+
+```bibtex
+@inproceedings{DBLP:conf/lwa/MartinH22,
+  author       = {Leon Martin and
+                  Andreas Henrich},
+  editor       = {Pascal Reuss and
+                  Viktor Eisenstadt and
+                  Jakob Michael Sch{\"{o}}nborn and
+                  Jero Sch{\"{a}}fer},
+  title        = {Specification and Validation of Quality Criteria for Git Repositories
+                  using {RDF} and {SHACL}},
+  booktitle    = {Proceedings of the {LWDA} 2022 Workshops: FGWM, FGKD, and FGDB, Hildesheim
+                  (Germany), Oktober 5-7th, 2022},
+  series       = {{CEUR} Workshop Proceedings},
+  volume       = {3341},
+  pages        = {124--135},
+  publisher    = {CEUR-WS.org},
+  year         = {2022},
+  url          = {https://ceur-ws.org/Vol-3341/WM-LWDA\_2022\_CRC\_1149.pdf},
+  timestamp    = {Sat, 30 Sep 2023 09:52:13 +0200},
+  biburl       = {https://dblp.org/rec/conf/lwa/MartinH22.bib},
+  bibsource    = {dblp computer science bibliography, https://dblp.org}
+}
+```
 
 ## Citation
 If you use this software, please cite it as below:

@@ -14,7 +14,9 @@ RUN pip install -U flask-cors
 RUN pip install -U fire
 RUN pip install -U pyshacl
 RUN pip install -U numpy
+RUN pip install -U pandas
 RUN pip install -U matplotlib
+RUN pip install -U brokenaxes
 
 VOLUME [ "/src" ]
 WORKDIR /src

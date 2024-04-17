@@ -85,8 +85,8 @@ propertyShapes:DoiAsHomepage
 		# The homepage link is internally mapped via the "website" property.
 		sh:path     sd:website ;
 		# https://www.crossref.org/blog/dois-and-matching-regular-expressions/
-		# Put into the right format with the help of ChatGPT.
-		sh:pattern  "^https://doi\\.org/10\\.[0-9]{4,}/[-._;()/:A-Z0-9]+$" ;
+		# Put into the right format with the help of ChatGPT, adapted.
+		sh:pattern  "^https://doi\\.org/10\\.[0-9]{4,}/[-._;()/:A-Za-z0-9]+$" ;
 		sh:minCount 1 ;
 		sh:message  "The homepage attribute is not set or its value is not a DOI. Make sure this attribute is filled with a DOI." ;
 		sh:description

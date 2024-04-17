@@ -17,3 +17,11 @@ services:
     ports:
       - "3000:3000"
     command: bash -c "npm install && npm run dev"
+  evaluation:
+    build: ./backend
+    container_name: evaluation
+    volumes:
+      - ./backend:/src
+    ports:
+      - "5000:5000"
+    entrypoint: bash

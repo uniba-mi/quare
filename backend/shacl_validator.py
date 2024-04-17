@@ -204,7 +204,7 @@ def versions_have_valid_increment(release_list: PaginatedList | list[dict]) -> b
 
 def version_pair_has_valid_version_increment(pair: tuple[Version, Version]) -> bool:
     # If the first number (major) is increased, the second (minor) and third (micro) must be set to zero.
-    if (pair[0].major + 1 == pair[1].major) & (pair[1].minor == 0) & (pair[1].micro == 0):
+    if (pair[0].major >= pair[1].major) & (pair[1].minor == 0) & (pair[1].micro == 0):
         return True
 
     # If minor is increased, micro must be set to zero.
@@ -303,7 +303,7 @@ def include_readme(graph: Graph, repo_entity: URIRef, repo: Repository, include_
     if include_check_for_doi:
         # Check whether there is at least one DOI in the README file (as text or link href).
         # Regex adapted from https://www.crossref.org/blog/dois-and-matching-regular-expressions/
-        doi_pattern = re.compile(r"https://doi\.org/10\.\d{4,}/[-._;()/:A-Z0-9]+")
+        doi_pattern = re.compile(r"https://doi\.org/10\.\d{4,}/[-._;()/:A-Za-z0-9]+")
         if soup.find_all(string=doi_pattern) or soup.find_all(href=doi_pattern):
             graph.add((readme_entity, props["containsDoi"], Literal("true")))
         else:
