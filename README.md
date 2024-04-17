@@ -176,6 +176,33 @@ If you use this software, please cite it as below:
 }
 ```
 
+## Citation
+If you use this software, please cite it as below:
+
+```bibtex
+@inproceedings{DBLP:conf/lwa/MartinH22,
+  author       = {Leon Martin and
+                  Andreas Henrich},
+  editor       = {Pascal Reuss and
+                  Viktor Eisenstadt and
+                  Jakob Michael Sch{\"{o}}nborn and
+                  Jero Sch{\"{a}}fer},
+  title        = {Specification and Validation of Quality Criteria for Git Repositories
+                  using {RDF} and {SHACL}},
+  booktitle    = {Proceedings of the {LWDA} 2022 Workshops: FGWM, FGKD, and FGDB, Hildesheim
+                  (Germany), Oktober 5-7th, 2022},
+  series       = {{CEUR} Workshop Proceedings},
+  volume       = {3341},
+  pages        = {124--135},
+  publisher    = {CEUR-WS.org},
+  year         = {2022},
+  url          = {https://ceur-ws.org/Vol-3341/WM-LWDA\_2022\_CRC\_1149.pdf},
+  timestamp    = {Sat, 30 Sep 2023 09:52:13 +0200},
+  biburl       = {https://dblp.org/rec/conf/lwa/MartinH22.bib},
+  bibsource    = {dblp computer science bibliography, https://dblp.org}
+}
+```
+
 ## License
 
 See [License](./LICENSE/)
