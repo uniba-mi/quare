@@ -501,5 +501,5 @@ def visualize_results() -> None:
     print(df_expected.describe(), df_trending.describe())
 
 if __name__ == "__main__":
-    # perform_evaluation()
+    perform_evaluation()
     visualize_results()
