@@ -147,7 +147,7 @@ To reproduce the evaluation results discussed in the SEMANTiCS 2024 paper, perfo
 - Run `docker compose run evaluation` to get a bash that is attached to the backend container.
 - Run `./python3 evaluation.py` to rerun the evaluation. This includes the FAIRness assessment of GitHub repositories and the runtime benchmark on the same repositories.
 
-The resulting files are place in the [evaluation](./backend/data/evaluation/) folder.
+The resulting files are placed in the [evaluation](./backend/data/evaluation/) folder.
 
 ## Citation
 If you use this software, please cite it as below:
