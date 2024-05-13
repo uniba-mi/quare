@@ -475,7 +475,7 @@ def visualize_results() -> None:
 
     fig = plt.figure(figsize=(6, 4))
 
-    bax = brokenaxes(xlims=((0, 5000), (12000, 12500)), ylims=((0, 30), (50, 55)))
+    bax = brokenaxes(xlims=((1, 5000), (12000, 12500)), ylims=((0, 30), (50, 55)), xscale="log")
 
     bax.scatter(x_trending, y_trending, c="#8ed7d7", s=15, label="Trending Repositories\n(N=217)")
     bax.scatter(x_expected, y_expected, c="#00407A", s=15, label="Repositories Expected to\nbe FAIR (N=6)")
@@ -485,21 +485,21 @@ def visualize_results() -> None:
 
     bax.legend(loc=1, ncol=1)
 
-    bax.grid(axis='y', which='major', ls="dashed")
-    bax.grid(axis='y', which='minor', ls="dashed", linewidth=0.5)
+    bax.grid(axis="y", which="major", ls="dashed")
+    bax.grid(axis="y", which="minor", ls="dashed", linewidth=0.5)
 
     plt.savefig("./data/evaluation/runtime_benchmark_scatter.pdf")
 
-    data = {'size': x_expected,
-            'runtime': y_expected}
+    data = {"size": x_expected,
+            "runtime": y_expected}
     df_expected = pd.DataFrame(data)
 
-    data = {'size': x_trending,
-            'runtime': y_trending}
+    data = {"size": x_trending,
+            "runtime": y_trending}
     df_trending = pd.DataFrame(data)
 
     print(df_expected.describe(), df_trending.describe())
 
 if __name__ == "__main__":
-    perform_evaluation()
+    # perform_evaluation()
     visualize_results()
