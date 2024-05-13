@@ -488,17 +488,17 @@ def visualize_results() -> None:
 
     bax.legend(loc=2, bbox_to_anchor=(0.02, 1))
 
-    bax.grid(axis='y', which='major', ls="dashed")
-    bax.grid(axis='y', which='minor', ls="dashed", linewidth=0.5)
+    bax.grid(axis="y", which="major", ls="dashed")
+    bax.grid(axis="y", which="minor", ls="dashed", linewidth=0.5)
 
     plt.savefig("./data/evaluation/runtime_benchmark_scatter.pdf")
 
-    data = {'size': x_expected,
-            'runtime': y_expected}
+    data = {"size": x_expected,
+            "runtime": y_expected}
     df_expected = pd.DataFrame(data)
 
-    data = {'size': x_trending,
-            'runtime': y_trending}
+    data = {"size": x_trending,
+            "runtime": y_trending}
     df_trending = pd.DataFrame(data)
 
     print(df_expected.describe(), df_trending.describe())

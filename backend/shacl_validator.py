@@ -154,7 +154,7 @@ def include_description(graph: Graph, repo_entity: URIRef, repo: Repository) -> 
 
 def include_homepage(graph: Graph, repo_entity: URIRef, repo: Repository) -> None:
     if repo.homepage:
-        graph.add((repo_entity, sd["website"], Literal(repo.homepage)))
+        graph.add((repo_entity, sd["website"], URIRef(repo.homepage)))
 
 
 def include_main_language(graph: Graph, repo_entity: URIRef, repo: Repository) -> None:

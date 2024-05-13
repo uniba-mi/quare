@@ -1,9 +1,10 @@
 FROM ubuntu:latest
 
-RUN apt-get update && apt-get install --yes openjdk-11-jre 
-
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install --yes python3.10
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install --yes python3.12
 RUN apt-get update && apt-get install --yes python3-pip
+
+# workaround for installing python packages outside of venv
+RUN rm /usr/lib/python3.12/EXTERNALLY-MANAGED
 
 RUN pip install -U rdflib
 RUN pip install -U PyGithub
