@@ -15,6 +15,8 @@ import validation_interface, verbalization_interface
 
 logging.basicConfig(level=logging.INFO)
 
+colors = {"primary": "#042940", "secondary": "#9FC131"}
+
 def perform_evaluation() -> None:
     with open(".github_access_token") as file:
         github_access_token = file.readline().strip()
@@ -435,11 +437,11 @@ def visualize_results() -> None:
     width = 0.35
     fig, ax = plt.subplots(figsize=(6, 4))
 
-    ax.bar(x - width / 2, scores_fair, width, label="Repositories Expected to be FAIR (N=6)", color="#00407A")
-    ax.bar(x + width / 2, scores_trending, width, label="Trending Repositories (N=217)", color="#8ed7d7")
+    ax.bar(x - width / 2, scores_fair, width, label="Repositories Expected to be FAIR (N=6)", color=colors["primary"])
+    ax.bar(x + width / 2, scores_trending, width, label="Trending Repositories (N=217)", color=colors["secondary"])
     ax.legend(loc="lower left", ncol=1, bbox_to_anchor=(0, 1, 1, 0))
 
-    ax.set_ylabel("Percentage of Conform Repositories")
+    ax.set_ylabel("Percentage of Compliant Repositories")
 
     ax.set_yticks(np.arange(0, 101, 10))
     ax.set_yticks(np.arange(5, 100, 5), minor=True)
@@ -475,15 +477,16 @@ def visualize_results() -> None:
 
     fig = plt.figure(figsize=(6, 4))
 
-    bax = brokenaxes(xlims=((0, 5000), (12000, 12500)), ylims=((0, 30), (50, 55)))
+    bax = brokenaxes(ylims=((1, 30), (50, 55)))
 
-    bax.scatter(x_trending, y_trending, c="#8ed7d7", s=15, label="Trending Repositories\n(N=217)")
-    bax.scatter(x_expected, y_expected, c="#00407A", s=15, label="Repositories Expected to\nbe FAIR (N=6)")
+    bax.scatter(x_trending, y_trending, edgecolors= "black", linewidths= 0.5, c=colors["secondary"], s=50, label="Trending Repositories\n(N=217)")
+    bax.scatter(x_expected, y_expected, edgecolors= "black", linewidths= 0.5, c=colors["primary"], s=50, label="Repositories Expected to\nbe FAIR (N=6)")
 
+    bax.set_xscale("log");
     bax.set_xlabel("Repository Size")
     bax.set_ylabel("Runtime Duration in Seconds")
 
-    bax.legend(loc=1, ncol=1)
+    bax.legend(loc=2, bbox_to_anchor=(0.02, 1))
 
     bax.grid(axis='y', which='major', ls="dashed")
     bax.grid(axis='y', which='minor', ls="dashed", linewidth=0.5)
@@ -501,5 +504,4 @@ def visualize_results() -> None:
     print(df_expected.describe(), df_trending.describe())
 
 if __name__ == "__main__":
-    perform_evaluation()
     visualize_results()
