@@ -437,8 +437,8 @@ def visualize_results() -> None:
     width = 0.35
     fig, ax = plt.subplots(figsize=(6, 4))
 
-    ax.bar(x - width / 2, scores_fair, width, label="Repositories Expected to be FAIR (N=6)", color=colors["primary"])
-    ax.bar(x + width / 2, scores_trending, width, label="Trending Repositories (N=217)", color=colors["secondary"])
+    ax.bar(x - width / 2, scores_fair, width, label="Repositories Expected to be FAIR (N=217)", color=colors["primary"])
+    ax.bar(x + width / 2, scores_trending, width, label="Trending Repositories (N=6)", color=colors["secondary"])
     ax.legend(loc="lower left", ncol=1, bbox_to_anchor=(0, 1, 1, 0))
 
     ax.set_ylabel("Percentage of Compliant Repositories")
@@ -477,8 +477,8 @@ def visualize_results() -> None:
 
     fig, ax = plt.subplots(figsize=(6, 4))
 
-    ax.scatter(x_trending, y_trending, edgecolors= "black", linewidths= 0.5, c=colors["secondary"], s=50, label=f"Trending Repositories\n(N={len(x_trending)})")
-    ax.scatter(x_expected, y_expected, edgecolors= "black", linewidths= 0.5, c=colors["primary"], s=50, label=f"Repositories Expected to\nbe FAIR (N={len(x_expected)})")
+    ax.scatter(x_trending, y_trending, edgecolors= "black", linewidths= 0.5, c=colors["secondary"], s=50, label="Trending Repositories\n(N=217)")
+    ax.scatter(x_expected, y_expected, edgecolors= "black", linewidths= 0.5, c=colors["primary"], s=50, label="Repositories Expected to\nbe FAIR (N=6))")
 
     ax.set_yticks(np.arange(0, 61, 5))
     ax.set_xscale("log");
@@ -505,5 +505,5 @@ def visualize_results() -> None:
     print(df_expected.describe(), df_trending.describe())
 
 if __name__ == "__main__":
-    # perform_evaluation()
+    perform_evaluation()
     visualize_results()
