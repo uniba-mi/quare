@@ -361,15 +361,15 @@ def execute_runtime_benchmark(repos_expected_to_be_fair: list, trending_repos: l
         # skip repo for evaluation if relevant data cannot be fetched
         try:
             repo = g.get_repo(repo_name)
-            # compute repo size as the sum of releases branches and issues
-            repo_size = repo.get_releases().totalCount + repo.get_branches().totalCount + repo.get_issues().totalCount
+            # compute repo size as the sum of releases and branches
+            repo_size = repo.get_releases().totalCount + repo.get_branches().totalCount
         except:
             continue
 
         # perform fairness assessment with profiler
         file_name = f"{repo_name.split('/')[1]}"
         
-        logging.info(f"{repo_name} has in total {repo_size} releases, branches, and issues.")
+        logging.info(f"{repo_name} has in total {repo_size} releases and branches.")
 
         cmd = ["./shacl_validator.py", "--github_access_token", github_access_token, "--repo_name", repo_name,
                "--expected_type", "FAIRSoftware"]
@@ -475,21 +475,20 @@ def visualize_results() -> None:
             x_expected.append(size)
             y_expected.append(runtime)
 
-    fig = plt.figure(figsize=(6, 4))
+    fig, ax = plt.subplots(figsize=(6, 4))
 
-    bax = brokenaxes(ylims=((1, 30), (50, 55)))
+    ax.scatter(x_trending, y_trending, edgecolors= "black", linewidths= 0.5, c=colors["secondary"], s=50, label=f"Trending Repositories\n(N={len(x_trending)})")
+    ax.scatter(x_expected, y_expected, edgecolors= "black", linewidths= 0.5, c=colors["primary"], s=50, label=f"Repositories Expected to\nbe FAIR (N={len(x_expected)})")
 
-    bax.scatter(x_trending, y_trending, edgecolors= "black", linewidths= 0.5, c=colors["secondary"], s=50, label="Trending Repositories\n(N=217)")
-    bax.scatter(x_expected, y_expected, edgecolors= "black", linewidths= 0.5, c=colors["primary"], s=50, label="Repositories Expected to\nbe FAIR (N=6)")
+    ax.set_yticks(np.arange(0, 61, 5))
+    ax.set_xscale("log");
+    ax.set_xlabel("Repository Size")
+    ax.set_ylabel("Runtime Duration in Seconds")
 
-    bax.set_xscale("log");
-    bax.set_xlabel("Repository Size")
-    bax.set_ylabel("Runtime Duration in Seconds")
+    ax.legend(loc=2, bbox_to_anchor=(0.02, 1))
 
-    bax.legend(loc=2, bbox_to_anchor=(0.02, 1))
-
-    bax.grid(axis="y", which="major", ls="dashed")
-    bax.grid(axis="y", which="minor", ls="dashed", linewidth=0.5)
+    ax.grid(axis="y", which="major", ls="dashed")
+    ax.grid(axis="y", which="minor", ls="dashed", linewidth=0.5)
 
     plt.savefig("./data/evaluation/runtime_benchmark_scatter.pdf")
 
@@ -504,4 +503,5 @@ def visualize_results() -> None:
     print(df_expected.describe(), df_trending.describe())
 
 if __name__ == "__main__":
+    perform_evaluation()
     visualize_results()
