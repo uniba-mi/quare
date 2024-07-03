@@ -490,6 +490,8 @@ def visualize_results() -> None:
     ax.grid(axis="y", which="major", ls="dashed")
     ax.grid(axis="y", which="minor", ls="dashed", linewidth=0.5)
 
+    fig.tight_layout()
+
     plt.savefig("./data/evaluation/runtime_benchmark_scatter.pdf")
 
     data = {"size": x_expected,
@@ -503,5 +505,5 @@ def visualize_results() -> None:
     print(df_expected.describe(), df_trending.describe())
 
 if __name__ == "__main__":
-    perform_evaluation()
+    # perform_evaluation()
     visualize_results()
