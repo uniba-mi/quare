@@ -5,17 +5,17 @@ import logging
 import pstats
 from subprocess import run
 
-import pandas as pd 
+import pandas as pd
 import numpy as np
 from github import UnknownObjectException, Github, Auth
 from matplotlib import pyplot as plt
-from brokenaxes import brokenaxes
 
 import validation_interface, verbalization_interface
 
 logging.basicConfig(level=logging.INFO)
 
 colors = {"primary": "#042940", "secondary": "#9FC131"}
+
 
 def perform_evaluation() -> None:
     with open(".github_access_token") as file:
@@ -32,7 +32,8 @@ def perform_evaluation() -> None:
     with open("./data/evaluation/trending_repos.json", "w") as file:
         json.dump(results_per_criterion_trending, file)
 
-    runtime_benchmark_results = execute_runtime_benchmark(repos_expected_to_be_fair, trending_repos, github_access_token)
+    runtime_benchmark_results = execute_runtime_benchmark(repos_expected_to_be_fair, trending_repos,
+                                                          github_access_token)
     with open("./data/evaluation/runtime_benchmark_results.json", "w") as file:
         json.dump(runtime_benchmark_results, file)
 
@@ -348,7 +349,8 @@ def process_verbalized_explanation(verbalized_explanation: list[str]) -> dict[st
     return result_per_criterion
 
 
-def execute_runtime_benchmark(repos_expected_to_be_fair: list, trending_repos: list, github_access_token: str) -> None:
+def execute_runtime_benchmark(repos_expected_to_be_fair: list, trending_repos: list, github_access_token: str) -> dict[
+    str, tuple[int, float, str]]:
     auth = Auth.Token(github_access_token)
     g = Github(auth=auth)
 
@@ -368,14 +370,14 @@ def execute_runtime_benchmark(repos_expected_to_be_fair: list, trending_repos: l
 
         # perform fairness assessment with profiler
         file_name = f"{repo_name.split('/')[1]}"
-        
+
         logging.info(f"{repo_name} has in total {repo_size} releases and branches.")
 
         cmd = ["./shacl_validator.py", "--github_access_token", github_access_token, "--repo_name", repo_name,
                "--expected_type", "FAIRSoftware"]
 
         run(["python3", "-m", "cProfile", "-o", f"data/benchmarks/{file_name}", "-s", "cumulative"] + cmd)
-        
+
         # process stats of fairness assessment runtime
         stats = pstats.Stats(f"data/benchmarks/{file_name}")
 
@@ -406,8 +408,8 @@ def execute_runtime_benchmark(repos_expected_to_be_fair: list, trending_repos: l
 
     return runtime_benchmark_results
 
-def visualize_results() -> None:
 
+def visualize_results() -> None:
     def get_results_in_percent(results_per_criterion: dict[str, dict[str, bool]]) -> dict[str, float]:
         first_inner_dict = list(results_per_criterion.values())[0]
         numeric_results: dict[str, int] = {key: 0 for key in first_inner_dict}
@@ -437,8 +439,8 @@ def visualize_results() -> None:
     width = 0.35
     fig, ax = plt.subplots(figsize=(6, 4))
 
-    ax.bar(x - width / 2, scores_fair, width, label="Repositories Expected to be FAIR (N=217)", color=colors["primary"])
-    ax.bar(x + width / 2, scores_trending, width, label="Trending Repositories (N=6)", color=colors["secondary"])
+    ax.bar(x - width / 2, scores_fair, width, label="Repositories Expected to be FAIR (N=6)", color=colors["primary"])
+    ax.bar(x + width / 2, scores_trending, width, label="Trending Repositories (N=217)", color=colors["secondary"])
     ax.legend(loc="lower left", ncol=1, bbox_to_anchor=(0, 1, 1, 0))
 
     ax.set_ylabel("Percentage of Compliant Repositories")
@@ -477,11 +479,13 @@ def visualize_results() -> None:
 
     fig, ax = plt.subplots(figsize=(6, 4))
 
-    ax.scatter(x_trending, y_trending, edgecolors= "black", linewidths= 0.5, c=colors["secondary"], s=50, label="Trending Repositories\n(N=217)")
-    ax.scatter(x_expected, y_expected, edgecolors= "black", linewidths= 0.5, c=colors["primary"], s=50, label="Repositories Expected to\nbe FAIR (N=6))")
+    ax.scatter(x_trending, y_trending, edgecolors="black", linewidths=0.5, c=colors["secondary"], s=50,
+               label="Trending Repositories\n(N=217)")
+    ax.scatter(x_expected, y_expected, edgecolors="black", linewidths=0.5, c=colors["primary"], s=50,
+               label="Repositories Expected to\nbe FAIR (N=6))")
 
     ax.set_yticks(np.arange(0, 61, 5))
-    ax.set_xscale("log");
+    ax.set_xscale("log")
     ax.set_xlabel("Repository Size")
     ax.set_ylabel("Runtime Duration in Seconds")
 
@@ -503,6 +507,7 @@ def visualize_results() -> None:
     df_trending = pd.DataFrame(data)
 
     print(df_expected.describe(), df_trending.describe())
+
 
 if __name__ == "__main__":
     perform_evaluation()
